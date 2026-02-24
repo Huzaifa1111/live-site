@@ -10,12 +10,14 @@ import { OrderItem } from './order-item.entity';
 import { Brand } from '../brands/brand.entity';
 import { AdminModule } from '../admin/admin.module';
 import { Settings } from '../admin/settings.entity';
+import { EmailModule } from '../email/email.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Order, Product, OrderItem, Brand, Settings]),
     CartModule,
     AdminModule,
+    EmailModule,
   ],
   controllers: [OrdersController],
   providers: [OrdersService, StripeService],

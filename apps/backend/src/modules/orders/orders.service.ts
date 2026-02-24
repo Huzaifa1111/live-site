@@ -9,6 +9,7 @@ import { CreateOrderDto } from './dto/create-order.dto';
 import { StripeService } from './stripe.service';
 import { AdminService } from '../admin/admin.service';
 import { Settings } from '../admin/settings.entity';
+import { EmailService } from '../email/email.service';
 
 
 @Injectable()
@@ -25,6 +26,7 @@ export class OrdersService {
     private cartService: CartService,
     private stripeService: StripeService,
     private adminService: AdminService,
+    private emailService: EmailService,
   ) { }
 
   private async getSettings(): Promise<{ taxRate: number; shippingFee: number }> {
@@ -128,6 +130,21 @@ export class OrdersService {
     // Trigger real-time analytics update
     this.adminService.notifyAnalyticsUpdate();
 
+    // Send Order Confirmation Email
+    try {
+      const orderWithData = await this.getOrderById(savedOrder.id);
+      if (orderWithData.user) {
+        await this.emailService.sendOrderConfirmation(
+          orderWithData.user.email,
+          orderWithData.user.name,
+          orderWithData
+        );
+      }
+    } catch (emailError) {
+      console.error('Failed to send order confirmation email:', emailError);
+      // We don't throw here as the order is already placed successfully
+    }
+
     return savedOrder;
   }
 
@@ -212,6 +229,7 @@ export class OrdersService {
       const order = await this.orderRepository.findOne({
         where,
         relations: {
+          user: true,
           items: {
             product: {
               brand: true

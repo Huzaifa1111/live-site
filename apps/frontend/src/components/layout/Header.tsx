@@ -11,6 +11,7 @@ import { useCart } from '@/hooks/useCart';
 import { useWishlist } from '@/lib/WishlistContext';
 
 import { categoryService } from '@/services/category.service';
+import SearchBar from './SearchBar';
 
 import {
   Search,
@@ -259,9 +260,8 @@ export default function Header() {
                 </div>
               )}
 
-              <button className="hidden sm:p-2 hover:bg-gray-100 rounded-full transition-colors">
-                <Search size={22} />
-              </button>
+              <SearchBar />
+
               <Link href="/wishlist" className="p-2 hover:bg-gray-100 rounded-full transition-colors relative">
                 <Heart size={22} className={wishlistItems.length > 0 ? "fill-red-500 text-red-500" : ""} />
                 <span className="absolute top-0 right-0 bg-white border border-black text-black text-[10px] font-black w-4 h-4 flex items-center justify-center rounded-full leading-none">

@@ -12,7 +12,13 @@ export class AttributesService {
         private attributeValueRepository: Repository<AttributeValue>,
     ) { }
 
-    async findAll() {
+    async findAll(query?: string) {
+        if (query) {
+            return this.attributeRepository.find({
+                where: { name: Like(`%${query}%`) },
+                relations: ['values']
+            });
+        }
         return this.attributeRepository.find({ relations: ['values'] });
     }
 

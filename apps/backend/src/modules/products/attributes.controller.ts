@@ -6,8 +6,8 @@ export class AttributesController {
     constructor(private readonly attributesService: AttributesService) { }
 
     @Get()
-    async findAll() {
-        return this.attributesService.findAll();
+    async findAll(@Query('q') query: string) {
+        return this.attributesService.findAll(query);
     }
 
     @Post()

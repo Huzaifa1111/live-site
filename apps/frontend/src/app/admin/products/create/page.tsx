@@ -77,11 +77,32 @@ export default function CreateProductPage() {
 
   // Attribute Management State
   const [useVariations, setUseVariations] = useState(false);
-  const [attributes, setAttributes] = useState<{ name: string; values: AttributeValue[] }[]>([
-    { name: 'Color', values: [] },
-    { name: 'Size', values: [] },
-  ]);
+  const [attributes, setAttributes] = useState<{ name: string; values: AttributeValue[] }[]>([]);
   const [newAttributeName, setNewAttributeName] = useState('');
+  const [attributeOptions, setAttributeOptions] = useState<{ id: number, name: string }[]>([]);
+  const [attributeLoading, setAttributeLoading] = useState(false);
+  const [showAttributeOptions, setShowAttributeOptions] = useState(false);
+
+  useEffect(() => {
+    const fetchAttributeOptions = async () => {
+      if (!showAttributeOptions && newAttributeName === '') return;
+      setAttributeLoading(true);
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/attributes?q=${newAttributeName}`);
+        if (res.ok) {
+          const data = await res.json();
+          setAttributeOptions(data);
+        }
+      } catch (err) {
+        console.error('Failed to fetch attributes', err);
+      } finally {
+        setAttributeLoading(false);
+      }
+    };
+
+    const timer = setTimeout(fetchAttributeOptions, 300);
+    return () => clearTimeout(timer);
+  }, [newAttributeName, showAttributeOptions]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -566,65 +587,135 @@ export default function CreateProductPage() {
                     <span className="text-xs text-gray-400 font-medium">{attributes.length} attribute{attributes.length !== 1 ? 's' : ''}</span>
                   </div>
 
-                  {/* Attribute rows */}
-                  <div className="space-y-4">
+                  {/* Attribute Search Bar (The new way to add attributes) */}
+                  <div className="relative mb-6">
+                    <div className="relative">
+                      <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                      <input
+                        type="text"
+                        value={newAttributeName}
+                        onChange={(e) => {
+                          setNewAttributeName(e.target.value);
+                          setShowAttributeOptions(true);
+                        }}
+                        onFocus={() => setShowAttributeOptions(true)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                            if (newAttributeName.trim() && !attributeLoading) addAttribute();
+                          }
+                        }}
+                        placeholder="Search or add an attribute (e.g. Color, Size, Material...)"
+                        className="w-full pl-12 pr-4 py-4 bg-white border border-gray-200 rounded-2xl focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 transition-all text-sm font-medium shadow-sm"
+                      />
+                      {newAttributeName.trim() && !attributeOptions.find(o => o.name.toLowerCase() === newAttributeName.toLowerCase().trim()) && (
+                        <button
+                          type="button"
+                          onClick={addAttribute}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 px-4 py-2 bg-indigo-50 text-indigo-600 rounded-xl font-bold hover:bg-indigo-100 transition-colors flex items-center gap-2 text-xs"
+                        >
+                          <Plus size={14} /> Add "{newAttributeName}"
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Attribute Search Results Dropdown */}
+                    <AnimatePresence>
+                      {showAttributeOptions && (attributeOptions.length > 0 || attributeLoading) && (
+                        <motion.div
+                          initial={{ opacity: 0, y: -10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -10 }}
+                          className="absolute z-30 w-full mt-2 bg-white border border-gray-100 shadow-2xl rounded-[2rem] overflow-hidden max-h-60 overflow-y-auto"
+                        >
+                          {attributeLoading && <div className="p-6 text-center"><Loader2 className="animate-spin mx-auto text-indigo-500" /></div>}
+                          {!attributeLoading && attributeOptions.map(opt => (
+                            <button
+                              key={opt.id}
+                              type="button"
+                              onClick={() => {
+                                if (!attributes.find(a => a.name.toLowerCase() === opt.name.toLowerCase())) {
+                                  setAttributes(prev => [...prev, { name: opt.name, values: [] }]);
+                                }
+                                setNewAttributeName('');
+                                setShowAttributeOptions(false);
+                              }}
+                              className="w-full text-left px-6 py-4 hover:bg-indigo-50 flex items-center justify-between transition-colors border-b border-gray-50 last:border-0 group"
+                            >
+                              <div className="flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-white group-hover:text-indigo-600 transition-colors">
+                                  <Tag size={14} />
+                                </div>
+                                <span className="text-sm font-bold text-gray-700 group-hover:text-indigo-700">{opt.name}</span>
+                              </div>
+                              {attributes.find(a => a.name.toLowerCase() === opt.name.toLowerCase()) ? (
+                                <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest">Added</span>
+                              ) : (
+                                <Plus size={16} className="text-gray-300 group-hover:text-indigo-500" />
+                              )}
+                            </button>
+                          ))}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+
+                    {showAttributeOptions && (
+                      <div className="fixed inset-0 z-20" onClick={() => setShowAttributeOptions(false)} />
+                    )}
+                  </div>
+
+                  {/* Attribute boxes */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {attributes.map((attr, idx) => (
-                      <div key={idx} className="p-4 bg-white rounded-2xl border border-gray-100 shadow-sm">
-                        <div className="flex items-center justify-between mb-3">
-                          <span className="text-sm font-bold text-gray-700 flex items-center gap-2">
-                            <div className="w-2 h-2 rounded-full bg-indigo-400" />
-                            {attr.name}
-                          </span>
+                      <div key={idx} className="p-5 bg-white rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+                        <div className="flex items-center justify-between mb-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600">
+                              <Tag size={16} />
+                            </div>
+                            <span className="text-sm font-black text-gray-900 uppercase tracking-tight">
+                              {attr.name}
+                            </span>
+                          </div>
                           <button
                             type="button"
                             onClick={() => removeAttribute(idx)}
-                            className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                            className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
                             title={`Remove ${attr.name}`}
                           >
-                            <X size={14} />
+                            <X size={16} />
                           </button>
                         </div>
-                        <AttributeSelector
-                          attributeName={attr.name}
-                          selectedValues={attr.values}
-                          onChange={(vals) => updateAttributeValues(idx, vals)}
-                        />
+
+                        <div className="mt-2">
+                          <p className="text-[10px] uppercase font-black text-gray-400 tracking-widest mb-3">Attribute Values</p>
+                          <AttributeSelector
+                            attributeName={attr.name}
+                            selectedValues={attr.values}
+                            onChange={(vals) => updateAttributeValues(idx, vals)}
+                          />
+                        </div>
                       </div>
                     ))}
                   </div>
 
-                  {/* Add new attribute */}
-                  <div className="flex gap-3 pt-2">
-                    <div className="relative flex-1">
-                      <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
-                      <input
-                        type="text"
-                        value={newAttributeName}
-                        onChange={(e) => setNewAttributeName(e.target.value)}
-                        onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addAttribute(); } }}
-                        placeholder="Add new attribute (e.g. Material, Storage...)"
-                        className="w-full pl-10 pr-4 py-3 bg-white border border-dashed border-indigo-200 rounded-xl focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 transition-all text-sm font-medium placeholder:text-gray-400"
-                      />
+                  {attributes.length > 0 && (
+                    <div className="flex justify-end pt-4">
+                      <button
+                        type="button"
+                        onClick={generateVariations}
+                        className="px-8 py-4 bg-indigo-600 text-white rounded-2xl font-bold hover:bg-indigo-700 transition-all flex items-center gap-2 shadow-lg shadow-indigo-100 hover:scale-[1.02] active:scale-[0.98]"
+                      >
+                        <Sparkles size={20} /> Generate Combinations
+                      </button>
                     </div>
-                    <button
-                      type="button"
-                      onClick={addAttribute}
-                      disabled={!newAttributeName.trim()}
-                      className="px-5 py-3 bg-indigo-50 text-indigo-600 rounded-xl font-bold hover:bg-indigo-100 transition-colors flex items-center gap-2 text-sm disabled:opacity-40 disabled:cursor-not-allowed"
-                    >
-                      <Plus size={16} /> Add
-                    </button>
-                  </div>
+                  )}
 
-                  <div className="flex justify-end pt-2">
-                    <button
-                      type="button"
-                      onClick={generateVariations}
-                      className="px-6 py-2 bg-white border-2 border-indigo-100 text-indigo-600 rounded-xl font-bold hover:bg-indigo-50 transition-colors flex items-center gap-2"
-                    >
-                      <Sparkles size={18} /> Generate Combinations
-                    </button>
-                  </div>
+                  {attributes.length === 0 && (
+                    <div className="text-center py-10 border-2 border-dashed border-indigo-50 rounded-3xl bg-indigo-50/10">
+                      <p className="text-indigo-400 text-sm font-medium">No attributes added yet. Use the search bar above to define attributes for this product.</p>
+                    </div>
+                  )}
                 </div>
 
                 {/* Variations List */}
