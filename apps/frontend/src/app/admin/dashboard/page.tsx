@@ -65,225 +65,154 @@ export default function AdminDashboardPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[500px]">
-        <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+      <div className="flex items-center justify-center min-h-[400px]">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+          className="h-10 w-10 border-4 border-emerald-500/20 border-t-emerald-500 rounded-full"
+        />
       </div>
     );
   }
 
   const stats = [
-    {
-      title: 'Total Products',
-      value: data?.productCount || 0,
-      change: '+12%',
-      trending: 'up',
-      icon: Package,
-      gradient: 'from-blue-500 to-cyan-500',
-      shadow: 'shadow-blue-200'
-    },
-    {
-      title: 'Total Users',
-      value: data?.userCount || 0,
-      change: '+5%',
-      trending: 'up',
-      icon: Users,
-      gradient: 'from-green-500 to-emerald-500',
-      shadow: 'shadow-green-200'
-    },
-    {
-      title: 'Total Orders',
-      value: data?.orderCount || 0,
-      change: '+18%',
-      trending: 'up',
-      icon: ShoppingCart,
-      gradient: 'from-purple-500 to-pink-500',
-      shadow: 'shadow-purple-200'
-    },
-    {
-      title: 'Total Messages',
-      value: data?.messageCount || 0,
-      change: '+10%',
-      trending: 'up',
-      icon: Mail,
-      gradient: 'from-pink-500 to-rose-500',
-      shadow: 'shadow-pink-200'
-    },
-    {
-      title: 'Total Reviews',
-      value: data?.reviewCount || 0,
-      change: '+15%',
-      trending: 'up',
-      icon: Star,
-      gradient: 'from-yellow-400 to-orange-400',
-      shadow: 'shadow-yellow-200'
-    },
-    {
-      title: 'Total Revenue',
-      value: `$${Number(data?.totalRevenue || 0).toFixed(2)}`,
-      change: '+8%',
-      trending: 'up',
-      icon: DollarSign,
-      gradient: 'from-orange-500 to-red-500',
-      shadow: 'shadow-orange-200'
-    }
+    { title: 'Inventory Volume', value: data?.productCount || 0, change: '+12%', icon: Package },
+    { title: 'Client Registry', value: data?.userCount || 0, change: '+5%', icon: Users },
+    { title: 'Acquisition Flow', value: data?.orderCount || 0, change: '+18%', icon: ShoppingCart },
+    { title: 'Gross Valuation', value: `$${Number(data?.totalRevenue || 0).toLocaleString(undefined, { minimumFractionDigits: 0 })}`, change: '+8%', icon: DollarSign }
   ];
 
   return (
     <motion.div
-      className="space-y-8"
+      className="space-y-10"
       variants={containerVariants}
       initial="hidden"
       animate="show"
     >
-      {/* Header */}
-      <motion.div variants={itemVariants} className="bg-white rounded-[2.5rem] p-8 md:p-10 shadow-sm border border-gray-100 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-bl from-purple-50 to-blue-50 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 opacity-80 pointer-events-none"></div>
-        <div className="relative z-10">
-          <h1 className="text-4xl font-black text-gray-900 mb-2 tracking-tight">Admin Dashboard</h1>
-          <p className="text-gray-500 text-lg">Overview of your store performance and system status.</p>
+      {/* Executive Header */}
+      <motion.div variants={itemVariants} className="relative overflow-hidden rounded-2xl bg-black px-7 py-5 text-white shadow-xl group">
+        <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-emerald-600/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2 group-hover:bg-emerald-500/20 transition-colors duration-1000"></div>
+
+        <div className="relative z-10 flex flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-5">
+            <div className="flex items-center gap-2.5">
+              <span className="w-4 h-[1.5px] bg-emerald-500 flex-shrink-0" />
+              <span className="text-[9px] font-black text-emerald-400 uppercase tracking-[0.3em] whitespace-nowrap">Operational Oversight</span>
+            </div>
+            <div className="w-px h-6 bg-white/10 flex-shrink-0" />
+            <h1 className="text-lg md:text-xl font-black tracking-tighter leading-none">Executive Terminal</h1>
+            <p className="hidden md:block text-gray-500 font-medium text-[11px] max-w-sm">Real-time governance of system dynamics, logistics, and client relations.</p>
+          </div>
+          <div className="flex-shrink-0">
+            <div className="px-4 py-2 bg-white/5 backdrop-blur-md rounded-lg text-[8px] font-black text-emerald-400 uppercase tracking-widest border border-white/10 whitespace-nowrap">
+              Live Link: Operational
+            </div>
+          </div>
         </div>
       </motion.div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {/* Primary Metrics */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((stat, index) => (
-          <motion.div key={index} variants={itemVariants} whileHover={{ y: -5, transition: { duration: 0.2 } }}>
-            <div className="bg-white rounded-[2rem] p-6 border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 h-full">
-              <div className="flex justify-between items-start mb-4">
-                <div className={`p-3 rounded-2xl bg-gradient-to-br ${stat.gradient} text-white shadow-lg ${stat.shadow}`}>
-                  <stat.icon size={24} />
+          <motion.div key={index} variants={itemVariants} whileHover={{ y: -5 }}>
+            <div className="bg-white rounded-[2rem] p-7 border border-gray-100 shadow-sm relative overflow-hidden group">
+              <div className="flex justify-between items-start mb-5">
+                <div className="p-3.5 rounded-xl bg-black text-emerald-500 shadow-xl transition-all duration-500 group-hover:bg-emerald-600 group-hover:text-white">
+                  <stat.icon size={20} />
                 </div>
-                {stat.trending === 'up' && (
-                  <span className="flex items-center text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded-full border border-green-100">
-                    <TrendingUp size={12} className="mr-1" />
-                    {stat.change}
-                  </span>
-                )}
+                <span className="text-[9px] font-black text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-100 uppercase tracking-wider">
+                  {stat.change}
+                </span>
               </div>
-              <p className="text-gray-500 text-sm font-bold uppercase tracking-wider mb-1">{stat.title}</p>
-              <h3 className="text-3xl font-black text-gray-900 tracking-tight">{stat.value}</h3>
+              <p className="text-gray-400 text-[10px] font-black uppercase tracking-[0.2em] mb-1.5">{stat.title}</p>
+              <h3 className="text-3xl font-black text-black tracking-tighter">{stat.value}</h3>
             </div>
           </motion.div>
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Quick Actions */}
-        <motion.div variants={itemVariants} className="lg:col-span-2">
-          <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm p-8 h-full">
-            <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-              <PlusCircle className="text-purple-600" /> Quick Actions
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Link href="/admin/products/create" className="group">
-                <div className="p-5 rounded-[1.5rem] bg-blue-50/50 border border-blue-100 hover:bg-blue-600 hover:border-blue-600 transition-all duration-300 group-hover:shadow-lg group-hover:shadow-blue-200">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="p-2 rounded-xl bg-blue-100 text-blue-600 group-hover:bg-white/20 group-hover:text-white transition-colors">
-                      <Package size={20} />
-                    </span>
-                    <ArrowRight size={18} className="text-blue-400 group-hover:text-white transition-colors opacity-0 group-hover:opacity-100" />
-                  </div>
-                  <h3 className="font-bold text-gray-900 group-hover:text-white mb-1">Add Product</h3>
-                  <p className="text-xs text-gray-500 group-hover:text-white/80 font-medium">Create new inventory item</p>
-                </div>
-              </Link>
-
-              <Link href="/admin/orders" className="group">
-                <div className="p-5 rounded-[1.5rem] bg-green-50/50 border border-green-100 hover:bg-green-600 hover:border-green-600 transition-all duration-300 group-hover:shadow-lg group-hover:shadow-green-200">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="p-2 rounded-xl bg-green-100 text-green-600 group-hover:bg-white/20 group-hover:text-white transition-colors">
-                      <ShoppingCart size={20} />
-                    </span>
-                    <ArrowRight size={18} className="text-green-400 group-hover:text-white transition-colors opacity-0 group-hover:opacity-100" />
-                  </div>
-                  <h3 className="font-bold text-gray-900 group-hover:text-white mb-1">View Orders</h3>
-                  <p className="text-xs text-gray-500 group-hover:text-white/80 font-medium">Manage customer purchases</p>
-                </div>
-              </Link>
-
-              <Link href="/admin/users" className="group">
-                <div className="p-5 rounded-[1.5rem] bg-purple-50/50 border border-purple-100 hover:bg-purple-600 hover:border-purple-600 transition-all duration-300 group-hover:shadow-lg group-hover:shadow-purple-200">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="p-2 rounded-xl bg-purple-100 text-purple-600 group-hover:bg-white/20 group-hover:text-white transition-colors">
-                      <Users size={20} />
-                    </span>
-                    <ArrowRight size={18} className="text-purple-400 group-hover:text-white transition-colors opacity-0 group-hover:opacity-100" />
-                  </div>
-                  <h3 className="font-bold text-gray-900 group-hover:text-white mb-1">Manage Users</h3>
-                  <p className="text-xs text-gray-500 group-hover:text-white/80 font-medium">View and edit accounts</p>
-                </div>
-              </Link>
-
-              <Link href="/admin/analytics" className="group">
-                <div className="p-5 rounded-[1.5rem] bg-orange-50/50 border border-orange-100 hover:bg-orange-600 hover:border-orange-600 transition-all duration-300 group-hover:shadow-lg group-hover:shadow-orange-200">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="p-2 rounded-xl bg-orange-100 text-orange-600 group-hover:bg-white/20 group-hover:text-white transition-colors">
-                      <TrendingUp size={20} />
-                    </span>
-                    <ArrowRight size={18} className="text-orange-400 group-hover:text-white transition-colors opacity-0 group-hover:opacity-100" />
-                  </div>
-                  <h3 className="font-bold text-gray-900 group-hover:text-white mb-1">Analytics</h3>
-                  <p className="text-xs text-gray-500 group-hover:text-white/80 font-medium">Check store performance</p>
-                </div>
-              </Link>
-
-              <Link href="/admin/messages" className="group">
-                <div className="p-5 rounded-[1.5rem] bg-rose-50/50 border border-rose-100 hover:bg-rose-600 hover:border-rose-600 transition-all duration-300 group-hover:shadow-lg group-hover:shadow-rose-200">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="p-2 rounded-xl bg-rose-100 text-rose-600 group-hover:bg-white/20 group-hover:text-white transition-colors">
-                      <Mail size={20} />
-                    </span>
-                    <ArrowRight size={18} className="text-rose-400 group-hover:text-white transition-colors opacity-0 group-hover:opacity-100" />
-                  </div>
-                  <h3 className="font-bold text-gray-900 group-hover:text-white mb-1">Messages</h3>
-                  <p className="text-xs text-gray-500 group-hover:text-white/80 font-medium">View user inquiries</p>
-                </div>
-              </Link>
-
-              <Link href="/admin/reviews" className="group">
-                <div className="p-5 rounded-[1.5rem] bg-yellow-50/50 border border-yellow-100 hover:bg-yellow-500 hover:border-yellow-500 transition-all duration-300 group-hover:shadow-lg group-hover:shadow-yellow-200">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="p-2 rounded-xl bg-yellow-100 text-yellow-600 group-hover:bg-white/20 group-hover:text-white transition-colors">
-                      <Star size={20} />
-                    </span>
-                    <ArrowRight size={18} className="text-yellow-400 group-hover:text-white transition-colors opacity-0 group-hover:opacity-100" />
-                  </div>
-                  <h3 className="font-bold text-gray-900 group-hover:text-white mb-1">Reviews</h3>
-                  <p className="text-xs text-gray-500 group-hover:text-white/80 font-medium">Manage customer ratings</p>
-                </div>
-              </Link>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+        {/* Logistics Feed & Controls */}
+        <div className="lg:col-span-8 space-y-10">
+          <motion.div variants={itemVariants} className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm p-8 group">
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="text-xl font-black text-black tracking-tighter uppercase tracking-widest flex items-center gap-3">
+                <div className="w-2 h-2 rounded-full bg-emerald-500" /> Operational Control
+              </h2>
             </div>
-          </div>
-        </motion.div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {[
+                { href: '/admin/products/create', label: 'New Asset', desc: 'Secure entry', icon: Package },
+                { href: '/admin/orders', label: 'Logistic Flow', desc: 'Dispatches', icon: ShoppingCart },
+                { href: '/admin/users', label: 'Identity Hub', desc: 'Client ledger', icon: Users },
+              ].map((action) => (
+                <Link key={action.label} href={action.href} className="group/action">
+                  <div className="p-5 rounded-2xl bg-gray-50/50 border border-transparent hover:bg-white hover:border-emerald-100 hover:shadow-xl transition-all duration-500">
+                    <div className="w-10 h-10 rounded-lg bg-white flex items-center justify-center text-emerald-500 mb-4 shadow-sm group-hover/action:scale-105 transition-transform">
+                      <action.icon size={18} />
+                    </div>
+                    <h3 className="font-black text-black text-[11px] uppercase tracking-widest mb-1">{action.label}</h3>
+                    <p className="text-[9px] text-gray-400 font-medium uppercase tracking-wide">{action.desc}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </motion.div>
 
-        {/* Recent Activity */}
-        <motion.div variants={itemVariants} className="lg:col-span-1">
-          <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm p-8 h-full">
-            <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-              <TrendingUp className="text-blue-600" /> Recent Activity
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {[
+              { title: 'Inbound Comms', value: data?.messageCount || 0, icon: Mail },
+              { title: 'Sentiment Analysis', value: data?.reviewCount || 0, icon: Star }
+            ].map((stat, index) => (
+              <motion.div key={index} variants={itemVariants} className="bg-white rounded-[2rem] p-6 border border-gray-100 shadow-sm flex items-center gap-5 group">
+                <div className="w-12 h-12 rounded-xl bg-gray-50 flex items-center justify-center text-emerald-500/40 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-500">
+                  <stat.icon size={20} />
+                </div>
+                <div>
+                  <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-0.5">{stat.title}</p>
+                  <p className="text-2xl font-black text-black tracking-tighter">{stat.value}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        {/* System Ledger Feed */}
+        <motion.div variants={itemVariants} className="lg:col-span-4 flex flex-col h-full">
+          <div className="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-sm flex-1 flex flex-col">
+            <h2 className="text-xl font-black text-black tracking-tighter mb-8 flex items-center gap-3">
+              <TrendingUp className="text-emerald-500" size={20} /> Activity Ledger
             </h2>
-            <div className="space-y-4">
+            <div className="space-y-1.5 flex-1 overflow-y-auto custom-scrollbar pr-1 max-h-[400px]">
               {data?.activities && data.activities.length > 0 ? (
                 data.activities.map((activity, index) => (
-                  <div key={index} className="flex items-start gap-4 p-3 rounded-2xl hover:bg-gray-50/80 transition-colors">
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${activity.type === 'order' ? 'bg-purple-100 text-purple-600' : 'bg-green-100 text-green-600'}`}>
-                      {activity.type === 'order' ? <ShoppingCart size={18} /> : <Users size={18} />}
+                  <div key={index} className="group/item flex items-center gap-4 p-3 rounded-xl hover:bg-gray-50 transition-all duration-300">
+                    <div className="w-9 h-9 rounded-lg bg-gray-50 flex items-center justify-center text-emerald-500 flex-shrink-0 group-hover/item:bg-emerald-600 group-hover/item:text-white transition-colors duration-300">
+                      {activity.type === 'order' ? <ShoppingCart size={14} /> : <Users size={14} />}
                     </div>
-                    <div className="min-w-0 flex-1 pt-1">
-                      <p className="font-bold text-gray-900 text-sm truncate">{activity.title}</p>
-                      <p className="text-xs text-gray-500 font-medium mb-1 truncate">{activity.subtitle}</p>
-                      <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">
-                        {new Date(activity.time).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
-                      </span>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex justify-between items-start mb-0.5">
+                        <p className="font-black text-[10px] text-black uppercase tracking-widest truncate">{activity.title}</p>
+                        <span className="text-[8px] font-bold text-gray-300 uppercase flex-shrink-0 ml-2">
+                          {new Date(activity.time).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                        </span>
+                      </div>
+                      <p className="text-[9px] text-gray-400 font-medium truncate uppercase tracking-wide">{activity.subtitle}</p>
                     </div>
                   </div>
                 ))
               ) : (
-                <div className="text-center py-10 opacity-50">
-                  <p className="text-gray-400 text-sm font-medium">No recent activity</p>
+                <div className="text-center py-20 opacity-30">
+                  <p className="text-gray-400 text-[9px] font-black uppercase tracking-widest italic">Ledger Null</p>
                 </div>
               )}
             </div>
+
+            <Link href="/admin/analytics" className="mt-8">
+              <button className="w-full py-3.5 bg-black text-white text-[9px] font-black uppercase tracking-[0.2em] rounded-xl hover:bg-emerald-600 transition-all duration-300 shadow-lg shadow-gray-100">
+                Full Analytics Engine
+              </button>
+            </Link>
           </div>
         </motion.div>
       </div>

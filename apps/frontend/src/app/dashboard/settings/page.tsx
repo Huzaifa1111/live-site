@@ -11,7 +11,8 @@ import {
     Mail,
     Eye,
     ChevronRight,
-    LogOut
+    LogOut,
+    Lock
 } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
 
@@ -39,26 +40,26 @@ interface ToggleProps {
 }
 
 const Toggle = ({ label, description, enabled, onChange, icon: Icon }: ToggleProps) => (
-    <div className="flex items-center justify-between py-4">
-        <div className="flex items-center gap-4">
+    <div className="flex items-center justify-between py-6">
+        <div className="flex items-center gap-6">
             {Icon && (
-                <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-500">
+                <div className="w-12 h-12 rounded-[1rem] bg-gray-50 flex items-center justify-center text-emerald-500/40 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-500 shadow-inner">
                     <Icon size={20} />
                 </div>
             )}
             <div>
-                <p className="font-bold text-gray-900">{label}</p>
-                {description && <p className="text-sm text-gray-500">{description}</p>}
+                <p className="font-bold text-black tracking-tight">{label}</p>
+                {description && <p className="text-[10px] text-gray-400 font-medium uppercase tracking-widest mt-1">{description}</p>}
             </div>
         </div>
         <button
             onClick={() => onChange(!enabled)}
-            className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${enabled ? 'bg-blue-600' : 'bg-gray-200'
+            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-all duration-500 focus:outline-none focus:ring-4 focus:ring-emerald-50 ${enabled ? 'bg-emerald-600 shadow-lg shadow-emerald-200' : 'bg-gray-200'
                 }`}
         >
             <span
                 className={`${enabled ? 'translate-x-6' : 'translate-x-1'
-                    } inline-block h-5 w-5 transform rounded-full bg-white transition-transform`}
+                    } inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-500 shadow-sm`}
             />
         </button>
     </div>
@@ -84,53 +85,56 @@ export default function SettingsPage() {
 
     return (
         <motion.div
-            className="max-w-4xl mx-auto space-y-8 pb-12"
+            className="space-y-12 pb-20"
             variants={containerVariants}
             initial="hidden"
             animate="show"
         >
             {/* Hero Section */}
-            <motion.div variants={itemVariants} className="relative overflow-hidden rounded-[2.5rem] bg-black p-8 md:p-12 text-white shadow-2xl">
-                <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-gradient-to-bl from-green-500 to-emerald-700 rounded-full blur-3xl -translate-y-1/3 translate-x-1/3 opacity-40 pointer-events-none"></div>
-                <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3 opacity-40 pointer-events-none"></div>
+            <motion.div variants={itemVariants} className="relative overflow-hidden rounded-[3rem] bg-black p-10 md:p-16 text-white shadow-3xl group">
+                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-600/20 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2 group-hover:bg-emerald-500/30 transition-colors duration-1000"></div>
 
                 <div className="relative z-10">
-                    <p className="text-green-300 font-medium mb-2 tracking-wide uppercase text-sm">Configuration</p>
-                    <h1 className="text-3xl md:text-5xl font-black mb-4 tracking-tight">Settings / Preferences</h1>
-                    <p className="text-gray-400 max-w-xl text-lg">
-                        Manage your account settings, notifications, and security preferences.
+                    <span className="inline-block px-4 py-1.5 rounded-full bg-emerald-600/20 backdrop-blur-md border border-emerald-500/30 text-[9px] font-black text-emerald-400 uppercase tracking-[0.2em] mb-6">
+                        System Configuration
+                    </span>
+                    <h1 className="text-4xl md:text-6xl font-black mb-6 tracking-tighter leading-none">Console & <br className="hidden md:block" /> Preferences</h1>
+                    <p className="text-gray-400 max-w-xl text-lg font-medium tracking-wide leading-relaxed">
+                        Curate your digital experience, modulate notification protocols, and govern your security parameters.
                     </p>
                 </div>
             </motion.div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
                 {/* Main Settings Panel */}
-                <motion.div variants={itemVariants} className="lg:col-span-2 space-y-6">
+                <motion.div variants={itemVariants} className="lg:col-span-2 space-y-8">
 
                     {/* Notifications Card */}
-                    <div className="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-sm">
-                        <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
-                            <Bell className="mr-3 text-blue-600" size={24} />
-                            Notifications
+                    <div className="bg-white rounded-[3rem] p-10 border border-gray-100 shadow-sm relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2 opacity-40 group-hover:opacity-60 transition-opacity duration-1000 pointer-events-none"></div>
+
+                        <h2 className="text-2xl font-black text-black tracking-tighter mb-10 flex items-center">
+                            <Bell className="mr-4 text-emerald-500/40" size={24} />
+                            Communication Protocols
                         </h2>
-                        <div className="space-y-2 divide-y divide-gray-50">
+                        <div className="space-y-2 divide-y divide-gray-50 relative z-10">
                             <Toggle
-                                label="Order Updates"
-                                description="Get notified about your order status"
+                                label="Logistics Alerts"
+                                description="Real-time updates on your style acquisitions"
                                 enabled={notifications.orders}
                                 onChange={(v) => setNotifications(prev => ({ ...prev, orders: v }))}
                                 icon={Smartphone}
                             />
                             <Toggle
-                                label="Email Newsletters"
-                                description="Receive updates about new products"
+                                label="Curated Chronicles"
+                                description="Receive exclusive updates on new drops"
                                 enabled={notifications.email}
                                 onChange={(v) => setNotifications(prev => ({ ...prev, email: v }))}
                                 icon={Mail}
                             />
                             <Toggle
-                                label="Promotional Offers"
-                                description="Get notified about sales and discounts"
+                                label="Privileged Access"
+                                description="Exclusive early access to seasonal boutique events"
                                 enabled={notifications.promo}
                                 onChange={(v) => setNotifications(prev => ({ ...prev, promo: v }))}
                                 icon={Globe}
@@ -139,30 +143,34 @@ export default function SettingsPage() {
                     </div>
 
                     {/* Privacy & Security Card */}
-                    <div className="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-sm">
-                        <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
-                            <Shield className="mr-3 text-green-600" size={24} />
-                            Privacy & Security
+                    <div className="bg-white rounded-[3rem] p-10 border border-gray-100 shadow-sm relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2 opacity-40 group-hover:opacity-60 transition-opacity duration-1000 pointer-events-none"></div>
+
+                        <h2 className="text-2xl font-black text-black tracking-tighter mb-10 flex items-center">
+                            <Shield className="mr-4 text-emerald-500/40" size={24} />
+                            Governance & Cryptography
                         </h2>
-                        <div className="space-y-2 divide-y divide-gray-50">
+                        <div className="space-y-2 divide-y divide-gray-50 relative z-10">
                             <Toggle
-                                label="Public Profile"
-                                description="Allow others to see your wishlist and reviews"
+                                label="Public Visibility"
+                                description="Allow community members to view your curated wishlist"
                                 enabled={privacy.publicProfile}
                                 onChange={(v) => setPrivacy(prev => ({ ...prev, publicProfile: v }))}
                                 icon={Eye}
                             />
-                            <div className="flex items-center justify-between py-4 cursor-pointer hover:bg-gray-50 rounded-xl transition-colors -mx-2 px-2">
-                                <div className="flex items-center gap-4">
-                                    <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-500">
-                                        <Shield size={20} />
+                            <div className="flex items-center justify-between py-6 cursor-pointer group/item">
+                                <div className="flex items-center gap-6">
+                                    <div className="w-12 h-12 rounded-[1rem] bg-gray-50 flex items-center justify-center text-emerald-500/40 group-hover/item:bg-black group-hover/item:text-white transition-all duration-500 shadow-inner">
+                                        <Lock size={20} />
                                     </div>
                                     <div>
-                                        <p className="font-bold text-gray-900">Change Password</p>
-                                        <p className="text-sm text-gray-500">Update your account password</p>
+                                        <p className="font-bold text-black tracking-tight">Access Key Rotation</p>
+                                        <p className="text-[10px] text-gray-400 font-medium uppercase tracking-widest mt-1">Re-calibrate your secure access code</p>
                                     </div>
                                 </div>
-                                <ChevronRight size={20} className="text-gray-400" />
+                                <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-300 group-hover/item:bg-emerald-600 group-hover/item:text-white transition-all duration-500">
+                                    <ChevronRight size={20} />
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -170,17 +178,17 @@ export default function SettingsPage() {
 
 
                 {/* Sidebar / Additional Settings */}
-                <motion.div variants={itemVariants} className="space-y-6">
+                <motion.div variants={itemVariants} className="space-y-8">
                     {/* Appearance */}
-                    <div className="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-sm">
-                        <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
-                            <Moon className="mr-3 text-purple-600" size={24} />
-                            Appearance
+                    <div className="bg-white rounded-[3rem] p-10 border border-gray-100 shadow-sm">
+                        <h2 className="text-2xl font-black text-black tracking-tighter mb-10 flex items-center">
+                            <Moon className="mr-4 text-emerald-500/40" size={24} />
+                            Aesthetic Mode
                         </h2>
                         <div className="space-y-2">
                             <Toggle
-                                label="Dark Mode"
-                                description="Switch to dark theme"
+                                label="Noir Presentation"
+                                description="Switch to high-contrast dark interface"
                                 enabled={appearance.darkMode}
                                 onChange={(v) => setAppearance(prev => ({ ...prev, darkMode: v }))}
                             />
@@ -188,17 +196,17 @@ export default function SettingsPage() {
                     </div>
 
                     {/* Danger Zone */}
-                    <div className="bg-red-50 rounded-[2.5rem] p-8 border border-red-100 shadow-sm">
-                        <h2 className="text-xl font-bold text-red-700 mb-4">Danger Zone</h2>
-                        <p className="text-red-600/70 text-sm mb-6">
-                            Irreversible actions related to your account.
+                    <div className="bg-red-50/50 rounded-[3rem] p-10 border border-red-100 shadow-sm group">
+                        <h2 className="text-2xl font-black text-red-700 tracking-tighter mb-4">Critical Actions</h2>
+                        <p className="text-red-600/60 text-[10px] font-black uppercase tracking-widest mb-10 leading-relaxed">
+                            Irreversible terminal termination and synchronization logout.
                         </p>
                         <button
                             onClick={logout}
-                            className="w-full py-3 bg-white border border-red-200 text-red-600 font-bold rounded-xl shadow-sm hover:bg-red-600 hover:text-white transition-all flex items-center justify-center"
+                            className="w-full py-5 bg-white border border-red-200 text-red-600 font-black uppercase tracking-[0.2em] text-[10px] rounded-full shadow-sm hover:bg-red-600 hover:text-white hover:border-red-600 hover:shadow-2xl hover:shadow-red-200 transform hover:-translate-y-1 transition-all duration-500 flex items-center justify-center"
                         >
-                            <LogOut size={18} className="mr-2" />
-                            Log Out
+                            <LogOut size={16} className="mr-3" />
+                            Terminate Session
                         </button>
                     </div>
                 </motion.div>

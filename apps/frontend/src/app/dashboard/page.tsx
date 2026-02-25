@@ -14,7 +14,8 @@ import {
   Package,
   DollarSign,
   Clock,
-  Loader2
+  Loader2,
+  Shield
 } from 'lucide-react';
 import Link from 'next/link';
 import { ordersService } from '@/services/orders.service';
@@ -55,7 +56,6 @@ export default function DashboardPage() {
       router.push('/auth/login');
     }
 
-    // Set greeting based on time
     const hour = new Date().getHours();
     if (hour < 12) setGreeting('Good morning');
     else if (hour < 18) setGreeting('Good afternoon');
@@ -79,12 +79,12 @@ export default function DashboardPage() {
 
   const totalSpent = orders.reduce((sum, order) => sum + Number(order.total), 0);
   const activeOrders = orders.filter(o => ['pending', 'processing', 'shipped'].includes(o.status)).length;
-  const recentOrder = orders.length > 0 ? orders[0] : null; // Assuming API returns sorted, or we sort
+  const recentOrder = orders.length > 0 ? orders[0] : null;
 
   if (authLoading || loadingOrders) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
+      <div className="flex items-center justify-center py-20">
+        <Loader2 className="w-8 h-8 text-emerald-600 animate-spin" />
       </div>
     );
   }
@@ -93,155 +93,156 @@ export default function DashboardPage() {
 
   return (
     <motion.div
-      className="min-h-screen pb-12 pt-4 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8 text-black"
       variants={containerVariants}
       initial="hidden"
       animate="show"
+      className="space-y-12"
     >
-      {/* Hero Section */}
+      {/* Cinematic Hero */}
       <motion.div
         variants={itemVariants}
-        className="relative overflow-hidden rounded-[2.5rem] bg-black p-8 md:p-12 text-white shadow-2xl"
+        className="relative overflow-hidden rounded-[3rem] bg-black p-10 md:p-16 text-white shadow-3xl group"
       >
-        <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-gradient-to-bl from-blue-600 to-purple-600 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 opacity-60 pointer-events-none"></div>
-        <div className="relative z-10">
-          <p className="text-blue-300 font-medium mb-2 tracking-wide uppercase text-sm">Customer Dashboard</p>
-          <h1 className="text-3xl md:text-5xl font-black mb-4 tracking-tight">
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-600/30 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2 group-hover:bg-emerald-500/40 transition-colors duration-1000" />
+        <div className="relative z-10 max-w-2xl">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="flex items-center gap-2 mb-6"
+          >
+            <span className="w-8 h-[2px] bg-emerald-500" />
+            <span className="text-emerald-400 font-bold uppercase tracking-[0.3em] text-xs">Customer Space</span>
+          </motion.div>
+          <h1 className="text-4xl md:text-6xl font-black mb-6 tracking-tighter leading-[0.9] text-white">
             {greeting}, <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
-              {user?.name?.split(' ')[0] || 'User'}!
+            <span className="text-emerald-400 italic font-serif">
+              {user?.name?.split(' ')[0] || 'User'}
             </span>
           </h1>
-          <p className="text-gray-400 max-w-xl text-lg">
-            Track your orders, manage your profile, and discover new favorites all in one place.
+          <p className="text-gray-400 text-lg md:text-xl font-medium tracking-wide max-w-lg leading-relaxed">
+            Your personal hub for tracking orders, managing style preferences, and exploring exclusive drops.
           </p>
         </div>
       </motion.div>
 
-      {/* Stats Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <motion.div variants={itemVariants} whileHover={{ y: -5 }} className="bg-white rounded-[2rem] p-6 border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-300">
-          <div className="flex justify-between items-start mb-4">
-            <div className="p-3 rounded-2xl bg-blue-50 text-blue-600">
-              <Package size={24} />
+      {/* Boutique Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {[
+          { icon: Package, label: 'Total Orders', value: orders.length, color: 'emerald' },
+          { icon: DollarSign, label: 'Lifetime Spent', value: `$${totalSpent.toLocaleString()}`, color: 'blue' },
+          { icon: Clock, label: 'Active In-transit', value: activeOrders, color: 'amber' }
+        ].map((stat, i) => (
+          <motion.div
+            key={i}
+            variants={itemVariants}
+            whileHover={{ y: -8, scale: 1.02 }}
+            className="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-sm hover:shadow-2xl transition-all duration-500 group"
+          >
+            <div className="flex justify-between items-start mb-6">
+              <div className={`p-4 rounded-2xl bg-${stat.color}-50 text-${stat.color}-600 group-hover:scale-110 transition-transform duration-500`}>
+                <stat.icon size={28} />
+              </div>
+              <ChevronRight className="w-5 h-5 text-gray-300 group-hover:text-emerald-500 transition-colors" />
             </div>
-          </div>
-          <p className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-1">Total Orders</p>
-          <h3 className="text-3xl font-black text-gray-900">{orders.length}</h3>
-        </motion.div>
-
-        <motion.div variants={itemVariants} whileHover={{ y: -5 }} className="bg-white rounded-[2rem] p-6 border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-300">
-          <div className="flex justify-between items-start mb-4">
-            <div className="p-3 rounded-2xl bg-green-50 text-green-600">
-              <DollarSign size={24} />
-            </div>
-          </div>
-          <p className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-1">Total Spent</p>
-          <h3 className="text-3xl font-black text-gray-900">${totalSpent.toLocaleString()}</h3>
-        </motion.div>
-
-        <motion.div variants={itemVariants} whileHover={{ y: -5 }} className="bg-white rounded-[2rem] p-6 border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-300">
-          <div className="flex justify-between items-start mb-4">
-            <div className="p-3 rounded-2xl bg-yellow-50 text-yellow-600">
-              <Clock size={24} />
-            </div>
-          </div>
-          <p className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-1">Active Orders</p>
-          <h3 className="text-3xl font-black text-gray-900">{activeOrders}</h3>
-        </motion.div>
+            <p className="text-gray-400 text-[10px] font-black uppercase tracking-[0.2em] mb-2">{stat.label}</p>
+            <h3 className="text-4xl font-black text-black tracking-tighter">{stat.value}</h3>
+          </motion.div>
+        ))}
       </div>
 
-      {/* Quick Actions Grid */}
-      <motion.div variants={itemVariants}>
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">Quick Actions</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Link href="/dashboard/orders" className="group">
-            <div className="bg-white p-6 rounded-[1.5rem] border border-gray-100 shadow-sm hover:border-blue-200 hover:shadow-md transition-all h-full flex flex-col items-center text-center">
-              <div className="w-14 h-14 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                <ShoppingBag size={24} />
-              </div>
-              <h3 className="font-bold text-gray-900 mb-1">My Orders</h3>
-              <p className="text-xs text-gray-500">Track and buy again</p>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+        {/* Recent Activity Card */}
+        <motion.div variants={itemVariants} className="lg:col-span-2 bg-white rounded-[3rem] p-10 border border-gray-100 shadow-sm">
+          <div className="flex justify-between items-center mb-10">
+            <div>
+              <h2 className="text-3xl font-black text-black tracking-tighter mb-1">Latest Order</h2>
+              <p className="text-gray-400 text-sm font-medium tracking-wide">Most recent acquisition</p>
             </div>
-          </Link>
+            {orders.length > 0 && (
+              <Link href="/dashboard/orders" className="p-3 bg-gray-50 rounded-full hover:bg-emerald-50 text-gray-400 hover:text-emerald-600 transition-all">
+                <ChevronRight size={24} />
+              </Link>
+            )}
+          </div>
 
-          <Link href="/profile" className="group">
-            <div className="bg-white p-6 rounded-[1.5rem] border border-gray-100 shadow-sm hover:border-purple-200 hover:shadow-md transition-all h-full flex flex-col items-center text-center">
-              <div className="w-14 h-14 bg-purple-50 text-purple-600 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                <User size={24} />
+          {recentOrder ? (
+            <div className="group relative bg-gray-50/50 rounded-[2rem] p-8 transition-all hover:bg-white hover:shadow-xl border border-transparent hover:border-gray-50">
+              <div className="flex flex-col md:flex-row gap-8 items-center">
+                <div className="w-24 h-24 bg-white rounded-3xl flex items-center justify-center shadow-inner group-hover:scale-105 transition-transform duration-500">
+                  <Package size={40} className="text-emerald-500/30" />
+                </div>
+                <div className="flex-1 text-center md:text-left">
+                  <span className="inline-block px-3 py-1 bg-white rounded-full text-[10px] font-black uppercase tracking-widest text-gray-400 mb-3 shadow-sm">
+                    {recentOrder.orderNumber || 'PREMIUM ORDER'}
+                  </span>
+                  <p className="text-gray-400 text-sm font-medium mb-1">Acquired on</p>
+                  <h3 className="font-bold text-gray-900 text-xl tracking-tight">
+                    {new Date(recentOrder.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                  </h3>
+                </div>
+                <div className="text-center md:text-right">
+                  <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-2">Total Value</p>
+                  <span className="block text-3xl font-black text-black tracking-tighter mb-3">${Number(recentOrder.total).toFixed(2)}</span>
+                  <span className={`px-5 py-2 rounded-full text-xs font-black uppercase tracking-widest
+                        ${recentOrder.status === 'delivered' ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-200' :
+                      recentOrder.status === 'cancelled' ? 'bg-red-50 text-red-600' :
+                        'bg-black text-white shadow-xl shadow-gray-200'}`}>
+                    {recentOrder.status}
+                  </span>
+                </div>
               </div>
-              <h3 className="font-bold text-gray-900 mb-1">Edit Profile</h3>
-              <p className="text-xs text-gray-500">Update personal info</p>
             </div>
-          </Link>
-
-          <Link href="/addresses" className="group">
-            <div className="bg-white p-6 rounded-[1.5rem] border border-gray-100 shadow-sm hover:border-green-200 hover:shadow-md transition-all h-full flex flex-col items-center text-center">
-              <div className="w-14 h-14 bg-green-50 text-green-600 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                <MapPin size={24} />
-              </div>
-              <h3 className="font-bold text-gray-900 mb-1">Addresses</h3>
-              <p className="text-xs text-gray-500">Manage shipping info</p>
+          ) : (
+            <div className="text-center py-16 bg-gray-50 rounded-[2rem] border-2 border-dashed border-gray-100">
+              <ShoppingBag className="mx-auto h-16 w-16 text-gray-200 mb-6" />
+              <h3 className="text-2xl font-black text-black mb-2">Portfolio Empty</h3>
+              <p className="text-gray-400 mb-8 max-w-xs mx-auto">Enhance your collection by exploring our latest drops.</p>
+              <Link href="/products">
+                <button className="px-10 py-4 bg-emerald-600 text-white rounded-full font-black uppercase tracking-widest text-xs hover:bg-emerald-700 shadow-xl shadow-emerald-200 transition-all">
+                  Shop Drop
+                </button>
+              </Link>
             </div>
-          </Link>
-
-          <button onClick={() => logout()} className="group w-full">
-            <div className="bg-red-50 p-6 rounded-[1.5rem] border border-red-100 shadow-sm hover:bg-red-100 transition-all h-full flex flex-col items-center text-center">
-              <div className="w-14 h-14 bg-white text-red-500 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-sm">
-                <LogOut size={24} />
-              </div>
-              <h3 className="font-bold text-red-700 mb-1">Log Out</h3>
-              <p className="text-xs text-red-400">Sign out of account</p>
-            </div>
-          </button>
-        </div>
-      </motion.div>
-
-      {/* Recent Activity */}
-      <motion.div variants={itemVariants} className="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-sm">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">Recent Order</h2>
-          {orders.length > 0 && (
-            <Link href="/dashboard/orders" className="text-sm font-bold text-blue-600 hover:underline flex items-center">
-              View All <ChevronRight size={16} />
-            </Link>
           )}
-        </div>
+        </motion.div>
 
-        {recentOrder ? (
-          <div className="flex flex-col md:flex-row gap-6 items-center bg-gray-50 rounded-3xl p-6">
-            <div className="w-20 h-20 bg-white rounded-2xl flex items-center justify-center shadow-sm text-gray-300">
-              <Package size={32} />
-            </div>
-            <div className="flex-1 text-center md:text-left">
-              <h3 className="font-bold text-gray-900 text-lg">{recentOrder.orderNumber || recentOrder.id}</h3>
-              <p className="text-gray-500 text-sm">
-                Placed on {new Date(recentOrder.createdAt).toLocaleDateString()}
-              </p>
-            </div>
-            <div className="text-center md:text-right">
-              <span className="block text-lg font-black text-gray-900">${Number(recentOrder.total).toFixed(2)}</span>
-              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold mt-1 capitalize
-                    ${recentOrder.status === 'delivered' ? 'bg-green-100 text-green-700' :
-                  recentOrder.status === 'cancelled' ? 'bg-red-500/10 text-red-700 border border-red-200' :
-                    'bg-yellow-100 text-yellow-700'}`}>
-                {recentOrder.status}
-              </span>
-            </div>
+        {/* Dynamic Actions Card */}
+        <motion.div variants={itemVariants} className="space-y-6">
+          <h2 className="text-2xl font-black text-black tracking-tighter mb-4 px-2">Portfolio Tools</h2>
+          <div className="grid grid-cols-1 gap-4">
+            {[
+              { label: 'My Profile', desc: 'Secure configuration', icon: User, href: '/dashboard/profile' },
+              { label: 'Addresses', desc: 'Logistic control', icon: MapPin, href: '/dashboard/addresses' },
+              { label: 'Security', desc: 'Privacy protection', icon: Shield, href: '/dashboard/settings' }
+            ].map((action, i) => (
+              <Link key={i} href={action.href} className="group">
+                <div className="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-500 flex items-center gap-6">
+                  <div className="w-16 h-16 bg-gray-50 text-gray-400 rounded-2xl flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition-all duration-500 shadow-inner group-hover:scale-105">
+                    <action.icon size={24} />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-black group-hover:text-emerald-600 transition-colors uppercase tracking-tight text-sm mb-1">{action.label}</h3>
+                    <p className="text-xs text-gray-400 font-medium">{action.desc}</p>
+                  </div>
+                  <ChevronRight size={16} className="ml-auto text-gray-300 group-hover:text-emerald-500 transition-all opacity-0 group-hover:opacity-100 group-hover:translate-x-2" />
+                </div>
+              </Link>
+            ))}
+
+            <button onClick={() => logout()} className="group w-full">
+              <div className="bg-red-50/50 p-6 rounded-[2rem] border border-red-50 shadow-sm hover:bg-red-50 transition-all duration-500 flex items-center gap-6 group-hover:shadow-red-100/50 shadow-xl shadow-transparent">
+                <div className="w-16 h-16 bg-white text-red-500 rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform duration-500">
+                  <LogOut size={24} />
+                </div>
+                <div className="text-left">
+                  <h3 className="font-bold text-red-700 uppercase tracking-tight text-sm mb-1">Exit Session</h3>
+                  <p className="text-xs text-red-400 font-medium">Safe disconnection</p>
+                </div>
+              </div>
+            </button>
           </div>
-        ) : (
-          <div className="text-center py-12 bg-gray-50 rounded-3xl">
-            <ShoppingBag className="mx-auto h-12 w-12 text-gray-300 mb-3" />
-            <h3 className="text-lg font-bold text-gray-900">No orders yet</h3>
-            <p className="text-gray-500 mb-6">Start shopping to see your activity here.</p>
-            <Link href="/products">
-              <button className="px-6 py-3 bg-black text-white rounded-xl font-bold hover:bg-gray-800 transition-colors">
-                Browse Products
-              </button>
-            </Link>
-          </div>
-        )}
-      </motion.div>
+        </motion.div>
+      </div>
     </motion.div>
   );
 }

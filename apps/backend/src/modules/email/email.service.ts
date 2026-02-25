@@ -45,18 +45,18 @@ export class EmailService {
     }
   }
 
-  async sendOrderConfirmation(to: string, name: string, order: any) {
+  async sendOrderConfirmation(to: string, name: string, order: any, attachments?: any[]) {
     const from = this.configService.get<string>('SMTP_FROM');
 
     // Create item rows for HTML table
     const itemRows = order.items.map((item: any) => `
       <tr>
         <td style="padding: 12px; border-bottom: 1px solid #eee;">
-          <div style="font-weight: bold; color: #333;">${item.product.name}</div>
+          <div style="font-weight: bold; color: #333;">${item.product?.name || 'Unknown Product'}</div>
           <div style="font-size: 12px; color: #666;">Quantity: ${item.quantity}</div>
         </td>
         <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: right; color: #333;">
-          $${(item.price * item.quantity).toFixed(2)}
+          $${(Number(item.price) * item.quantity).toFixed(2)}
         </td>
       </tr>
     `).join('');
@@ -87,19 +87,19 @@ export class EmailService {
             <div style="margin-top: 24px; border-top: 2px solid #eee; pt: 16px;">
               <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
                 <span style="color: #666;">Subtotal</span>
-                <span style="font-weight: 600;">$${order.subtotal}</span>
+                <span style="font-weight: 600;">$${Number(order.subtotal).toFixed(2)}</span>
               </div>
               <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
                 <span style="color: #666;">Shipping</span>
-                <span style="font-weight: 600;">$${order.shippingFee}</span>
+                <span style="font-weight: 600;">$${Number(order.shippingFee).toFixed(2)}</span>
               </div>
               <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
                 <span style="color: #666;">Tax</span>
-                <span style="font-weight: 600;">$${order.tax}</span>
+                <span style="font-weight: 600;">$${Number(order.tax).toFixed(2)}</span>
               </div>
               <div style="display: flex; justify-content: space-between; padding-top: 16px; border-top: 1px dashed #ddd;">
                 <span style="font-size: 18px; font-weight: 800;">Total</span>
-                <span style="font-size: 18px; font-weight: 800; color: #10b981;">$${order.total}</span>
+                <span style="font-size: 18px; font-weight: 800; color: #10b981;">$${Number(order.total).toFixed(2)}</span>
               </div>
             </div>
           </div>
@@ -110,6 +110,13 @@ export class EmailService {
             <p style="background: #fff; border: 1px solid #eee; border-radius: 12px; padding: 16px; font-size: 14px; line-height: 1.6; color: #4b5563;">
               ${order.shippingAddress}
             </p>
+          </div>
+
+          <!-- Tracking -->
+          <div style="margin-bottom: 32px; text-align: center;">
+             <p style="font-size: 14px; color: #4b5563;">
+                Your Order Tracking ID is: <strong>${order.orderNumber}</strong>
+             </p>
           </div>
 
           <!-- Footer -->
@@ -131,6 +138,7 @@ export class EmailService {
         to,
         subject: `Order Confirmation #${order.orderNumber}`,
         html,
+        attachments,
       });
       this.logger.log(`Order confirmation sent to ${to}: ${info.messageId}`);
       return { sent: true, messageId: info.messageId };

@@ -90,208 +90,192 @@ export default function AdminOrdersPage() {
     return matchesStatus && matchesSearch;
   });
 
-  const getStatusColor = (status: string) => {
+  const getStatusConfig = (status: string) => {
     switch (status) {
-      case 'delivered': return 'bg-green-100 text-green-700 border-green-200';
-      case 'shipped': return 'bg-blue-100 text-blue-700 border-blue-200';
-      case 'processing': return 'bg-purple-100 text-purple-700 border-purple-200';
-      case 'pending': return 'bg-yellow-100 text-yellow-700 border-yellow-200';
-      case 'cancelled': return 'bg-red-100 text-red-700 border-red-200';
-      default: return 'bg-gray-100 text-gray-700 border-gray-200';
-    }
-  };
-
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'delivered': return <CheckCircle size={14} className="mr-1.5" />;
-      case 'shipped': return <Truck size={14} className="mr-1.5" />;
-      case 'processing': return <Clock size={14} className="mr-1.5" />;
-      case 'pending': return <AlertTriangle size={14} className="mr-1.5" />;
-      default: return null;
+      case 'delivered': return { color: 'text-emerald-500', bg: 'bg-emerald-50', border: 'border-emerald-100', text: 'Delivered', icon: CheckCircle };
+      case 'shipped': return { color: 'text-black', bg: 'bg-gray-50', border: 'border-gray-200', text: 'In Transit', icon: Truck };
+      case 'processing': return { color: 'text-gray-600', bg: 'bg-gray-50', border: 'border-gray-100', text: 'Processing', icon: Clock };
+      case 'pending': return { color: 'text-orange-500', bg: 'bg-orange-50', border: 'border-orange-100', text: 'Awaiting', icon: AlertTriangle };
+      case 'cancelled': return { color: 'text-red-500', bg: 'bg-red-50', border: 'border-red-100', text: 'Terminated', icon: AlertTriangle };
+      default: return { color: 'text-gray-400', bg: 'bg-gray-50', border: 'border-gray-100', text: status, icon: Clock };
     }
   };
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[500px]">
-        <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+      <div className="flex items-center justify-center min-h-[400px]">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+          className="h-10 w-10 border-4 border-emerald-500/20 border-t-emerald-500 rounded-full"
+        />
       </div>
     );
   }
 
   return (
     <motion.div
-      className="space-y-8 pb-10"
+      className="space-y-10 pb-20"
       variants={containerVariants}
       initial="hidden"
       animate="show"
     >
-      <motion.div variants={itemVariants} className="flex flex-col md:flex-row md:items-end justify-between gap-6 bg-white rounded-[2.5rem] p-8 md:p-10 shadow-sm border border-gray-100 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-bl from-green-50 to-blue-50 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 opacity-70 pointer-events-none"></div>
+      {/* Logistics Header */}
+      <motion.div variants={itemVariants} className="relative overflow-hidden rounded-[2.5rem] bg-black p-10 md:p-14 text-white shadow-2xl group">
+        <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-emerald-600/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2 group-hover:bg-emerald-500/20 transition-colors duration-1000"></div>
+
         <div className="relative z-10">
-          <h1 className="text-4xl font-black text-gray-900 mb-2 tracking-tight">Orders Management</h1>
-          <p className="text-gray-500 text-lg">Track and manage customer purchases.</p>
+          <div className="flex items-center gap-3 mb-6">
+            <span className="w-6 h-[1.5px] bg-emerald-500" />
+            <span className="text-[10px] font-black text-emerald-400 uppercase tracking-[0.3em]">Fulfillment Protocol</span>
+          </div>
+          <h1 className="text-4xl md:text-5xl font-black tracking-tighter leading-none mb-3">Acquisitions Ledger</h1>
+          <p className="text-gray-400 font-medium tracking-wide max-w-lg text-sm md:text-base">Overseeing global acquisitions, financial settlements, and logistics fulfillment.</p>
         </div>
       </motion.div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <motion.div variants={itemVariants} whileHover={{ y: -5 }} className="bg-white rounded-[2rem] p-6 border border-gray-100 shadow-sm">
-          <div className="flex justify-between items-start mb-4">
-            <div className="p-3 rounded-2xl bg-blue-50 text-blue-600">
-              <ShoppingBag size={24} />
+      {/* Metrics Ledger */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {[
+          { title: 'Logistics Volume', value: orders.length, icon: ShoppingBag, desc: 'Total acquisitions' },
+          { title: 'Gross Settlement', value: `$${totalRevenue.toLocaleString()}`, icon: DollarSign, desc: 'Financial valuation' },
+          { title: 'Pending Dispatch', value: pendingOrders, icon: Clock, desc: 'Awaiting fulfillment' },
+          { title: 'Fulfillment Success', value: completedOrders, icon: CheckCircle, desc: 'Orders archived' },
+        ].map((stat, index) => (
+          <motion.div key={index} variants={itemVariants} whileHover={{ y: -5 }}>
+            <div className="bg-white rounded-[2rem] p-7 border border-gray-100 shadow-sm relative overflow-hidden group">
+              <div className="flex justify-between items-start mb-5">
+                <div className="p-3.5 rounded-xl bg-black text-emerald-500 shadow-xl transition-all duration-500 group-hover:bg-emerald-600 group-hover:text-white">
+                  <stat.icon size={20} />
+                </div>
+              </div>
+              <p className="text-gray-400 text-[10px] font-black uppercase tracking-[0.2em] mb-1.5">{stat.title}</p>
+              <h3 className="text-3xl font-black text-black tracking-tighter mb-1.5">{stat.value}</h3>
+              <p className="text-[9px] text-gray-400 font-medium uppercase tracking-widest">{stat.desc}</p>
             </div>
-          </div>
-          <p className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-1">Total Orders</p>
-          <h3 className="text-2xl font-black text-gray-900">{orders.length}</h3>
-        </motion.div>
-
-        <motion.div variants={itemVariants} whileHover={{ y: -5 }} className="bg-white rounded-[2rem] p-6 border border-gray-100 shadow-sm">
-          <div className="flex justify-between items-start mb-4">
-            <div className="p-3 rounded-2xl bg-green-50 text-green-600">
-              <DollarSign size={24} />
-            </div>
-          </div>
-          <p className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-1">Total Revenue</p>
-          <h3 className="text-2xl font-black text-gray-900">${totalRevenue.toLocaleString()}</h3>
-        </motion.div>
-
-        <motion.div variants={itemVariants} whileHover={{ y: -5 }} className="bg-white rounded-[2rem] p-6 border border-gray-100 shadow-sm">
-          <div className="flex justify-between items-start mb-4">
-            <div className="p-3 rounded-2xl bg-yellow-50 text-yellow-600">
-              <Clock size={24} />
-            </div>
-          </div>
-          <p className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-1">Pending</p>
-          <h3 className="text-2xl font-black text-gray-900">{pendingOrders}</h3>
-        </motion.div>
-
-        <motion.div variants={itemVariants} whileHover={{ y: -5 }} className="bg-white rounded-[2rem] p-6 border border-gray-100 shadow-sm">
-          <div className="flex justify-between items-start mb-4">
-            <div className="p-3 rounded-2xl bg-purple-50 text-purple-600">
-              <CheckCircle size={24} />
-            </div>
-          </div>
-          <p className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-1">Completed</p>
-          <h3 className="text-2xl font-black text-gray-900">{completedOrders}</h3>
-        </motion.div>
+          </motion.div>
+        ))}
       </div>
 
-      <motion.div variants={itemVariants} className="bg-white p-4 rounded-[1.5rem] border border-gray-100 shadow-sm flex flex-col sm:flex-row gap-4">
-        <div className="relative flex-1">
-          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-          <input
-            type="text"
-            placeholder="Search Order ID or Customer ID..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-12 pr-4 py-3 bg-gray-50/50 border border-gray-100 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-blue-500 transition-all font-medium text-gray-900"
-          />
+      {/* Operations Panel */}
+      <motion.div variants={itemVariants} className="space-y-6">
+        {/* Search & Filters */}
+        <div className="bg-white p-5 rounded-[2rem] border border-gray-100 shadow-sm flex flex-col sm:flex-row gap-4 items-center">
+          <div className="relative flex-1 w-full">
+            <Search className="absolute left-5 top-1/2 transform -translate-y-1/2 text-emerald-500/30 w-4 h-4" />
+            <input
+              type="text"
+              placeholder="Search acquisitions by ID or customer..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-12 pr-6 h-14 bg-gray-50/50 border border-gray-100 rounded-xl focus:bg-white focus:border-emerald-100 focus:outline-none transition-all font-medium text-sm tracking-wide placeholder:text-gray-300"
+            />
+          </div>
+
+          <div className="flex items-center gap-3 w-full sm:w-auto">
+            <select
+              value={filterStatus}
+              onChange={(e) => setFilterStatus(e.target.value)}
+              className="h-14 px-6 bg-gray-50 border border-gray-100 rounded-xl focus:bg-white focus:border-emerald-100 focus:outline-none font-black text-[9px] uppercase tracking-widest text-black cursor-pointer w-full sm:w-[180px]"
+            >
+              <option value="all">Filter: Global</option>
+              <option value="pending">Awaiting</option>
+              <option value="processing">Processing</option>
+              <option value="shipped">In Transit</option>
+              <option value="delivered">Delivered</option>
+              <option value="cancelled">Terminated</option>
+            </select>
+          </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          <Filter size={20} className="text-gray-400 ml-2" />
-          <select
-            value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value)}
-            className="py-3 px-4 bg-gray-50/50 border border-gray-100 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-blue-500 font-bold text-sm text-gray-700 cursor-pointer"
-          >
-            <option value="all">All Status</option>
-            <option value="pending">Pending</option>
-            <option value="processing">Processing</option>
-            <option value="shipped">Shipped</option>
-            <option value="delivered">Delivered</option>
-            <option value="cancelled">Cancelled</option>
-          </select>
-        </div>
-      </motion.div>
-
-      <motion.div variants={itemVariants} className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-100">
-            <thead className="bg-gray-50/50">
-              <tr>
-                <th className="px-8 py-5 text-left text-[11px] font-black uppercase tracking-[0.1em] text-gray-400">Order ID</th>
-                <th className="px-6 py-5 text-left text-[11px] font-black uppercase tracking-[0.1em] text-gray-400">Customer</th>
-                <th className="px-6 py-5 text-left text-[11px] font-black uppercase tracking-[0.1em] text-gray-400">Date</th>
-                <th className="px-6 py-5 text-left text-[11px] font-black uppercase tracking-[0.1em] text-gray-400">Total</th>
-                <th className="px-6 py-5 text-left text-[11px] font-black uppercase tracking-[0.1em] text-gray-400">Status</th>
-                <th className="px-8 py-5 text-left text-[11px] font-black uppercase tracking-[0.1em] text-gray-400">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-50 bg-white">
-              {filteredOrders.length === 0 ? (
-                <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-sm text-gray-500">
-                    <div className="flex flex-col items-center gap-2">
-                      <ShoppingBag size={40} className="text-gray-200" />
-                      <span className="font-semibold text-gray-900">No orders found</span>
-                    </div>
-                  </td>
+        {/* Acquisitions Ledger */}
+        <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden p-2">
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-50">
+              <thead>
+                <tr className="bg-gray-50/20">
+                  <th className="px-6 py-5 text-left text-[9px] font-black uppercase tracking-[0.2em] text-gray-400">Order ID</th>
+                  <th className="px-6 py-5 text-left text-[9px] font-black uppercase tracking-[0.2em] text-gray-400">Client Entry</th>
+                  <th className="px-6 py-5 text-left text-[9px] font-black uppercase tracking-[0.2em] text-gray-400">Registry Date</th>
+                  <th className="px-6 py-5 text-left text-[9px] font-black uppercase tracking-[0.2em] text-gray-400">Valuation</th>
+                  <th className="px-6 py-5 text-left text-[9px] font-black uppercase tracking-[0.2em] text-gray-400">Fulfillment</th>
+                  <th className="px-6 py-5 text-right text-[9px] font-black uppercase tracking-[0.2em] text-gray-400">Operations</th>
                 </tr>
-              ) : (
-                <AnimatePresence>
-                  {filteredOrders.map((order, index) => (
-                    <motion.tr
-                      key={order.id}
-                      className="hover:bg-gray-50/80 transition-colors group"
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.05 }}
-                    >
-                      <td className="px-8 py-5">
-                        <span className="font-bold text-gray-900">#{order.orderNumber || order.id}</span>
-                      </td>
-                      <td className="px-6 py-5">
-                        <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500">
-                            <User size={14} />
-                          </div>
-                          <span className="text-sm font-medium text-gray-700">User {order.userId}</span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-5">
-                        <div className="flex items-center gap-2 text-gray-500">
-                          <Calendar size={14} />
-                          <span className="text-sm">{new Date(order.createdAt).toLocaleDateString()}</span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-5">
-                        <span className="font-black text-gray-900">${order.total}</span>
-                      </td>
-                      <td className="px-6 py-5">
-                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold border uppercase tracking-wide ${getStatusColor(order.status)}`}>
-                          {getStatusIcon(order.status)}
-                          {order.status}
-                        </span>
-                      </td>
-                      <td className="px-8 py-5">
-                        <div className="flex items-center gap-3">
-                          <Link
-                            href={`/admin/orders/${order.id}`}
-                            className="p-2 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors"
-                            title="View Details"
-                          >
-                            <ExternalLink size={16} />
-                          </Link>
-                          <select
-                            value={order.status}
-                            onChange={(e) => handleStatusChange(order.id, e.target.value)}
-                            className="text-xs font-bold p-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-100 outline-none cursor-pointer hover:bg-white transition-colors"
-                          >
-                            <option value="pending">Pending</option>
-                            <option value="processing">Processing</option>
-                            <option value="shipped">Shipped</option>
-                            <option value="delivered">Delivered</option>
-                            <option value="cancelled">Cancelled</option>
-                          </select>
-                        </div>
-                      </td>
-                    </motion.tr>
-                  ))}
-                </AnimatePresence>
-              )}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-gray-50/50">
+                {filteredOrders.length === 0 ? (
+                  <tr>
+                    <td colSpan={6} className="px-6 py-20 text-center">
+                      <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest italic text-center">No acquisitions found in this sector.</p>
+                    </td>
+                  </tr>
+                ) : (
+                  <AnimatePresence>
+                    {filteredOrders.map((order, index) => {
+                      const statusConfig = getStatusConfig(order.status);
+                      const StatusIcon = statusConfig.icon;
+                      return (
+                        <motion.tr
+                          key={order.id}
+                          className="hover:bg-gray-50/30 transition-all duration-300 group"
+                          initial={{ opacity: 0, y: 5 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: index * 0.02 }}
+                        >
+                          <td className="px-6 py-4">
+                            <span className="text-[13px] font-bold text-black tracking-tight group-hover:text-emerald-600 transition-colors">#{order.orderNumber || order.id.toString().padStart(6, '0')}</span>
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-black group-hover:text-white transition-colors duration-500">
+                                <User size={14} />
+                              </div>
+                              <span className="text-[9px] font-black text-black uppercase tracking-widest">User {order.userId}</span>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4">
+                            <span className="text-[9px] font-black uppercase tracking-widest text-gray-400">
+                              {new Date(order.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4">
+                            <span className="text-xs font-black text-black tracking-tight">${Number(order.total).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                          </td>
+                          <td className="px-6 py-4">
+                            <span className={`inline-flex items-center px-3 py-1 rounded-lg text-[8px] font-black uppercase tracking-widest border ${statusConfig.border} ${statusConfig.bg} ${statusConfig.color}`}>
+                              {statusConfig.text}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 text-right">
+                            <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-2 group-hover:translate-x-0">
+                              <Link
+                                href={`/admin/orders/${order.id}`}
+                                className="p-2 rounded-lg bg-white text-gray-400 hover:bg-black hover:text-white border border-gray-50 shadow-sm transition-all duration-300"
+                                title="Inspect Entry"
+                              >
+                                <ExternalLink size={14} />
+                              </Link>
+                              <select
+                                value={order.status}
+                                onChange={(e) => handleStatusChange(order.id, e.target.value)}
+                                className="text-[8px] font-black uppercase tracking-widest px-2 py-2 bg-gray-50 border border-gray-100 rounded-lg focus:border-emerald-100 outline-none cursor-pointer hover:bg-white transition-all w-[100px]"
+                              >
+                                <option value="pending">Pending</option>
+                                <option value="processing">Processing</option>
+                                <option value="shipped">Shipped</option>
+                                <option value="delivered">Delivered</option>
+                                <option value="cancelled">Cancelled</option>
+                              </select>
+                            </div>
+                          </td>
+                        </motion.tr>
+                      );
+                    })}
+                  </AnimatePresence>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       </motion.div>
     </motion.div>

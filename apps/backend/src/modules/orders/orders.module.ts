@@ -12,6 +12,8 @@ import { AdminModule } from '../admin/admin.module';
 import { Settings } from '../admin/settings.entity';
 import { EmailModule } from '../email/email.module';
 
+import { PdfService } from './pdf.service';
+
 @Module({
   imports: [
     TypeOrmModule.forFeature([Order, Product, OrderItem, Brand, Settings]),
@@ -20,7 +22,7 @@ import { EmailModule } from '../email/email.module';
     EmailModule,
   ],
   controllers: [OrdersController],
-  providers: [OrdersService, StripeService],
+  providers: [OrdersService, StripeService, PdfService],
   exports: [OrdersService],
 })
 export class OrdersModule { }

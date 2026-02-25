@@ -17,7 +17,7 @@ import {
     ShoppingBag,
     Loader2,
     FileText,
-    Download
+    AlertTriangle
 } from 'lucide-react';
 import Link from 'next/link';
 import { ordersService } from '@/services/orders.service';
@@ -69,6 +69,8 @@ export default function MyOrdersPage() {
     const { user, isAuthenticated, isLoading: authLoading } = useAuth();
     const [orders, setOrders] = useState<Order[]>([]);
     const [loadingOrders, setLoadingOrders] = useState(true);
+    const [cancellingId, setCancellingId] = useState<number | null>(null);
+    const [confirmingId, setConfirmingId] = useState<number | null>(null);
 
     useEffect(() => {
         if (!authLoading && !isAuthenticated) {
@@ -83,7 +85,6 @@ export default function MyOrdersPage() {
     const fetchOrders = async () => {
         try {
             const data = await ordersService.getUserOrders();
-            // Sort by newest first if API doesn't
             const sorted = Array.isArray(data) ? data.sort((a: Order, b: Order) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()) : [];
             setOrders(sorted);
         } catch (error) {
@@ -93,26 +94,50 @@ export default function MyOrdersPage() {
         }
     };
 
+    const canCancel = (status: string) => ['pending', 'processing'].includes(status.toLowerCase());
+
+    const handleCancel = async (e: React.MouseEvent, orderId: number) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (confirmingId !== orderId) {
+            setConfirmingId(orderId);
+            return;
+        }
+        try {
+            setCancellingId(orderId);
+            setConfirmingId(null);
+            await ordersService.cancelOrder(orderId);
+            await fetchOrders();
+        } catch (err: any) {
+            console.error('Cancel failed', err);
+        } finally {
+            setCancellingId(null);
+        }
+    };
+
     const getStatusConfig = (status: string) => {
         const s = status.toLowerCase();
         switch (s) {
             case 'delivered':
             case 'completed':
-                return { icon: CheckCircle, color: 'text-green-600', bg: 'bg-green-100', text: 'Delivered' };
-            case 'processing':
+                return { icon: CheckCircle, color: 'text-white', bg: 'bg-emerald-600 shadow-lg shadow-emerald-200', text: 'Delivered' };
             case 'shipped':
-                return { icon: Truck, color: 'text-blue-600', bg: 'bg-blue-100', text: 'In Transit' };
+                return { icon: Truck, color: 'text-white', bg: 'bg-black shadow-lg shadow-gray-200', text: 'Shipped' };
+            case 'processing':
+                return { icon: Clock, color: 'text-white', bg: 'bg-gray-700 shadow-lg shadow-gray-200', text: 'Processing' };
+            case 'pending':
+                return { icon: Clock, color: 'text-amber-700', bg: 'bg-amber-50', text: 'Pending' };
             case 'cancelled':
-                return { icon: XCircle, color: 'text-red-700', bg: 'bg-red-500/10', text: 'Cancelled' };
+                return { icon: XCircle, color: 'text-red-600', bg: 'bg-red-50', text: 'Cancelled' };
             default:
-                return { icon: Clock, color: 'text-yellow-600', bg: 'bg-yellow-100', text: 'Processing' };
+                return { icon: Clock, color: 'text-black', bg: 'bg-gray-100', text: s };
         }
     };
 
     if (authLoading || loadingOrders) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50">
-                <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
+            <div className="flex items-center justify-center py-20">
+                <Loader2 className="w-8 h-8 text-emerald-600 animate-spin" />
             </div>
         );
     }
@@ -121,37 +146,39 @@ export default function MyOrdersPage() {
 
     return (
         <motion.div
-            className="min-h-screen pb-12 pt-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8"
             variants={containerVariants}
             initial="hidden"
             animate="show"
+            className="space-y-12"
         >
             {/* Header */}
-            <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <motion.div variants={itemVariants} className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-gray-100 pb-10">
                 <div>
-                    <Link href="/dashboard" className="inline-flex items-center text-sm font-bold text-gray-500 hover:text-black mb-2 transition-colors">
-                        <ArrowLeft size={16} className="mr-1" /> Back to Dashboard
+                    <Link href="/dashboard" className="group inline-flex items-center text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 hover:text-emerald-600 mb-6 transition-colors">
+                        <ArrowLeft size={14} className="mr-2 group-hover:-translate-x-1 transition-transform" /> Dashboard
                     </Link>
-                    <h1 className="text-4xl font-black text-gray-900 tracking-tight">My Orders</h1>
-                    <p className="text-gray-500 mt-1">Track and manage your purchase history.</p>
+                    <h1 className="text-5xl font-black text-black tracking-tighter leading-none mb-4">My Portfolio</h1>
+                    <p className="text-gray-400 font-medium tracking-wide">A curated history of your style acquisitions.</p>
                 </div>
-                <div className="px-5 py-2 bg-white rounded-full border border-gray-100 shadow-sm text-sm font-bold text-gray-700">
-                    {orders.length} Orders Placed
+                <div className="flex items-center gap-4">
+                    <div className="px-6 py-3 bg-gray-50 rounded-full text-[10px] font-black text-gray-500 uppercase tracking-widest border border-gray-100 shadow-inner">
+                        {orders.length} Acquisitions
+                    </div>
                 </div>
             </motion.div>
 
             {/* Orders List */}
-            <motion.div variants={itemVariants} className="space-y-4">
+            <motion.div variants={itemVariants} className="space-y-8">
                 {orders.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center py-20 bg-white rounded-[2.5rem] border border-gray-100 shadow-sm text-center px-4">
-                        <div className="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mb-6">
-                            <ShoppingBag size={40} className="text-gray-300" />
+                    <div className="flex flex-col items-center justify-center py-24 bg-gray-50/50 rounded-[3rem] border-2 border-dashed border-gray-100 text-center px-4">
+                        <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center mb-8 shadow-sm group-hover:scale-110 transition-transform duration-500">
+                            <ShoppingBag size={48} className="text-gray-200" />
                         </div>
-                        <h2 className="text-2xl font-bold text-gray-900 mb-2">No orders yet</h2>
-                        <p className="text-gray-500 max-w-sm mb-8">It looks like you haven't placed any orders yet. Start exploring our collection today!</p>
+                        <h2 className="text-3xl font-black text-black tracking-tighter mb-4">Portfolio is empty</h2>
+                        <p className="text-gray-400 font-medium max-w-sm mb-10 leading-relaxed">Your journey begins with your first selection. Explore our latest drops to start your collection.</p>
                         <Link href="/products">
-                            <button className="px-8 py-4 bg-black text-white rounded-xl font-bold hover:bg-gray-800 transition-all hover:scale-105 active:scale-95">
-                                Start Shopping
+                            <button className="px-12 py-5 bg-black text-white rounded-full font-black uppercase tracking-widest text-xs hover:bg-emerald-600 hover:shadow-2xl hover:shadow-emerald-200 transition-all duration-500 hover:scale-105 active:scale-95">
+                                Explore Drop
                             </button>
                         </Link>
                     </div>
@@ -166,65 +193,90 @@ export default function MyOrdersPage() {
                                     <Link
                                         key={order.id}
                                         href={`/dashboard/orders/${order.id}`}
-                                        className="block"
+                                        className="block group"
                                     >
                                         <motion.div
                                             variants={itemVariants}
-                                            className="bg-white rounded-[2rem] p-6 sm:p-8 border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-300 group cursor-pointer"
+                                            whileHover={{ y: -5, scale: 1.01 }}
+                                            className="bg-white rounded-[2.5rem] p-8 sm:p-10 border border-gray-100 shadow-sm hover:shadow-3xl transition-all duration-500"
                                         >
-                                            <div className="flex flex-col lg:flex-row gap-6 lg:items-center justify-between">
+                                            <div className="flex flex-col lg:flex-row gap-10 lg:items-center justify-between">
                                                 {/* Order Info */}
-                                                <div className="flex items-start gap-4">
-                                                    <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center flex-shrink-0 text-gray-400">
-                                                        <Package size={28} />
+                                                <div className="flex items-center gap-8">
+                                                    <div className="w-20 h-20 bg-gray-50 rounded-[1.8rem] flex items-center justify-center flex-shrink-0 text-emerald-500/30 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-500 shadow-inner border border-transparent group-hover:border-emerald-500">
+                                                        <Package size={32} />
                                                     </div>
                                                     <div>
-                                                        <h3 className="text-xl font-bold text-gray-900 mb-1">{order.orderNumber || order.id}</h3>
-                                                        <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm text-gray-500 font-medium">
-                                                            <span className="flex items-center">
-                                                                <Calendar size={14} className="mr-1.5" />
-                                                                {new Date(order.createdAt).toLocaleDateString(undefined, {
-                                                                    year: 'numeric',
-                                                                    month: 'long',
-                                                                    day: 'numeric'
-                                                                })}
-                                                            </span>
-                                                            <span className="flex items-center">
-                                                                <Clock size={14} className="mr-1.5" />
-                                                                {new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                                            </span>
-                                                        </div>
+                                                        <span className="inline-block px-3 py-1 bg-gray-50 rounded-full text-[9px] font-black uppercase tracking-widest text-gray-400 mb-3 group-hover:bg-emerald-50 transition-colors">
+                                                            {order.orderNumber || 'PREMIUM ORDER'}
+                                                        </span>
+                                                        <h3 className="text-2xl font-bold text-black tracking-tight group-hover:text-emerald-600 transition-colors">
+                                                            {new Date(order.createdAt).toLocaleDateString('en-US', {
+                                                                month: 'long',
+                                                                day: 'numeric',
+                                                                year: 'numeric'
+                                                            })}
+                                                        </h3>
+                                                        <p className="text-gray-400 text-xs font-semibold mt-1">
+                                                            {new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                        </p>
                                                     </div>
                                                 </div>
 
                                                 {/* Status & Price */}
-                                                <div className="flex items-center justify-between lg:justify-end gap-6 flex-1 border-t lg:border-t-0 border-gray-50 pt-4 lg:pt-0">
-                                                    <span className={`inline-flex items-center px-4 py-2 rounded-xl text-sm font-bold ${statusConfig.color} ${statusConfig.bg}`}>
-                                                        <StatusIcon size={16} className="mr-2" />
+                                                <div className="flex flex-wrap items-center justify-between lg:justify-end gap-10 flex-1 lg:border-l lg:border-gray-50 lg:pl-10">
+                                                    <div className={`flex items-center px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest ${statusConfig.color} ${statusConfig.bg}`}>
+                                                        <StatusIcon size={14} className="mr-2" />
                                                         {statusConfig.text || order.status}
-                                                    </span>
+                                                    </div>
 
                                                     <div className="text-right">
-                                                        <p className="text-xs text-gray-400 font-bold uppercase tracking-wider mb-0.5">Total</p>
-                                                        <p className="text-2xl font-black text-gray-900">
+                                                        <p className="text-gray-400 text-[10px] font-black uppercase tracking-[0.2em] mb-1">Portfolio Value</p>
+                                                        <p className="text-3xl font-black text-black tracking-tighter">
                                                             ${Number(order.total).toFixed(2)}
                                                         </p>
                                                     </div>
 
                                                     <div className="flex items-center gap-3">
+                                                        {/* Invoice download */}
                                                         <button
                                                             onClick={(e) => {
                                                                 e.preventDefault();
                                                                 e.stopPropagation();
                                                                 generateInvoice(order);
                                                             }}
-                                                            className="p-3 bg-gray-50 text-gray-400 rounded-xl hover:bg-gray-100 hover:text-blue-600 transition-all active:scale-90"
+                                                            className="w-12 h-12 bg-gray-50 text-gray-400 rounded-xl flex items-center justify-center hover:bg-emerald-600 hover:text-white transition-all duration-300 shadow-sm"
                                                             title="Download Invoice"
                                                         >
-                                                            <FileText size={20} />
+                                                            <FileText size={18} />
                                                         </button>
-                                                        <div className="hidden sm:block pl-4 border-l border-gray-100">
-                                                            <div className="w-12 h-12 rounded-xl bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-black group-hover:text-white transition-all">
+
+                                                        {/* Cancel order — only for pending / processing */}
+                                                        {canCancel(order.status) && (
+                                                            <button
+                                                                onClick={(e) => handleCancel(e, order.id)}
+                                                                disabled={cancellingId === order.id}
+                                                                className={`h-12 px-4 rounded-xl flex items-center gap-2 font-black uppercase tracking-wider text-[9px] transition-all duration-300 shadow-sm ${cancellingId === order.id
+                                                                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                                                    : confirmingId === order.id
+                                                                        ? 'bg-red-600 text-white hover:bg-red-700 animate-pulse'
+                                                                        : 'bg-red-50 text-red-500 hover:bg-red-100'
+                                                                    }`}
+                                                                title="Cancel Order"
+                                                            >
+                                                                {cancellingId === order.id ? (
+                                                                    <Loader2 size={14} className="animate-spin" />
+                                                                ) : confirmingId === order.id ? (
+                                                                    <><AlertTriangle size={14} /> Confirm Cancel</>
+                                                                ) : (
+                                                                    <><XCircle size={14} /> Cancel</>
+                                                                )}
+                                                            </button>
+                                                        )}
+
+                                                        {/* Chevron */}
+                                                        <div className="hidden sm:block">
+                                                            <div className="w-12 h-12 rounded-xl bg-white border border-gray-100 flex items-center justify-center text-gray-300 group-hover:border-emerald-500 group-hover:text-emerald-500 transition-all duration-300 shadow-sm">
                                                                 <ChevronRight size={20} />
                                                             </div>
                                                         </div>

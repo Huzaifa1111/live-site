@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, ForbiddenException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Order, OrderStatus } from './order.entity';
@@ -10,6 +10,7 @@ import { StripeService } from './stripe.service';
 import { AdminService } from '../admin/admin.service';
 import { Settings } from '../admin/settings.entity';
 import { EmailService } from '../email/email.service';
+import { PdfService } from './pdf.service';
 
 
 @Injectable()
@@ -27,6 +28,7 @@ export class OrdersService {
     private stripeService: StripeService,
     private adminService: AdminService,
     private emailService: EmailService,
+    private pdfService: PdfService,
   ) { }
 
   private async getSettings(): Promise<{ taxRate: number; shippingFee: number }> {
@@ -134,10 +136,19 @@ export class OrdersService {
     try {
       const orderWithData = await this.getOrderById(savedOrder.id);
       if (orderWithData.user) {
+        // Generate Invoice PDF
+        const pdfBuffer = await this.pdfService.generateInvoice(orderWithData);
+
         await this.emailService.sendOrderConfirmation(
           orderWithData.user.email,
           orderWithData.user.name,
-          orderWithData
+          orderWithData,
+          [
+            {
+              filename: `invoice-${orderWithData.orderNumber}.pdf`,
+              content: pdfBuffer,
+            }
+          ]
         );
       }
     } catch (emailError) {
@@ -259,6 +270,31 @@ export class OrdersService {
     this.adminService.notifyAnalyticsUpdate();
 
     return savedOrder;
+  }
+
+  async cancelOrder(id: number, userId: number) {
+    // Fetch order owned by this user
+    const order = await this.orderRepository.findOne({ where: { id, userId } });
+
+    if (!order) {
+      throw new NotFoundException('Order not found');
+    }
+
+    const cancellableStatuses: OrderStatus[] = [OrderStatus.PENDING, OrderStatus.PROCESSING];
+
+    if (!cancellableStatuses.includes(order.status)) {
+      throw new ForbiddenException(
+        `Order cannot be cancelled. It is currently "${order.status}". Only pending or processing orders can be cancelled.`
+      );
+    }
+
+    order.status = OrderStatus.CANCELLED;
+    const saved = await this.orderRepository.save(order);
+
+    // Notify analytics
+    this.adminService.notifyAnalyticsUpdate();
+
+    return saved;
   }
 
   async deleteOrder(id: number) {

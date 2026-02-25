@@ -17,10 +17,9 @@ export default function ProductTable({ products, loading = false, onDelete }: Pr
   const [confirmDelete, setConfirmDelete] = useState<number | null>(null);
 
   const formatPrice = (price: any) => {
-    // Convert to number first, then format
     const numPrice = Number(price);
     if (isNaN(numPrice)) return '$0.00';
-    return `$${numPrice.toFixed(2)}`;
+    return `$${numPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   };
 
   const formatStock = (stock: any) => {
@@ -29,26 +28,35 @@ export default function ProductTable({ products, loading = false, onDelete }: Pr
     return numStock;
   };
 
-  const getStockColor = (stock: number) => {
-    if (stock === 0) return 'text-red-700 bg-red-50 border-red-100';
-    if (stock < 5) return 'text-yellow-700 bg-yellow-50 border-yellow-100';
-    return 'text-green-700 bg-green-50 border-green-100';
+  const getStockConfig = (stock: number) => {
+    if (stock === 0) return { color: 'text-red-500', bg: 'bg-red-50', border: 'border-red-100', text: 'Depleted' };
+    if (stock < 10) return { color: 'text-orange-500', bg: 'bg-orange-50', border: 'border-orange-100', text: 'Low Reserve' };
+    return { color: 'text-emerald-500', bg: 'bg-emerald-50', border: 'border-emerald-100', text: 'In Selection' };
   };
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center py-12 gap-2">
-        <div className="h-6 w-6 border-b-2 border-blue-600 rounded-full animate-spin"></div>
-        <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Loading...</span>
+      <div className="flex flex-col items-center justify-center py-24 gap-4">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+          className="h-10 w-10 border-4 border-emerald-500/20 border-t-emerald-500 rounded-full"
+        />
+        <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em]">Synchronizing Ledger...</span>
       </div>
     )
   }
 
   if (products.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-12 gap-2 text-center">
-        <PackageSearch size={40} className="text-gray-200" />
-        <span className="font-semibold text-gray-900">No products found</span>
+      <div className="flex flex-col items-center justify-center py-24 gap-6 text-center">
+        <div className="w-20 h-20 bg-gray-50 rounded-[2rem] flex items-center justify-center text-gray-200">
+          <PackageSearch size={40} className="opacity-50" />
+        </div>
+        <div>
+          <h3 className="text-xl font-black text-black tracking-tighter mb-2">Ledger is Empty</h3>
+          <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">No inventory records detected in this sector.</p>
+        </div>
       </div>
     )
   }
@@ -57,231 +65,240 @@ export default function ProductTable({ products, loading = false, onDelete }: Pr
     <>
       {/* Desktop Table View */}
       <div className="hidden md:block overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-100">
-          <thead className="bg-gray-50/50">
-            <tr>
-              <th className="px-6 py-4 text-left text-[11px] font-black uppercase tracking-[0.1em] text-gray-400">
-                Product
+        <table className="min-w-full divide-y divide-gray-50">
+          <thead>
+            <tr className="bg-gray-50/20">
+              <th className="px-6 py-5 text-left text-[9px] font-black uppercase tracking-[0.2em] text-gray-400">
+                Asset Name
               </th>
-              <th className="px-6 py-4 text-left text-[11px] font-black uppercase tracking-[0.1em] text-gray-400">
-                Category
+              <th className="px-6 py-5 text-left text-[9px] font-black uppercase tracking-[0.2em] text-gray-400">
+                Classification
               </th>
-              <th className="px-6 py-4 text-left text-[11px] font-black uppercase tracking-[0.1em] text-gray-400">
-                Price
+              <th className="px-6 py-5 text-left text-[9px] font-black uppercase tracking-[0.2em] text-gray-400">
+                Valuation
               </th>
-              <th className="px-6 py-4 text-left text-[11px] font-black uppercase tracking-[0.1em] text-gray-400">
-                Stock
+              <th className="px-6 py-5 text-left text-[9px] font-black uppercase tracking-[0.2em] text-gray-400">
+                Reserve
               </th>
-              <th className="px-6 py-4 text-left text-[11px] font-black uppercase tracking-[0.1em] text-gray-400">
+              <th className="px-6 py-5 text-left text-[9px] font-black uppercase tracking-[0.2em] text-gray-400">
                 Status
               </th>
-              <th className="px-6 py-4 text-right text-[11px] font-black uppercase tracking-[0.1em] text-gray-400">
-                Actions
+              <th className="px-6 py-5 text-right text-[9px] font-black uppercase tracking-[0.2em] text-gray-400">
+                Operations
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-50">
+          <tbody className="divide-y divide-gray-50/50">
             <AnimatePresence>
-              {products.map((product, index) => (
-                <motion.tr
-                  key={product.id}
-                  className="hover:bg-gray-50/80 transition-colors group"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.05 }}
-                >
-                  <td className="px-6 py-5">
-                    <div className="flex items-center">
-                      <div className="flex-shrink-0 h-12 w-12 relative shadow-sm rounded-xl overflow-hidden border border-gray-100">
-                        {product.images && product.images.length > 0 ? (
-                          <img
-                            className="h-full w-full object-cover"
-                            src={resolveProductImage(product.images)}
-                            alt={product.name}
-                          />
-                        ) : (
-                          <div className="h-full w-full bg-gray-50 flex items-center justify-center">
-                            <span className="text-gray-300 text-[10px]">IMG</span>
+              {products.map((product, index) => {
+                const stock = formatStock(product.stock);
+                const stockConfig = getStockConfig(stock);
+                return (
+                  <motion.tr
+                    key={product.id}
+                    className="hover:bg-gray-50/30 transition-all duration-300 group"
+                    initial={{ opacity: 0, y: 5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.02 }}
+                  >
+                    <td className="px-6 py-4">
+                      <div className="flex items-center">
+                        <div className="flex-shrink-0 h-10 w-10 relative rounded-lg overflow-hidden border border-gray-100 group-hover:scale-105 transition-transform duration-500 shadow-sm bg-gray-50">
+                          {product.images && product.images.length > 0 ? (
+                            <img
+                              className="h-full w-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
+                              src={resolveProductImage(product.images)}
+                              alt={product.name}
+                            />
+                          ) : (
+                            <div className="h-full w-full flex items-center justify-center">
+                              <Package className="text-gray-200" size={14} />
+                            </div>
+                          )}
+                        </div>
+                        <div className="ml-4 min-w-0">
+                          <div className="text-[13px] font-bold text-black tracking-tight truncate max-w-[200px] group-hover:text-emerald-600 transition-colors">
+                            {product.name}
                           </div>
-                        )}
-                      </div>
-                      <div className="ml-4">
-                        <div className="text-sm font-bold text-gray-900 line-clamp-1">
-                          {product.name}
-                        </div>
-                        <div className="text-xs text-gray-500 truncate max-w-[200px]">
-                          {product.description?.replace(/<[^>]*>/g, '').substring(0, 50)}
+                          <div className="text-[9px] text-gray-400 font-bold uppercase tracking-widest truncate max-w-[200px]">
+                            {product.id.toString().padStart(6, '0')} • {product.description?.replace(/<[^>]*>/g, '').substring(0, 30)}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-5">
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-gray-100 text-gray-600">
-                      {typeof product.category === 'object' ? product.category.name : (product.category || 'N/A')}
-                    </span>
-                  </td>
-                  <td className="px-6 py-5 text-sm font-black text-gray-900">
-                    {formatPrice(product.price)}
-                  </td>
-                  <td className="px-6 py-5">
-                    <span
-                      className={`inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold border ${getStockColor(
-                        formatStock(product.stock)
-                      )}`}
-                    >
-                      {formatStock(product.stock) < 5 && formatStock(product.stock) > 0 && <AlertTriangle size={10} className="mr-1" />}
-                      {formatStock(product.stock) === 0 && <AlertTriangle size={10} className="mr-1" />}
-                      {formatStock(product.stock)} available
-                    </span>
-                  </td>
-                  <td className="px-6 py-5">
-                    {product.featured ? (
-                      <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-gradient-to-r from-yellow-400 to-orange-400 text-white shadow-sm shadow-orange-200">
-                        <Star size={10} className="mr-1 fill-current" /> Featured
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="inline-flex items-center px-3 py-1 rounded-lg text-[8px] font-black uppercase tracking-widest bg-gray-50 text-gray-400 border border-gray-100 group-hover:text-black transition-colors">
+                        {typeof product.category === 'object' ? product.category.name : (product.category || 'N/A')}
                       </span>
-                    ) : (
-                      <span className="text-xs font-bold text-gray-400">Regular</span>
-                    )}
-                  </td>
-                  <td className="px-6 py-5 text-right whitespace-nowrap">
-                    <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <Link
-                        href={`/products/${product.id}`}
-                        className="p-2 rounded-lg text-blue-600 hover:bg-blue-50 transition-colors"
-                        title="View"
-                      >
-                        <Eye className="h-4 w-4" />
-                      </Link>
-                      <Link
-                        href={`/admin/products/edit/${product.id}`}
-                        className="p-2 rounded-lg text-indigo-600 hover:bg-indigo-50 transition-colors"
-                        title="Edit"
-                      >
-                        <Edit2 className="h-4 w-4" />
-                      </Link>
-                      <button
-                        onClick={() => setConfirmDelete(product.id)}
-                        className="p-2 rounded-lg text-red-600 hover:bg-red-50 transition-colors"
-                        title="Delete"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
-                    </div>
-                  </td>
-                </motion.tr>
-              ))}
+                    </td>
+                    <td className="px-6 py-4 text-xs font-black text-black tracking-tight">
+                      {formatPrice(product.price)}
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex flex-col">
+                        <span className={`text-[11px] font-black tracking-tighter ${stockConfig.color}`}>
+                          {stock} Units
+                        </span>
+                        <span className={`text-[8px] font-bold uppercase tracking-widest pl-0 ${stockConfig.color} opacity-40`}>
+                          {stockConfig.text}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      {product.featured ? (
+                        <span className="inline-flex items-center px-3 py-1 rounded-lg text-[8px] font-black uppercase tracking-widest bg-emerald-600 text-white shadow-lg shadow-emerald-100">
+                          Spotlight
+                        </span>
+                      ) : (
+                        <span className="text-[9px] font-bold text-gray-300 uppercase tracking-widest">General</span>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-2 group-hover:translate-x-0">
+                        <Link
+                          href={`/products/${product.id}`}
+                          className="p-2 rounded-lg bg-white text-gray-400 hover:bg-black hover:text-white border border-gray-50 shadow-sm transition-all duration-300"
+                          title="View"
+                        >
+                          <Eye className="h-4 w-4" />
+                        </Link>
+                        <Link
+                          href={`/admin/products/edit/${product.id}`}
+                          className="p-2 rounded-lg bg-white text-gray-400 hover:bg-emerald-600 hover:text-white border border-gray-50 shadow-sm transition-all duration-300"
+                          title="Edit"
+                        >
+                          <Edit2 className="h-4 w-4" />
+                        </Link>
+                        <button
+                          onClick={() => setConfirmDelete(product.id)}
+                          className="p-2 rounded-lg bg-white text-gray-400 hover:bg-red-600 hover:text-white border border-gray-50 shadow-sm transition-all duration-300"
+                          title="Delete"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </motion.tr>
+                );
+              })}
             </AnimatePresence>
           </tbody>
         </table>
       </div>
 
       {/* Mobile Card View */}
-      <div className="md:hidden space-y-4 px-4 pb-4">
+      <div className="md:hidden space-y-4 px-4 pb-10">
         <AnimatePresence>
-          {products.map((product, index) => (
-            <motion.div
-              key={product.id}
-              className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.05 }}
-            >
-              <div className="flex items-start gap-4 mb-4">
-                <div className="w-20 h-20 rounded-xl overflow-hidden bg-gray-50 border border-gray-100 flex-shrink-0">
-                  {product.images && product.images.length > 0 ? (
-                    <img
-                      className="h-full w-full object-cover"
-                      src={resolveProductImage(product.images)}
-                      alt={product.name}
-                    />
-                  ) : (
-                    <div className="h-full w-full flex items-center justify-center">
-                      <span className="text-gray-300 text-[10px]">IMG</span>
-                    </div>
-                  )}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex justify-between items-start">
-                    <h3 className="font-bold text-gray-900 line-clamp-2 mb-1">{product.name}</h3>
-                    <div className="ml-2">
+          {products.map((product, index) => {
+            const stock = formatStock(product.stock);
+            const stockConfig = getStockConfig(stock);
+            return (
+              <motion.div
+                key={product.id}
+                className="bg-white rounded-[2rem] p-6 border border-gray-100 shadow-sm relative overflow-hidden group"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.05 }}
+              >
+                <div className="flex items-start gap-5">
+                  <div className="w-20 h-20 rounded-xl overflow-hidden bg-gray-50 border border-gray-100 flex-shrink-0">
+                    {product.images && product.images.length > 0 ? (
+                      <img
+                        className="h-full w-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                        src={resolveProductImage(product.images)}
+                        alt={product.name}
+                      />
+                    ) : (
+                      <div className="h-full w-full flex items-center justify-center">
+                        <Package className="text-gray-200" size={20} />
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0 pt-1">
+                    <div className="flex justify-between items-start mb-1.5">
+                      <h3 className="text-sm font-black text-black tracking-tight leading-tight uppercase">{product.name}</h3>
                       {product.featured && (
-                        <Star size={14} className="fill-yellow-400 text-yellow-400" />
+                        <div className="ml-2 flex-shrink-0 bg-emerald-50 px-2 py-0.5 rounded text-[8px] font-black text-emerald-600 uppercase tracking-widest">
+                          Spotlight
+                        </div>
                       )}
                     </div>
-                  </div>
-                  <p className="text-xs text-gray-500 line-clamp-1 mb-2">{product.description}</p>
-                  <div className="flex flex-wrap gap-2">
-                    <span className="px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 text-[10px] font-bold uppercase tracking-wide">
-                      {typeof product.category === 'object' ? product.category.name : (product.category || 'N/A')}
-                    </span>
-                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${getStockColor(formatStock(product.stock))}`}>
-                      {formatStock(product.stock)} Left
-                    </span>
+                    <div className="flex flex-col gap-1.5 pt-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[14px] font-black text-black tracking-tighter">{formatPrice(product.price)}</span>
+                        <span className="text-[9px] text-gray-400 font-bold uppercase tracking-widest">• ID: {product.id}</span>
+                      </div>
+                      <div className="flex gap-2">
+                        <span className="px-2 py-0.5 rounded bg-gray-50 text-gray-400 text-[8px] font-black uppercase tracking-widest border border-gray-100">
+                          {typeof product.category === 'object' ? product.category.name : (product.category || 'N/A')}
+                        </span>
+                        <span className={`px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest border ${stockConfig.border} ${stockConfig.bg} ${stockConfig.color}`}>
+                          {stock} UNITS
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="flex items-center justify-between pt-4 border-t border-gray-50">
-                <span className="text-xl font-black text-gray-900">{formatPrice(product.price)}</span>
-                <div className="flex gap-2">
+                <div className="flex items-center justify-end gap-2 mt-5 pt-5 border-t border-gray-50">
                   <Link
                     href={`/products/${product.id}`}
-                    className="p-2 rounded-lg bg-blue-50 text-blue-600"
+                    className="flex-1 max-w-[40px] h-10 flex items-center justify-center rounded-xl bg-gray-50 text-gray-400 active:bg-black active:text-white transition-all"
                   >
-                    <Eye size={18} />
+                    <Eye size={16} />
                   </Link>
                   <Link
                     href={`/admin/products/edit/${product.id}`}
-                    className="p-2 rounded-lg bg-indigo-50 text-indigo-600"
+                    className="flex-1 h-10 flex items-center justify-center gap-2 rounded-xl bg-gray-50 text-[9px] font-black uppercase text-gray-500 hover:text-emerald-600 transition-all"
                   >
-                    <Edit2 size={18} />
+                    <Edit2 size={12} /> Edit Asset
                   </Link>
                   <button
                     onClick={() => setConfirmDelete(product.id)}
-                    className="p-2 rounded-lg bg-red-50 text-red-600"
+                    className="flex-1 max-w-[40px] h-10 flex items-center justify-center rounded-xl bg-gray-50 text-gray-400 active:bg-red-600 active:text-white transition-all"
                   >
-                    <Trash2 size={18} />
+                    <Trash2 size={16} />
                   </button>
                 </div>
-              </div>
-            </motion.div>
-          ))}
+              </motion.div>
+            );
+          })}
         </AnimatePresence>
       </div>
 
       {/* Delete Confirmation Modal */}
       {confirmDelete && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-md flex items-center justify-center z-[100] p-6">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white p-8 rounded-[2rem] shadow-2xl max-w-sm w-full border border-gray-100"
+            className="bg-white p-8 rounded-[2rem] shadow-3xl max-w-sm w-full border border-gray-100"
           >
-            <div className="w-12 h-12 bg-red-50 rounded-full flex items-center justify-center mb-4 text-red-500 mx-auto">
-              <Trash2 size={24} />
-            </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-2 text-center">
-              Confirm Delete
-            </h3>
-            <p className="text-gray-500 mb-8 text-center text-sm">
-              Are you sure you want to delete this product? This action cannot be undone.
-            </p>
-            <div className="flex gap-3">
-              <button
-                onClick={() => setConfirmDelete(null)}
-                className="flex-1 px-4 py-3 text-sm font-bold text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => {
-                  onDelete(confirmDelete);
-                  setConfirmDelete(null);
-                }}
-                className="flex-1 px-4 py-3 text-sm font-bold text-white bg-red-600 rounded-xl hover:bg-red-700 shadow-lg shadow-red-200 transition-colors"
-              >
-                Delete
-              </button>
+            <div className="flex flex-col items-center text-center">
+              <div className="w-14 h-14 bg-red-50 rounded-2xl flex items-center justify-center mb-6 text-red-500">
+                <AlertTriangle size={24} />
+              </div>
+              <h3 className="text-xl font-black text-black tracking-tight mb-3">Confirm Deletion</h3>
+              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-relaxed mb-8">
+                This asset will be permanently expunged from the registry. This action cannot be rescinded.
+              </p>
+              <div className="flex gap-3 w-full">
+                <button
+                  onClick={() => setConfirmDelete(null)}
+                  className="flex-1 py-4 text-[9px] font-black uppercase tracking-[0.2em] text-gray-400 bg-gray-50 rounded-xl transition-all"
+                >
+                  Abort
+                </button>
+                <button
+                  onClick={() => {
+                    onDelete(confirmDelete);
+                    setConfirmDelete(null);
+                  }}
+                  className="flex-1 py-4 text-[9px] font-black uppercase tracking-[0.2em] text-white bg-red-600 rounded-xl hover:bg-black transition-all shadow-xl shadow-red-100"
+                >
+                  Expunge
+                </button>
+              </div>
             </div>
           </motion.div>
         </div>

@@ -60,6 +60,12 @@ export class OrdersController {
     return await this.ordersService.updateOrderStatus(id, status);
   }
 
+  @Put(':id/cancel')
+  @UseGuards(JwtAuthGuard)
+  async cancelOrder(@Req() req, @Param('id', ParseIntPipe) id: number) {
+    return await this.ordersService.cancelOrder(id, req.user.id);
+  }
+
   @Delete(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)

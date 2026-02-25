@@ -139,24 +139,23 @@ export default function ProfilePage() {
 
     return (
         <motion.div
-            className="max-w-4xl mx-auto space-y-8 pb-12"
+            className="space-y-12 pb-20"
             variants={containerVariants}
             initial="hidden"
             animate="show"
         >
             {/* Header Section */}
-            <motion.div variants={itemVariants} className="relative overflow-hidden rounded-[2.5rem] bg-black p-8 md:p-12 text-white shadow-2xl">
-                <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-gradient-to-bl from-purple-600 to-pink-600 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 opacity-50 pointer-events-none"></div>
-                <div className="absolute bottom-0 left-0 w-[200px] h-[200px] bg-gradient-to-tr from-blue-600 to-cyan-600 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3 opacity-40 pointer-events-none"></div>
+            <motion.div variants={itemVariants} className="relative overflow-hidden rounded-[3rem] bg-black p-10 md:p-16 text-white shadow-3xl group">
+                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-600/20 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2 group-hover:bg-emerald-500/30 transition-colors duration-1000"></div>
 
-                <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
-                    <div className="relative group">
-                        <div className="w-32 h-32 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 p-1">
-                            <div className="w-full h-full rounded-full bg-gray-900 flex items-center justify-center overflow-hidden">
+                <div className="relative z-10 flex flex-col md:flex-row items-center gap-10">
+                    <div className="relative group/avatar">
+                        <div className="w-40 h-40 rounded-full bg-emerald-600/20 p-1.5 backdrop-blur-xl border border-white/10 group-hover/avatar:scale-105 transition-transform duration-500">
+                            <div className="w-full h-full rounded-full bg-white flex items-center justify-center overflow-hidden shadow-inner">
                                 {user.picture ? (
-                                    <img src={user.picture} alt={user.name} className="w-full h-full object-cover" />
+                                    <img src={user.picture} alt={user.name} className="w-full h-full object-cover group-hover/avatar:scale-110 transition-transform duration-700" />
                                 ) : (
-                                    <span className="text-4xl font-bold text-white">{user.name?.charAt(0) || 'U'}</span>
+                                    <span className="text-5xl font-black text-black tracking-tighter">{user.name?.charAt(0) || 'U'}</span>
                                 )}
                             </div>
                         </div>
@@ -169,18 +168,21 @@ export default function ProfilePage() {
                         />
                         <button
                             onClick={() => document.getElementById('avatar-upload')?.click()}
-                            className="absolute bottom-0 right-0 p-2 bg-white text-black rounded-full shadow-lg hover:bg-gray-100 transition-colors"
+                            className="absolute bottom-1 right-1 p-3 bg-emerald-600 text-white rounded-full shadow-2xl hover:bg-emerald-500 hover:scale-110 active:scale-95 transition-all duration-300 border-4 border-black"
                         >
                             <Camera size={18} />
                         </button>
                     </div>
 
-                    <div className="text-center md:text-left space-y-2">
-                        <div className="inline-flex items-center px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs font-medium text-blue-200 mb-2">
-                            <Shield size={12} className="mr-1" /> {user.role?.toUpperCase() || 'USER'} account
+                    <div className="text-center md:text-left space-y-4">
+                        <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-emerald-600/20 backdrop-blur-md border border-emerald-500/30 text-[9px] font-black text-emerald-400 uppercase tracking-[0.2em] mb-2">
+                            <Shield size={12} className="mr-2" /> {user.role?.toUpperCase() || 'CLIENT'} ACCESS
                         </div>
-                        <h1 className="text-3xl md:text-4xl font-black tracking-tight">{user.name}</h1>
-                        <p className="text-gray-400">{user.email}</p>
+                        <h1 className="text-4xl md:text-6xl font-black tracking-tighter leading-none">{user.name}</h1>
+                        <p className="text-gray-400 font-medium tracking-wide flex items-center justify-center md:justify-start">
+                            <Mail size={16} className="mr-3 text-emerald-500/50" />
+                            {user.email}
+                        </p>
                     </div>
                 </div>
             </motion.div>
@@ -188,105 +190,107 @@ export default function ProfilePage() {
             <div className="flex justify-center">
                 {/* Main Form */}
                 <motion.div variants={itemVariants} className="w-full max-w-2xl">
-                    <div className="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-sm relative overflow-hidden">
+                    <div className="bg-white rounded-[3rem] p-10 sm:p-12 border border-blue-50/50 shadow-sm relative overflow-hidden group">
 
-                        {/* Decorative background element for the card */}
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-blue-50 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 opacity-60 pointer-events-none"></div>
+                        <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-50 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2 opacity-40 group-hover:opacity-60 transition-opacity duration-1000 pointer-events-none"></div>
 
                         <div className="relative z-10">
-                            <div className="flex items-center justify-between mb-8">
-                                <h2 className="text-2xl font-bold text-gray-900">Personal Information</h2>
+                            <div className="mb-10">
+                                <h2 className="text-3xl font-black text-black tracking-tighter">Client Identity</h2>
+                                <p className="text-gray-400 text-xs font-medium mt-2">Update your personal identification details.</p>
                             </div>
 
                             {message && (
                                 <motion.div
                                     initial={{ opacity: 0, y: -10 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    className={`p-4 rounded-xl mb-6 flex items-center ${message.type === 'success' ? 'bg-green-50 text-green-700 border border-green-100' : 'bg-red-50 text-red-700 border border-red-100'}`}
+                                    className={`p-5 rounded-2xl mb-10 flex items-center font-bold text-[11px] uppercase tracking-widest ${message.type === 'success' ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-red-50 text-red-700 border border-red-100'}`}
                                 >
-                                    <div className={`w-2 h-2 rounded-full mr-3 ${message.type === 'success' ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                                    <div className={`w-2.5 h-2.5 rounded-full mr-4 ${message.type === 'success' ? 'bg-emerald-500 shadow-lg shadow-emerald-200' : 'bg-red-500 shadow-lg shadow-red-200 animate-pulse'}`}></div>
                                     {message.text}
                                 </motion.div>
                             )}
 
-                            <form onSubmit={handleSubmit} className="space-y-6">
-                                <div className="grid grid-cols-1 gap-6">
-                                    <div className="space-y-2">
-                                        <label className="text-sm font-bold text-gray-700 ml-1">Full Name</label>
-                                        <div className="relative">
-                                            <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                            <form onSubmit={handleSubmit} className="space-y-8">
+                                <div className="grid grid-cols-1 gap-8">
+                                    <div className="space-y-3">
+                                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Full Name</label>
+                                        <div className="relative group/input">
+                                            <User className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within/input:text-emerald-500 transition-colors" size={18} />
                                             <input
                                                 type="text"
                                                 name="name"
                                                 value={formData.name}
                                                 onChange={handleChange}
-                                                className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition-all font-medium text-gray-900 bg-gray-50 focus:bg-white"
-                                                placeholder="Your full name"
+                                                className="w-full pl-14 pr-6 py-4 rounded-2xl border border-gray-100 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-50 outline-none transition-all font-bold text-black bg-gray-50/50 focus:bg-white shadow-inner"
+                                                placeholder="Identity Name"
                                             />
                                         </div>
                                     </div>
 
-                                    <div className="space-y-2">
-                                        <label className="text-sm font-bold text-gray-700 ml-1">Phone Number</label>
-                                        <div className="relative">
-                                            <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                                    <div className="space-y-3">
+                                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Phone Number</label>
+                                        <div className="relative group/input">
+                                            <Phone className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within/input:text-emerald-500 transition-colors" size={18} />
                                             <input
                                                 type="tel"
                                                 name="phone"
                                                 value={formData.phone}
                                                 onChange={handleChange}
-                                                className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition-all font-medium text-gray-900 bg-gray-50 focus:bg-white"
+                                                className="w-full pl-14 pr-6 py-4 rounded-2xl border border-gray-100 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-50 outline-none transition-all font-bold text-black bg-gray-50/50 focus:bg-white shadow-inner"
                                                 placeholder="+1 (555) 000-0000"
                                             />
                                         </div>
                                     </div>
 
-                                    <div className="space-y-2">
-                                        <label className="text-sm font-bold text-gray-700 ml-1">Email Address</label>
-                                        <div className="relative">
-                                            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                                    <div className="space-y-3">
+                                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Email Terminal</label>
+                                        <div className="relative opacity-60">
+                                            <Mail className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-300" size={18} />
                                             <input
                                                 type="email"
                                                 name="email"
                                                 value={formData.email}
                                                 onChange={handleChange}
                                                 disabled
-                                                title="Contact support to change email"
-                                                className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 bg-gray-100 text-gray-500 font-medium cursor-not-allowed"
-                                                placeholder="name@example.com"
+                                                className="w-full pl-14 pr-6 py-4 rounded-2xl border border-gray-100 bg-gray-100 text-gray-400 font-bold cursor-not-allowed shadow-inner"
+                                                placeholder="Terminal ID"
                                             />
-                                            <p className="text-xs text-gray-400 mt-1 ml-1">Email cannot be changed directly.</p>
+                                            <p className="text-[9px] text-gray-300 font-black uppercase tracking-widest mt-2 ml-1">Identity Terminal locked.</p>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="pt-6 border-t border-gray-100 mt-6">
-                                    <h3 className="text-lg font-bold text-gray-900 mb-4">Change Password</h3>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-bold text-gray-700 ml-1">New Password</label>
-                                            <div className="relative">
-                                                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                                <div className="pt-10 border-t border-gray-50 mt-10">
+                                    <div className="mb-8">
+                                        <h3 className="text-xl font-black text-black tracking-tighter">Credential Rotation</h3>
+                                        <p className="text-gray-400 text-[10px] font-medium mt-1 uppercase tracking-widest">Optional: Update your secure access code.</p>
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                        <div className="space-y-3">
+                                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">New Secret</label>
+                                            <div className="relative group/input">
+                                                <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within/input:text-emerald-500 transition-colors" size={18} />
                                                 <input
                                                     type="password"
                                                     name="newPassword"
                                                     value={formData.newPassword}
                                                     onChange={handleChange}
-                                                    className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition-all font-medium text-gray-900 bg-gray-50 focus:bg-white"
+                                                    className="w-full pl-14 pr-6 py-4 rounded-2xl border border-gray-100 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-50 outline-none transition-all font-bold text-black bg-gray-50/50 focus:bg-white shadow-inner"
                                                     placeholder="••••••••"
                                                 />
                                             </div>
                                         </div>
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-bold text-gray-700 ml-1">Confirm Password</label>
-                                            <div className="relative">
-                                                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                                        <div className="space-y-3">
+                                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Verify Secret</label>
+                                            <div className="relative group/input">
+                                                <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within/input:text-emerald-500 transition-colors" size={18} />
                                                 <input
                                                     type="password"
                                                     name="confirmPassword"
                                                     value={formData.confirmPassword}
                                                     onChange={handleChange}
-                                                    className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition-all font-medium text-gray-900 bg-gray-50 focus:bg-white"
+                                                    className="w-full pl-14 pr-6 py-4 rounded-2xl border border-gray-100 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-50 outline-none transition-all font-bold text-black bg-gray-50/50 focus:bg-white shadow-inner"
                                                     placeholder="••••••••"
                                                 />
                                             </div>
@@ -294,16 +298,16 @@ export default function ProfilePage() {
                                     </div>
                                 </div>
 
-                                <div className="flex justify-end pt-4">
+                                <div className="flex justify-end pt-8">
                                     <button
                                         type="submit"
                                         disabled={isLoading}
-                                        className="flex items-center px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl font-bold shadow-lg shadow-blue-200 hover:shadow-xl hover:shadow-blue-300 transform hover:-translate-y-0.5 transition-all disabled:opacity-70 disabled:cursor-not-allowed"
+                                        className="flex items-center px-12 py-5 bg-black text-white rounded-full font-black uppercase tracking-[0.2em] text-[10px] shadow-2xl hover:bg-emerald-600 hover:shadow-emerald-200 transform hover:-translate-y-1 transition-all duration-500 disabled:opacity-50 disabled:cursor-not-allowed group/btn"
                                     >
                                         {isLoading ? (
-                                            <><Loader2 className="animate-spin mr-2" size={20} /> Saving...</>
+                                            <><Loader2 className="animate-spin mr-3" size={16} /> Encrypting...</>
                                         ) : (
-                                            <><Save className="mr-2" size={20} /> Save Changes</>
+                                            <><Save className="mr-3 group-hover/btn:rotate-12 transition-transform" size={16} /> Synchronize Profile</>
                                         )}
                                     </button>
                                 </div>
