@@ -43,7 +43,7 @@ export class Order {
   })
   status: OrderStatus;
 
-  @Column({ nullable: true })
+  @Column('text', { nullable: true })
   shippingAddress: string;
 
   @Column({ nullable: true })
