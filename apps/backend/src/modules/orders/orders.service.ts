@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { Injectable, NotFoundException, BadRequestException, ForbiddenException } from '@nestjs/common';
+=======
+import { Injectable, NotFoundException, BadRequestException, Logger } from '@nestjs/common';
+>>>>>>> 7a3f24e5908fb1c170403cd1d42cfe67da3359a1
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Order, OrderStatus } from './order.entity';
@@ -15,6 +19,8 @@ import { PdfService } from './pdf.service';
 
 @Injectable()
 export class OrdersService {
+  private readonly logger = new Logger(OrdersService.name);
+
   constructor(
     @InjectRepository(OrderItem)
     private orderItemRepository: Repository<OrderItem>,
@@ -44,8 +50,11 @@ export class OrdersService {
   }
 
   async createOrder(userId: number, createOrderDto: CreateOrderDto) {
+    this.logger.log(`Starting createOrder for user ${userId}. Payment Method: ${createOrderDto.paymentMethod}`);
+
     // Get cart items
     const cartItems = await this.cartService.getCart(userId);
+    this.logger.log(`Found ${cartItems.length} items in cart for user ${userId}`);
 
     if (cartItems.length === 0) {
       throw new BadRequestException('Cart is empty. Please add items before checkout.');
@@ -53,21 +62,23 @@ export class OrdersService {
 
     // Calculate subtotal from cart items
     const subtotal = cartItems.reduce((sum, item) => {
-      return sum + (item.price * item.quantity);
+      return sum + (Number(item.price) * item.quantity);
     }, 0);
+    this.logger.log(`Calculated subtotal: ${subtotal}`);
 
     // Fetch live settings for tax and shipping
     const { taxRate, shippingFee } = await this.getSettings();
     const tax = parseFloat((subtotal * (taxRate / 100)).toFixed(2));
     const total = parseFloat((subtotal + shippingFee + tax).toFixed(2));
+    this.logger.log(`Calculated total: ${total} (Tax: ${tax}, Shipping: ${shippingFee})`);
 
-    // Generate professional order number (e.g., ORD-20240210-ABCD)
+    // Generate professional order number
     const date = new Date();
     const dateStr = date.toISOString().slice(0, 10).replace(/-/g, '');
     const randomStr = Math.random().toString(36).substring(2, 6).toUpperCase();
     const orderNumber = `ORD-${dateStr}-${randomStr}`;
 
-    // Create order
+    // Create order object
     const order = this.orderRepository.create({
       userId,
       orderNumber,
@@ -82,6 +93,7 @@ export class OrdersService {
 
     // Handle Stripe Payment
     if (createOrderDto.paymentMethod === 'stripe') {
+      this.logger.log(`Processing stripe payment for user ${userId}`);
       if (!createOrderDto.paymentIntentId) {
         throw new Error('Payment Intent ID is required for Stripe payments');
       }
@@ -95,14 +107,17 @@ export class OrdersService {
           throw new Error(`Payment not successful: ${paymentIntent.status}`);
         }
       } catch (error) {
-        console.error('Stripe verification failed:', error);
-        throw new Error('Failed to verify payment');
+        this.logger.error(`Stripe verification failed for user ${userId}: ${error.message}`);
+        throw new BadRequestException('Failed to verify payment: ' + error.message);
       }
     }
 
+    this.logger.log(`Saving order ${orderNumber} to database...`);
     const savedOrder = await this.orderRepository.save(order);
+    this.logger.log(`Order saved with ID: ${savedOrder.id}`);
 
     // Create Order Items
+    this.logger.log(`Creating order items for order ID: ${savedOrder.id}`);
     for (const item of cartItems) {
       const orderItem = this.orderItemRepository.create({
         orderId: savedOrder.id,
@@ -114,31 +129,41 @@ export class OrdersService {
     }
 
     // Deduct Stock
+    this.logger.log(`Deducting stock for order ID: ${savedOrder.id}`);
     for (const item of cartItems) {
       const product = await this.productRepository.findOne({ where: { id: item.productId } });
       if (product) { // Ensure product exists
         if (product.stock < item.quantity) {
-          throw new Error(`Insufficient stock for product: ${product.name}`);
+          this.logger.error(`Insufficient stock for product ${product.id}`);
+          throw new BadRequestException(`Insufficient stock for product: ${product.name}`);
         }
         product.stock -= item.quantity;
         await this.productRepository.save(product);
-        console.log(`Stock deducted for product ${product.id}: ${item.quantity} units. New stock: ${product.stock}`);
+        // console.log(`Stock deducted for product ${product.id}: ${item.quantity} units. New stock: ${product.stock}`);
       }
     }
 
     // Clear cart after order is created
+    this.logger.log(`Clearing cart for user ${userId}`);
     await this.cartService.clearCart(userId);
 
     // Trigger real-time analytics update
-    this.adminService.notifyAnalyticsUpdate();
+    await this.adminService.notifyAnalyticsUpdate();
 
     // Send Order Confirmation Email
     try {
+      this.logger.log(`Initiating order confirmation email for Order ID: ${savedOrder.id}`);
+      // Fetch full order details including user and item relations
       const orderWithData = await this.getOrderById(savedOrder.id);
+<<<<<<< HEAD
       if (orderWithData.user) {
         // Generate Invoice PDF
         const pdfBuffer = await this.pdfService.generateInvoice(orderWithData);
 
+=======
+
+      if (orderWithData && orderWithData.user) {
+>>>>>>> 7a3f24e5908fb1c170403cd1d42cfe67da3359a1
         await this.emailService.sendOrderConfirmation(
           orderWithData.user.email,
           orderWithData.user.name,
@@ -150,9 +175,11 @@ export class OrdersService {
             }
           ]
         );
+      } else {
+        this.logger.warn(`Could not send confirmation email: Order or User data not found for ID ${savedOrder.id}`);
       }
     } catch (emailError) {
-      console.error('Failed to send order confirmation email:', emailError);
+      this.logger.error(`Failed to send order confirmation email for order ${savedOrder.id}: ${emailError.message}`);
       // We don't throw here as the order is already placed successfully
     }
 
