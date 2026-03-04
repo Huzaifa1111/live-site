@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import { Injectable, NotFoundException, BadRequestException, ForbiddenException } from '@nestjs/common';
-=======
-import { Injectable, NotFoundException, BadRequestException, Logger } from '@nestjs/common';
->>>>>>> 7a3f24e5908fb1c170403cd1d42cfe67da3359a1
+import { Injectable, NotFoundException, BadRequestException, ForbiddenException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Order, OrderStatus } from './order.entity';
@@ -155,15 +151,10 @@ export class OrdersService {
       this.logger.log(`Initiating order confirmation email for Order ID: ${savedOrder.id}`);
       // Fetch full order details including user and item relations
       const orderWithData = await this.getOrderById(savedOrder.id);
-<<<<<<< HEAD
-      if (orderWithData.user) {
+      if (orderWithData && orderWithData.user) {
         // Generate Invoice PDF
         const pdfBuffer = await this.pdfService.generateInvoice(orderWithData);
 
-=======
-
-      if (orderWithData && orderWithData.user) {
->>>>>>> 7a3f24e5908fb1c170403cd1d42cfe67da3359a1
         await this.emailService.sendOrderConfirmation(
           orderWithData.user.email,
           orderWithData.user.name,

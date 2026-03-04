@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import PDFDocument from 'pdfkit';
+import PDFDocument = require('pdfkit');
 import { Order } from './order.entity';
 
 @Injectable()

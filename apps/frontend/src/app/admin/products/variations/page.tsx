@@ -120,7 +120,7 @@ export default function VariationsPage() {
                     <div className="absolute -right-20 -top-20 w-64 h-64 bg-indigo-50/30 rounded-full blur-3xl group-hover:bg-indigo-100/40 transition-colors" />
                 </div>
                 <div className="relative z-10">
-                    <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Product Variations</h1>
+                    <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Product Attributes</h1>
                     <p className="text-gray-400 mt-1 font-medium text-sm">Manage global product attributes and their values</p>
                 </div>
                 <div className="relative z-20 flex flex-col md:flex-row items-stretch gap-2 bg-[#F9FAFB] p-1.5 rounded-[1.5rem] border border-gray-100 w-full xl:w-auto xl:min-w-[500px]">

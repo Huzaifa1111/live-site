@@ -409,8 +409,8 @@ export default function ProductForm({ initialData, isEditing = false }: ProductF
               <Layers size={24} />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-gray-900 leading-tight">Variable Product</h3>
-              <p className="text-sm text-gray-500 font-medium mt-1">Enable variations like size, color, etc.</p>
+              <h3 className="text-lg font-bold text-gray-900 leading-tight">Product Attributes</h3>
+              <p className="text-sm text-gray-500 font-medium mt-1">Enable attributes like size, color, etc.</p>
             </div>
           </div>
           <label className="relative inline-flex items-center cursor-pointer group">
@@ -560,7 +560,7 @@ export default function ProductForm({ initialData, isEditing = false }: ProductF
               {/* Variations List */}
               <div className="space-y-4 mt-12">
                 <div className="flex items-center justify-between px-2">
-                  <h4 className="font-bold text-gray-900">Variations ({formData.variations?.length || 0})</h4>
+                  <h4 className="font-bold text-gray-900">Attributes ({formData.variations?.length || 0})</h4>
                   <button
                     type="button"
                     onClick={() => setFormData(prev => ({
@@ -598,7 +598,7 @@ export default function ProductForm({ initialData, isEditing = false }: ProductF
                       <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center shadow-sm mb-4">
                         <Layers className="text-gray-200" size={32} />
                       </div>
-                      <p className="text-gray-400 font-medium">No variations defined yet</p>
+                      <p className="text-gray-400 font-medium">No attributes defined yet</p>
                     </div>
                   )}
                 </div>

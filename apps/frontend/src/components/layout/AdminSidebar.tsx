@@ -28,10 +28,10 @@ const navItems = [
     children: [
       { href: '/admin/products', label: 'All Products' },
       { href: '/admin/products/create', label: 'Add Product' },
-      { href: '/admin/products/variations', label: 'Variations' },
+      { href: '/admin/categories', label: 'Categories' },
+      { href: '/admin/products/variations', label: 'Attributes' },
     ]
   },
-  { href: '/admin/categories', label: 'Categories', icon: Folder },
   { href: '/admin/orders', label: 'Orders', icon: ShoppingCart },
   { href: '/admin/messages', label: 'Messages', icon: Mail },
   { href: '/admin/users', label: 'Users', icon: Users },
