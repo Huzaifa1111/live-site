@@ -10,11 +10,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 interface ProductTableProps {
   products: Product[];
   loading?: boolean;
-  onDelete: (id: number) => void;
+  onDelete: (id: string) => void;
 }
 
 export default function ProductTable({ products, loading = false, onDelete }: ProductTableProps) {
-  const [confirmDelete, setConfirmDelete] = useState<number | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
 
   const formatPrice = (price: any) => {
     const numPrice = Number(price);

@@ -33,7 +33,7 @@ export default function AdminProductsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
-  const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const fetchProducts = async () => {
     try {
@@ -54,7 +54,7 @@ export default function AdminProductsPage() {
     fetchProducts();
   }, []);
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: string) => {
     try {
       setDeletingId(id);
       await productService.deleteProduct(id);
