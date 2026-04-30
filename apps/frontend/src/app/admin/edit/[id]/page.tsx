@@ -29,7 +29,7 @@ const itemVariants = {
 export default function EditProductPage() {
   const router = useRouter();
   const params = useParams();
-  const productId = parseInt(params.id as string);
+  const productId = params.id as string;
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
