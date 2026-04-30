@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 export default function EditProductPage() {
   const router = useRouter();
   const params = useParams();
-  const id = parseInt(params.id as string);
+  const id = params.id as string;
 
   const [loading, setLoading] = useState(true);
   const [product, setProduct] = useState<any>(null);
