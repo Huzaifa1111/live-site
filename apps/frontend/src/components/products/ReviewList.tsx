@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Star, User, Calendar } from 'lucide-react';
+import Image from 'next/image';
 
 interface Review {
     id: string;
@@ -35,12 +36,12 @@ export default function ReviewList({ reviews }: ReviewListProps) {
 
     return (
         <div className="space-y-12 font-plus-jakarta-sans">
-            {/* Review Stats Header - Archive Signature */}
+            {/* Review Stats Header */}
             <div className="bg-white p-10 rounded-xl border border-gray-100 shadow-sm flex flex-col md:flex-row items-center gap-12 relative overflow-hidden group">
                 <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-50 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2 opacity-40 group-hover:opacity-60 transition-opacity duration-1000"></div>
 
                 <div className="text-center md:text-left relative z-10">
-                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-4">Metric: Average Rating</p>
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-4">Average Rating</p>
                     <div className="flex items-end gap-3 px-4 py-6 bg-gray-50/50 rounded-xl border border-gray-100">
                         <h2 className="text-7xl font-black text-black tracking-tighter leading-none">{averageRating.toFixed(1)}</h2>
                         <div className="mb-1">
@@ -49,7 +50,7 @@ export default function ReviewList({ reviews }: ReviewListProps) {
                                     <Star key={i} size={14} className={i <= Math.round(averageRating) ? 'fill-current' : 'text-gray-200'} strokeWidth={3} />
                                 ))}
                             </div>
-                            <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">{reviews.length} Total Testimony</p>
+                            <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">{reviews.length} Total Reviews</p>
                         </div>
                     </div>
                 </div>
@@ -89,9 +90,9 @@ function ReviewItem({ review }: { review: any }) {
         <div className="group bg-white p-8 rounded-xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-1">
             <div className="flex items-start justify-between mb-8">
                 <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full bg-emerald-50 text-emerald-700 flex items-center justify-center font-black text-xs overflow-hidden border border-emerald-100 shadow-inner">
+                    <div className="w-12 h-12 rounded-full bg-emerald-50 text-emerald-700 flex items-center justify-center font-black text-xs overflow-hidden border border-emerald-100 shadow-inner relative">
                         {review.user.picture ? (
-                            <img src={review.user.picture} alt={review.user.name} className="w-full h-full object-cover" />
+                            <Image src={review.user.picture || 'https://placehold.co/100x100/000000/ffffff?text=User'} alt={review.user.name} fill sizes="48px" className="object-cover" />
                         ) : (
                             review.user.name.charAt(0).toUpperCase()
                         )}
@@ -122,7 +123,7 @@ function ReviewItem({ review }: { review: any }) {
                         className="mt-4 flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.2em] text-emerald-600 hover:text-emerald-700 transition-all group/btn"
                     >
                         <span className="w-4 h-[1px] bg-emerald-200 group-hover/btn:w-8 transition-all"></span>
-                        {isExpanded ? 'Collapse' : 'Expand Testimony'}
+                        {isExpanded ? 'Collapse' : 'Read More'}
                     </button>
                 )}
             </div>

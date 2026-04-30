@@ -24,7 +24,7 @@ export class CategoriesController {
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles('admin')
     findOne(@Param('id') id: string) {
-        return this.categoriesService.findOne(+id);
+        return this.categoriesService.findOne(id);
     }
 
     @Post()
@@ -38,13 +38,13 @@ export class CategoriesController {
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles('admin')
     update(@Param('id') id: string, @Body() updateCategoryDto: any) {
-        return this.categoriesService.update(+id, updateCategoryDto);
+        return this.categoriesService.update(id, updateCategoryDto);
     }
 
     @Delete(':id')
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles('admin')
     remove(@Param('id') id: string) {
-        return this.categoriesService.remove(+id);
+        return this.categoriesService.remove(id);
     }
 }

@@ -63,13 +63,13 @@ export default function AboutPage() {
             transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
           >
             <span className="inline-block px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-black uppercase tracking-[0.4em] text-[10px] mb-8">
-              Legacy of Excellence
+              Our Story
             </span>
             <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-white mb-6 leading-[0.9]">
-              ARCHITECTS <br className="hidden md:block" /> <span className="text-transparent bg-clip-text bg-gradient-to-b from-emerald-400 to-emerald-600">OF DIGITAL</span> <br /> MASTERY.
+              LEADING THE <br className="hidden md:block" /> <span className="text-transparent bg-clip-text bg-gradient-to-b from-emerald-400 to-emerald-600">FUTURE OF</span> <br /> SHOPPING.
             </h1>
             <p className="text-sm md:text-base text-gray-400 max-w-xl mx-auto font-medium leading-relaxed tracking-wide">
-              Engineering the future of boutique commerce through high-fidelity experiences and uncompromising quality.
+              We create premium shopping experiences with a total focus on quality, style, and our customers.
             </p>
           </motion.div>
         </div>
@@ -87,15 +87,15 @@ export default function AboutPage() {
               <div className="relative aspect-[4/5] rounded-[3rem] overflow-hidden shadow-2xl">
                 <Image
                   src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80"
-                  alt="Atelier"
+                  alt="Our Office"
                   fill
                   className="object-cover contrast-110 saturate-[0.8] transition-transform duration-1000 group-hover:scale-110"
                 />
               </div>
               {/* Floating Stat Card */}
               <div className="absolute -bottom-10 -right-10 bg-black text-white p-8 rounded-[2rem] shadow-2xl hidden md:block border border-white/10 backdrop-blur-3xl bg-black/80">
-                <p className="text-[9px] font-black uppercase tracking-[0.3em] mb-3 text-emerald-400">Founded</p>
-                <div className="text-4xl font-black tracking-tighter">MMXXIV</div>
+                <p className="text-[9px] font-black uppercase tracking-[0.3em] mb-3 text-emerald-400">Established</p>
+                <div className="text-4xl font-black tracking-tighter">2024</div>
               </div>
             </motion.div>
 
@@ -105,27 +105,27 @@ export default function AboutPage() {
               viewport={{ once: true }}
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             >
-              <span className="text-emerald-600 font-black uppercase tracking-[0.4em] text-[10px] mb-8 block">The Philosophy</span>
+              <span className="text-emerald-600 font-black uppercase tracking-[0.4em] text-[10px] mb-8 block">Our Philosophy</span>
               <h2 className="text-4xl md:text-6xl font-black tracking-tight text-black mb-10 leading-[0.95]">
-                DRIVEN BY <span className="text-gray-300">PRECISION.</span> <br /> GUIDED BY VISION.
+                DRIVEN BY <span className="text-gray-300">QUALITY.</span> <br /> GUIDED BY VISION.
               </h2>
               <div className="space-y-8 text-gray-500 text-lg font-medium leading-relaxed">
                 <p className="border-l-4 border-emerald-500 pl-8">
-                  Our journey is a synthesis of art and algorithm. We believe that digital commerce should transcend the transactional, becoming a curated ritual of discovery.
+                  Our journey is a blend of style and technology. We believe that shopping online should go beyond a simple transaction and become a unique experience.
                 </p>
                 <p>
-                  Today, we bridge the gap between artisanal quality and digital speed. We connect a global community of masters with those who seek nothing less than the exceptional.
+                  Today, we bridge the gap between high-end quality and fast delivery. We connect a global community of makers with those who seek nothing less than the best.
                 </p>
               </div>
 
               <div className="mt-16 grid grid-cols-2 gap-12">
                 <div className="border-t border-gray-100 pt-8">
                   <h3 className="text-4xl font-black text-black mb-3">24/7</h3>
-                  <p className="text-gray-400 text-[9px] font-black uppercase tracking-[0.25em]">Global Operations</p>
+                  <p className="text-gray-400 text-[9px] font-black uppercase tracking-[0.25em]">Available Worldwide</p>
                 </div>
                 <div className="border-t border-gray-100 pt-8">
-                  <h3 className="text-4xl font-black text-black mb-3">99.9%</h3>
-                  <p className="text-gray-400 text-[9px] font-black uppercase tracking-[0.25em]">Precision Rating</p>
+                  <h3 className="text-4xl font-black text-black mb-3">100%</h3>
+                  <p className="text-gray-400 text-[9px] font-black uppercase tracking-[0.25em]">Customer Satisfaction</p>
                 </div>
               </div>
             </motion.div>
@@ -153,10 +153,10 @@ export default function AboutPage() {
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
           >
             {[
-              { icon: <Zap size={16} />, title: "Velocity", desc: "Instantaneous execution at the speed of thought." },
-              { icon: <Award size={16} />, title: "Nobility", desc: "Upholding the highest standards of integrity and quality." },
-              { icon: <Sparkles size={16} />, title: "Aesthetics", desc: "Every pixel curated for emotional resonance." },
-              { icon: <Target size={16} />, title: "Focus", desc: "Unwavering commitment to our user ecosystem." },
+              { icon: <Zap size={16} />, title: "Speed", desc: "Fast delivery to your doorstep." },
+              { icon: <Award size={16} />, title: "Quality", desc: "Highest standards of honesty and performance." },
+              { icon: <Sparkles size={16} />, title: "Design", desc: "Every product chosen for the best look and feel." },
+              { icon: <Target size={16} />, title: "Service", desc: "Always here to help our customers." },
             ].map((item, index) => (
               <motion.div
                 key={index}
@@ -180,12 +180,12 @@ export default function AboutPage() {
         className="py-24 bg-white relative"
       >
         <div className="max-w-4xl mx-auto px-6 text-center">
-          <span className="text-emerald-600 font-black uppercase tracking-[0.4em] text-[9px] mb-6 block">Initiate Engagement</span>
+          <span className="text-emerald-600 font-black uppercase tracking-[0.4em] text-[10px] mb-6 block">Get Started</span>
           <h2 className="text-4xl md:text-6xl font-black tracking-tighter mb-10 text-black leading-[0.85]">
-            SHAPE THE <br /> <span className="text-gray-200">TOMORROW.</span>
+            JOIN OUR <br /> <span className="text-gray-200">COMMUNITY.</span>
           </h2>
           <p className="text-gray-400 text-sm md:text-base mb-12 font-medium leading-relaxed max-w-2xl mx-auto tracking-tight">
-            Collaborate with the guild of specialists redefining the vanguard of digital commerce.
+            Join thousands of happy customers and discover our latest products today.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -194,7 +194,7 @@ export default function AboutPage() {
               className="group relative inline-flex items-center px-8 py-4 bg-black text-white rounded-xl font-black uppercase tracking-[0.3em] text-[9px] overflow-hidden transition-all duration-500 hover:scale-105 shadow-2xl shadow-emerald-900/10"
             >
               <span className="relative z-10 flex items-center">
-                Access Gallery <ArrowRight className="ml-3 group-hover:translate-x-2 transition-transform" size={12} />
+                View Products <ArrowRight className="ml-3 group-hover:translate-x-2 transition-transform" size={12} />
               </span>
               <div className="absolute inset-0 bg-emerald-600 -translate-x-full group-hover:translate-x-0 transition-transform duration-700 ease-[0.16, 1, 0.3, 1]"></div>
             </Link>
@@ -204,7 +204,7 @@ export default function AboutPage() {
               className="group relative inline-flex items-center px-8 py-4 bg-white border-2 border-black text-black rounded-xl font-black uppercase tracking-[0.3em] text-[9px] overflow-hidden transition-all duration-500 hover:scale-105"
             >
               <span className="relative z-10">
-                Secure Inquiry
+                Contact Us
               </span>
             </Link>
           </div>

@@ -36,37 +36,37 @@ export default function RegisterPage() {
 
     try {
       if (!formData.name || !formData.email || !formData.password || !formData.confirmPassword) {
-        throw new Error('All required archives must be filled.');
+        throw new Error('Please fill in all required fields.');
       }
 
       if (!/\S+@\S+\.\S+/.test(formData.email)) {
-        throw new Error('Identity link (email) is malformed.');
+        throw new Error('Please enter a valid email address.');
       }
 
       if (formData.password.length < 6) {
-        throw new Error('Key length must exceed 6 characters.');
+        throw new Error('Password must be at least 6 characters long.');
       }
 
       if (formData.password !== formData.confirmPassword) {
-        throw new Error('Key synthesis mismatch.');
+        throw new Error('Passwords do not match.');
       }
 
       const result = await register(formData.name, formData.email, formData.password, formData.phone);
 
       if (result.requiresVerification) {
-        setSuccess('Initiation successful. Check your secure vault (email).');
+        setSuccess('Registration successful! Please check your email to verify your account.');
         localStorage.setItem('pendingVerificationEmail', formData.email);
         setTimeout(() => {
           router.push(`/auth/verify-email?email=${encodeURIComponent(formData.email)}`);
         }, 2000);
       } else {
-        setSuccess('Curation access granted. Entering collective...');
+        setSuccess('Account created successfully! Logging you in...');
         setTimeout(() => {
           router.push('/dashboard');
         }, 2000);
       }
     } catch (err: any) {
-      setError(err.message || 'Registration failed. Retrying synthesis...');
+      setError(err.message || 'Registration failed. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -102,8 +102,8 @@ export default function RegisterPage() {
 
             <div className="relative z-10">
               <div className="mb-10 text-center">
-                <h2 className="text-3xl font-black text-white tracking-tighter mb-2 uppercase italic">JOIN THE GUILD</h2>
-                <p className="text-gray-500 font-medium text-xs tracking-[0.2em] uppercase">Begin your journey within the collective</p>
+                <h2 className="text-3xl font-black text-white tracking-tighter mb-2 uppercase italic">CREATE AN ACCOUNT</h2>
+                <p className="text-gray-500 font-medium text-xs tracking-[0.2em] uppercase">Join us to start shopping</p>
               </div>
 
               <form className="space-y-6" onSubmit={handleSubmit}>
@@ -131,7 +131,7 @@ export default function RegisterPage() {
 
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] ml-2">Visionary Name</label>
+                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] ml-2">Full Name</label>
                     <div className="relative group">
                       <User className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-emerald-500 transition-colors" size={16} />
                       <input
@@ -148,7 +148,7 @@ export default function RegisterPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] ml-2">Communication (Phone)</label>
+                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] ml-2">Phone Number</label>
                     <div className="relative group">
                       <Phone className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-emerald-500 transition-colors" size={16} />
                       <input
@@ -164,7 +164,7 @@ export default function RegisterPage() {
                   </div>
 
                   <div className="md:col-span-2 space-y-2">
-                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] ml-2">Identity Link (Email)</label>
+                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] ml-2">Email Address</label>
                     <div className="relative group">
                       <Mail className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-emerald-500 transition-colors" size={16} />
                       <input
@@ -181,7 +181,7 @@ export default function RegisterPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] ml-2">Coded Key (Password)</label>
+                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] ml-2">Password</label>
                     <div className="relative group">
                       <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-emerald-500 transition-colors" size={16} />
                       <input
@@ -198,7 +198,7 @@ export default function RegisterPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] ml-2">Verify Key</label>
+                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] ml-2">Confirm Password</label>
                     <div className="relative group">
                       <ShieldCheck className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-emerald-500 transition-colors" size={16} />
                       <input
@@ -223,32 +223,32 @@ export default function RegisterPage() {
                   {isLoading ? (
                     <div className="flex items-center space-x-3">
                       <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin"></div>
-                      <span>INITIATING...</span>
+                      <span>CREATING ACCOUNT...</span>
                     </div>
                   ) : (
                     <>
-                      <span>CONSTRUCT ACCOUNT</span>
+                      <span>CREATE ACCOUNT</span>
                       <UserPlus size={14} className="group-hover:translate-x-1 transition-transform" />
                     </>
                   )}
                 </button>
 
                 <div className="mt-8 text-center">
-                  <span className="text-[10px] font-black text-gray-600 uppercase tracking-widest">Already established? </span>
-                  <Link href="/auth/login" className="text-[10px] font-black text-white hover:text-emerald-500 uppercase tracking-widest underline underline-offset-8 decoration-emerald-500/30 transition-all">Identify Here</Link>
+                  <span className="text-[10px] font-black text-gray-600 uppercase tracking-widest">Already have an account? </span>
+                  <Link href="/auth/login" className="text-[10px] font-black text-white hover:text-emerald-500 uppercase tracking-widest underline underline-offset-8 decoration-emerald-500/30 transition-all">Login Here</Link>
                 </div>
               </form>
 
               <div className="mt-12 pt-6 border-t border-white/5 text-[9px] text-gray-600 text-center uppercase tracking-[0.2em] leading-relaxed">
-                By initiating access, you align with our <br />
-                <Link href="/terms" className="text-white hover:text-emerald-500 transition-colors">Framework of Engagement</Link> and <Link href="/privacy" className="text-white hover:text-emerald-500 transition-colors">Privacy Synthesis</Link>
+                By creating an account, you agree to our <br />
+                <Link href="/terms" className="text-white hover:text-emerald-500 transition-colors">Terms of Service</Link> and <Link href="/privacy" className="text-white hover:text-emerald-500 transition-colors">Privacy Policy</Link>
               </div>
             </div>
           </div>
 
           {/* Meta Info */}
           <div className="mt-12 text-center opacity-40">
-            <p className="text-[9px] font-black text-gray-600 uppercase tracking-[0.5em]">Global Guild Initiation Protocol v1.2.9</p>
+            <p className="text-[9px] font-black text-gray-600 uppercase tracking-[0.5em]">Secure Registration System</p>
           </div>
         </motion.div>
       </div>

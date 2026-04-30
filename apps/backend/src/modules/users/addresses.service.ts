@@ -10,40 +10,40 @@ export class AddressesService {
         private addressesRepository: Repository<Address>,
     ) { }
 
-    async findAll(userId: number): Promise<Address[]> {
+    async findAll(userId: string): Promise<Address[]> {
         return this.addressesRepository.find({ where: { userId } });
     }
 
-    async findOne(id: number, userId: number): Promise<Address> {
-        const address = await this.addressesRepository.findOne({ where: { id, userId } });
+    async findOne(id: string, userId: string): Promise<Address> {
+        const address = await this.addressesRepository.findOne({ where: { _id: id, userId } as any });
         if (!address) {
             throw new NotFoundException(`Address with ID ${id} not found`);
         }
         return address;
     }
 
-    async create(userId: number, addressData: Partial<Address>): Promise<Address> {
+    async create(userId: string, addressData: Partial<Address>): Promise<Address> {
         // If setting as default, unset other defaults
         if (addressData.isDefault) {
-            await this.addressesRepository.update({ userId }, { isDefault: false });
+            await this.addressesRepository.update({ userId } as any, { isDefault: false });
         }
 
         const address = this.addressesRepository.create({ ...addressData, userId });
         return this.addressesRepository.save(address);
     }
 
-    async update(id: number, userId: number, addressData: Partial<Address>): Promise<Address> {
+    async update(id: string, userId: string, addressData: Partial<Address>): Promise<Address> {
         const address = await this.findOne(id, userId);
 
         if (addressData.isDefault) {
-            await this.addressesRepository.update({ userId }, { isDefault: false });
+            await this.addressesRepository.update({ userId } as any, { isDefault: false });
         }
 
         Object.assign(address, addressData);
         return this.addressesRepository.save(address);
     }
 
-    async remove(id: number, userId: number): Promise<void> {
+    async remove(id: string, userId: string): Promise<void> {
         const address = await this.findOne(id, userId);
         await this.addressesRepository.remove(address);
     }

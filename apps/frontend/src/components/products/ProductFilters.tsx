@@ -79,14 +79,14 @@ export default function ProductFilters({
         {/* Search */}
         <div className="relative">
           <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-4">
-            Catalogue Search
+            Search Products
           </label>
           <div className="relative">
             <input
               type="text"
               value={search}
               onChange={(e) => handleSearch(e.target.value)}
-              placeholder="Find your selection..."
+              placeholder="Search for products..."
               className="w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-xl focus:ring-1 focus:ring-emerald-500 focus:bg-white transition-all text-[13px] font-medium placeholder-gray-300"
             />
           </div>
@@ -104,7 +104,7 @@ export default function ProductFilters({
                 onClick={() => handleCategoryChange('all')}
                 className={`block w-full text-left px-5 py-3.5 rounded-xl text-[12px] font-black uppercase tracking-widest transition-all ${!selectedCategory ? 'bg-emerald-600 text-white shadow-[0_10px_20px_-5px_rgba(5,150,105,0.3)]' : 'text-gray-500 hover:text-emerald-600 hover:bg-emerald-50'}`}
               >
-                Entire Collection
+                All Products
               </button>
               {categories.map((category) => (
                 <button
@@ -125,7 +125,7 @@ export default function ProductFilters({
           {/* Price Range */}
           <div>
             <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-6 flex items-center">
-              Price Points
+              Price Range
               <span className="ml-auto w-8 h-[1px] bg-emerald-200"></span>
             </h3>
             <div className="grid grid-cols-2 gap-4">
@@ -170,7 +170,7 @@ export default function ProductFilters({
                 </div>
               </div>
               <span className="ml-4 text-[11px] font-black uppercase tracking-widest text-emerald-950 group-hover:text-emerald-600 transition-colors">
-                Archive Selection
+                Featured Items
               </span>
             </label>
           </div>
@@ -183,7 +183,7 @@ export default function ProductFilters({
             className="w-full flex items-center justify-center text-[9px] font-black uppercase tracking-[0.4em] text-gray-300 hover:text-emerald-600 transition-all group/clear"
           >
             <X className="w-3 h-3 mr-3 group-hover:rotate-90 transition-transform" />
-            Reset Archive
+            Clear Filters
           </button>
         </div>
       </div>

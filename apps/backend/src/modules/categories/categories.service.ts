@@ -14,20 +14,22 @@ export class CategoriesService {
 
     async findAll() {
         return this.categoryRepository.find({
-            relations: ['products'],
-            order: { createdAt: 'DESC' },
+            order: { createdAt: 'DESC' } as any,
         });
     }
 
-    async findOne(id: number) {
+    async findOne(id: string) {
         const category = await this.categoryRepository.findOne({
-            where: { id },
-            relations: ['products'],
+            where: { _id: id } as any,
         });
 
         if (!category) {
             throw new NotFoundException(`Category with ID ${id} not found`);
         }
+
+        // Manually fetch products if needed
+        const productRepo = this.categoryRepository.manager.getRepository('Product');
+        category.products = await productRepo.find({ where: { categoryId: id } as any });
 
         return category;
     }
@@ -42,7 +44,7 @@ export class CategoriesService {
         return savedCategory;
     }
 
-    async update(id: number, updateCategoryDto: any) {
+    async update(id: string, updateCategoryDto: any) {
         const category = await this.findOne(id);
         Object.assign(category, updateCategoryDto);
         const updated = await this.categoryRepository.save(category);
@@ -52,7 +54,7 @@ export class CategoriesService {
         return updated;
     }
 
-    async remove(id: number) {
+    async remove(id: string) {
         const category = await this.findOne(id);
         await this.categoryRepository.remove(category);
 

@@ -34,21 +34,12 @@ export class ProductsService {
   }
 
   async create(createProductDto: CreateProductDto, images?: Express.Multer.File[]): Promise<any> {
-    console.log('Creating product:', createProductDto);
-    console.log('Images received:', images ? images.length : 0);
-
     const imageUrls: string[] = [];
 
     if (images && images.length > 0) {
-      try {
-        for (const image of images) {
-          const url = await this.cloudinaryService.uploadImage(image);
-          imageUrls.push(url);
-        }
-        console.log('Images uploaded to Cloudinary:', imageUrls);
-      } catch (error) {
-        console.error('Failed to upload images:', error);
-        throw new Error('Failed to upload images to Cloudinary');
+      for (const image of images) {
+        const url = await this.cloudinaryService.uploadImage(image);
+        imageUrls.push(url);
       }
     }
 
@@ -61,24 +52,18 @@ export class ProductsService {
       price: createProductDto.price,
       stock: createProductDto.stock,
       sku: createProductDto.sku,
-      category: createProductDto.categoryId
-        ? { id: createProductDto.categoryId } as any
-        : (createProductDto.category ? await this.getOrCreateCategory(createProductDto.category) : undefined),
-      featured: createProductDto.featured || false,
+      categoryId: createProductDto.categoryId,
+      featured: typeof createProductDto.featured === 'string' ? createProductDto.featured === 'true' : !!createProductDto.featured,
       images: imageUrls,
       descriptionImages: createProductDto.descriptionImages || [],
+      brandId: createProductDto.brandId,
+      upsellIds: createProductDto.upsellIds || [],
+      crossSellIds: createProductDto.crossSellIds || [],
     };
 
-    if (createProductDto.brandId) {
-      productData.brand = { id: createProductDto.brandId } as Brand;
-    }
-
-    if (createProductDto.upsellIds) {
-      productData.upsells = createProductDto.upsellIds.map(id => ({ id } as Product));
-    }
-
-    if (createProductDto.crossSellIds) {
-      productData.crossSells = createProductDto.crossSellIds.map(id => ({ id } as Product));
+    if (!productData.categoryId && createProductDto.category) {
+       const cat = await this.getOrCreateCategory(createProductDto.category);
+       productData.categoryId = cat.id;
     }
 
     const product = this.productRepository.create(productData as Product);
@@ -88,8 +73,8 @@ export class ProductsService {
       for (const vDto of createProductDto.variations) {
         const variation = this.variationRepository.create({
           ...vDto,
-          product: savedProduct,
-          attributeValues: vDto.attributeValueIds ? vDto.attributeValueIds.map(id => ({ id })) : [],
+          productId: savedProduct.id,
+          attributeValueIds: vDto.attributeValueIds || [],
         } as any);
         await this.variationRepository.save(variation);
       }
@@ -101,56 +86,48 @@ export class ProductsService {
     };
   }
 
-  async findAll(filters?: ProductFilterDto): Promise<Product[]> { // UPDATE THIS METHOD
-    const query = this.productRepository.createQueryBuilder('product');
+  async findAll(filters?: ProductFilterDto): Promise<Product[]> {
+    const where: any = {};
 
     if (filters?.category) {
-      query.leftJoin('product.category', 'category')
-        .andWhere('category.name = :category', { category: filters.category });
+       const cat = await this.categoryRepository.findOne({ where: { name: filters.category } });
+       if (cat) where.categoryId = cat.id;
     }
 
     if (filters?.featured !== undefined) {
-      query.andWhere('product.featured = :featured', { featured: filters.featured });
+      where.featured = filters.featured;
     }
 
-    if (filters?.minPrice !== undefined) {
-      query.andWhere('product.price >= :minPrice', { minPrice: filters.minPrice });
-    }
-
-    if (filters?.maxPrice !== undefined) {
-      query.andWhere('product.price <= :maxPrice', { maxPrice: filters.maxPrice });
+    if (filters?.minPrice !== undefined || filters?.maxPrice !== undefined) {
+      where.price = {};
+      if (filters.minPrice !== undefined) where.price.$gte = filters.minPrice;
+      if (filters.maxPrice !== undefined) where.price.$lte = filters.maxPrice;
     }
 
     if (filters?.search) {
-      query.andWhere('(product.name LIKE :search OR product.description LIKE :search)', {
-        search: `%${filters.search}%`,
-      });
+      where.$or = [
+        { name: { $regex: filters.search, $options: 'i' } },
+        { description: { $regex: filters.search, $options: 'i' } }
+      ];
     }
 
-    query.leftJoinAndSelect('product.brand', 'brand');
-    query.leftJoinAndSelect('product.variations', 'variations');
-    query.orderBy('product.createdAt', 'DESC');
+    const products = await this.productRepository.find({
+      where,
+      order: { createdAt: 'DESC' } as any,
+      take: filters?.limit,
+    });
 
-    if (filters?.limit) {
-      query.limit(filters.limit);
+    // Manually join basic info if needed for listings
+    for (const p of products) {
+        if (p.brandId) p.brand = await this.brandRepository.findOne({ where: { _id: p.brandId } as any });
+        p.variations = await this.variationRepository.find({ where: { productId: p.id } });
     }
 
-    return query.getMany();
+    return products;
   }
 
   async findFeaturedProducts(limit?: number): Promise<Product[]> {
-    const query = this.productRepository
-      .createQueryBuilder('product')
-      .leftJoinAndSelect('product.brand', 'brand')
-      .leftJoinAndSelect('product.variations', 'variations')
-      .where('product.featured = :featured', { featured: true })
-      .orderBy('product.createdAt', 'DESC');
-
-    if (limit) {
-      query.limit(limit);
-    }
-
-    return query.getMany();
+    return this.findAll({ featured: true, limit });
   }
 
   async getCategories(): Promise<string[]> {
@@ -158,102 +135,78 @@ export class ProductsService {
     return categories.map(c => c.name);
   }
 
-  async findOne(id: number): Promise<Product> {
+  async findOne(id: string): Promise<Product> {
+    const { ObjectId } = require('mongodb');
+    const objectId = new ObjectId(id);
+
     const product = await this.productRepository.findOne({
-      where: { id },
-      relations: ['brand', 'category', 'variations', 'variations.attributeValues', 'variations.attributeValues.attribute', 'upsells', 'crossSells']
+      where: { _id: objectId } as any,
     });
 
     if (!product) {
       throw new NotFoundException(`Product with ID ${id} not found`);
     }
 
+    // Manual joins for MongoDB
+    if (product.brandId) product.brand = await this.brandRepository.findOne({ where: { _id: new ObjectId(product.brandId) } as any });
+    if (product.categoryId) product.category = await this.categoryRepository.findOne({ where: { _id: new ObjectId(product.categoryId) } as any });
+    product.variations = await this.variationRepository.find({ where: { productId: product.id } });
+    
+    if (product.upsellIds && product.upsellIds.length > 0) {
+        const upIds = product.upsellIds.map((u: string) => new ObjectId(u));
+        product.upsells = await this.productRepository.find({ where: { _id: { $in: upIds } } as any });
+    }
+    
+    if (product.crossSellIds && product.crossSellIds.length > 0) {
+        const crIds = product.crossSellIds.map((c: string) => new ObjectId(c));
+        product.crossSells = await this.productRepository.find({ where: { _id: { $in: crIds } } as any });
+    }
+
     return product;
   }
 
-  async update(id: number, updateProductDto: any, images?: Express.Multer.File[]): Promise<Product> {
+  async update(id: string, updateProductDto: any, images?: Express.Multer.File[]): Promise<Product> {
     const product = await this.findOne(id);
-
     const imageUrls: string[] = product.images || [];
 
     if (images && images.length > 0) {
-      try {
-        for (const image of images) {
-          const url = await this.cloudinaryService.uploadImage(image);
-          imageUrls.push(url);
-        }
-        console.log('New images uploaded to Cloudinary:', imageUrls);
-      } catch (error) {
-        console.error('Failed to upload new images:', error);
-        throw new Error('Failed to upload new images to Cloudinary');
-      }
+       for (const image of images) {
+         const url = await this.cloudinaryService.uploadImage(image);
+         imageUrls.push(url);
+       }
     }
 
     const updateData: any = { ...updateProductDto };
 
     if (updateProductDto.category) {
-      updateData.category = await this.getOrCreateCategory(updateProductDto.category);
+      const cat = await this.getOrCreateCategory(updateProductDto.category);
+      updateData.categoryId = cat.id;
     }
 
-    // Handle types
-    if (updateProductDto.price !== undefined) {
-      const p = parseFloat(updateProductDto.price);
-      updateData.price = isNaN(p) ? 0 : p;
-    }
-    if (updateProductDto.stock !== undefined) {
-      const s = parseInt(updateProductDto.stock);
-      updateData.stock = isNaN(s) ? 0 : s;
-    }
-
-    if (updateProductDto.shippingPolicy !== undefined) {
-      updateData.shippingPolicy = updateProductDto.shippingPolicy;
-    }
-
-    if (updateProductDto.returnPolicy !== undefined) {
-      updateData.returnPolicy = updateProductDto.returnPolicy;
-    }
-
-    if (updateProductDto.brandId) {
-      updateData.brand = { id: updateProductDto.brandId };
-    }
-
-    if (updateProductDto.upsellIds) {
-      updateData.upsells = updateProductDto.upsellIds.map(id => ({ id } as Product));
-    }
-
-    if (updateProductDto.crossSellIds) {
-      updateData.crossSells = updateProductDto.crossSellIds.map(id => ({ id } as Product));
-    }
-
+    if (updateProductDto.price !== undefined) updateData.price = parseFloat(updateProductDto.price);
+    if (updateProductDto.stock !== undefined) updateData.stock = parseInt(updateProductDto.stock);
+    
     updateData.images = imageUrls;
 
-    if (updateProductDto.categoryId !== undefined) {
-      updateData.category = updateProductDto.categoryId ? { id: updateProductDto.categoryId } : null;
-    }
-
-    if (updateProductDto.descriptionImages !== undefined) {
-      updateData.descriptionImages = updateProductDto.descriptionImages;
-    }
-
-    // Variations handling for update
-    if (updateProductDto.variations) {
-      await this.variationRepository.delete({ product: { id } });
-      for (const vDto of updateProductDto.variations) {
+    if (updateData.variations) {
+      await this.variationRepository.delete({ productId: id } as any);
+      for (const vDto of updateData.variations) {
         const variation = this.variationRepository.create({
           ...vDto,
-          product: { id } as Product,
-          attributeValues: vDto.attributeValueIds ? vDto.attributeValueIds.map(id => ({ id })) : [],
+          productId: id,
+          attributeValueIds: vDto.attributeValueIds || [],
         } as any);
         await this.variationRepository.save(variation);
       }
       delete updateData.variations;
     }
 
-    await this.productRepository.save({ id, ...updateData });
+    await this.productRepository.update(id, updateData);
     return this.findOne(id);
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: string): Promise<void> {
     await this.productRepository.delete(id);
+    await this.variationRepository.delete({ productId: id } as any);
   }
 }

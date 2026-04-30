@@ -76,7 +76,7 @@ const getRandomPolicy = (policies: string[], seed: number) => {
 export default function ProductDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const id = parseInt(params.id as string);
+  const id = params.id as string;
 
   const [product, setProduct] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
@@ -124,7 +124,7 @@ export default function ProductDetailPage() {
       <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="w-12 h-12 animate-spin text-emerald-600" />
-          <p className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400">Authenticating Product Dossier</p>
+          <p className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400">Loading Product Details</p>
         </div>
       </div>
     );
@@ -135,9 +135,9 @@ export default function ProductDetailPage() {
       <div className="min-h-screen flex items-center justify-center font-plus-jakarta-sans bg-white">
         <div className="text-center">
           <Package className="w-16 h-16 text-gray-100 mx-auto mb-6" />
-          <h1 className="text-3xl font-black text-gray-900 mb-4 tracking-tighter">Selection Missing</h1>
+          <h1 className="text-3xl font-black text-gray-900 mb-4 tracking-tighter">Product Not Found</h1>
           <button onClick={() => router.push('/products')} className="px-8 py-3 bg-black text-white rounded-full text-[10px] font-black uppercase tracking-[0.3em] hover:bg-emerald-600 transition-all">
-            Return to Collection
+            Back to Shop
           </button>
         </div>
       </div>
@@ -172,7 +172,7 @@ export default function ProductDetailPage() {
           className="group flex items-center text-[10px] font-black uppercase tracking-[0.4em] text-gray-400 hover:text-emerald-600 mb-6 transition-all"
         >
           <ArrowLeft className="w-4 h-4 mr-3 group-hover:-translate-x-2 transition-transform" />
-          The Collection
+          Back to Products
         </button>
 
         <ProductDetail product={product as any} />
@@ -194,7 +194,7 @@ export default function ProductDetailPage() {
             className={`flex items-center gap-3 pb-6 text-xs font-black uppercase tracking-[0.3em] transition-all relative ${activeTab === 'reviews' ? 'text-emerald-600' : 'text-gray-400 hover:text-gray-600'}`}
           >
             <MessageSquare size={16} />
-            Testimony & Reviews
+            Reviews & Feedback
             {activeTab === 'reviews' && (
               <div className="absolute bottom-0 left-0 w-full h-1 bg-emerald-600 rounded-full animate-in fade-in slide-in-from-bottom-1 duration-300"></div>
             )}
@@ -230,7 +230,7 @@ export default function ProductDetailPage() {
               </div>
               <div
                 className="prose prose-emerald max-w-none text-emerald-900/70 font-medium leading-[2] text-base md:text-lg rich-text-content"
-                dangerouslySetInnerHTML={{ __html: product.longDescription || product.description || "No extended dossier available for this selection." }}
+                dangerouslySetInnerHTML={{ __html: product.longDescription || product.description || "No additional details available for this product." }}
               />
 
               {/* Description Images Gallery */}
@@ -239,7 +239,7 @@ export default function ProductDetailPage() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <span className="w-2 h-2 bg-emerald-600 rounded-full animate-pulse"></span>
-                      <h3 className="text-xl font-black text-emerald-900 tracking-tight uppercase tracking-[0.2em] text-[10px]">Visual Dossier</h3>
+                      <h3 className="text-xl font-black text-emerald-900 tracking-tight uppercase tracking-[0.2em] text-[10px]">Product Gallery</h3>
                     </div>
                     <div className="flex gap-2">
                       <button
@@ -345,7 +345,7 @@ export default function ProductDetailPage() {
                   </div>
                 ) : reviews.length === 0 ? (
                   <div className="py-24 text-center bg-gray-50/30 rounded-[3rem] border-2 border-dashed border-gray-100">
-                    <span className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-300">Testimony Archive Empty</span>
+                    <span className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-300">No Reviews Yet</span>
                   </div>
                 ) : (
                   <ReviewList reviews={reviews} />
@@ -361,13 +361,13 @@ export default function ProductDetailPage() {
                   <div className="sticky top-8 p-12 text-center bg-gray-900 text-white rounded-[2.5rem] shadow-2xl overflow-hidden relative">
                     <div className="absolute top-0 left-0 w-full h-1 bg-emerald-500"></div>
                     <Star className="w-10 h-10 text-emerald-500 mx-auto mb-8 opacity-50" />
-                    <h3 className="text-xl font-black mb-4 uppercase tracking-[0.2em]">Join Consensus</h3>
-                    <p className="text-white/40 text-[10px] mb-10 font-bold uppercase tracking-widest leading-loose">Verify your acquisition to contribute premium testimony.</p>
+                    <h3 className="text-xl font-black mb-4 uppercase tracking-[0.2em]">Share Your Experience</h3>
+                    <p className="text-white/40 text-[10px] mb-10 font-bold uppercase tracking-widest leading-loose">Log in to write a review about this product.</p>
                     <button
                       onClick={() => router.push(`/auth/login?redirect=/products/${id}`)}
                       className="w-full py-4 bg-white text-black rounded-2xl font-black uppercase tracking-[0.2em] text-[10px] hover:bg-emerald-500 hover:text-white transition-all shadow-lg"
                     >
-                      Authenticate
+                      Log In
                     </button>
                   </div>
                 )}

@@ -161,7 +161,7 @@ export default function HomePage() {
         <div className="container mx-auto px-6 md:px-12">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-10">
             <div className="relative">
-              <span className="absolute -top-10 left-0 text-[10px] font-black uppercase tracking-[0.6em] text-emerald-600/40">Archive Selection</span>
+              <span className="absolute -top-10 left-0 text-[10px] font-black uppercase tracking-[0.6em] text-emerald-600/40">Our Categories</span>
               <div className="flex items-end gap-3">
                 <h2 className="text-4xl md:text-5xl font-black font-plus-jakarta-sans tracking-tighter text-black leading-tight">
                   Shop<br />
@@ -173,10 +173,10 @@ export default function HomePage() {
 
             <div className="max-w-md md:text-right">
               <p className="text-gray-400 text-xs md:text-sm font-medium leading-relaxed mb-6 md:ml-auto">
-                Discover our meticulously curated collections, ranging from avant-garde horology to next-generation tech essentials.
+                Discover our handpicked collections, ranging from luxury watches to the latest tech essentials.
               </p>
               <Link href="/products" className="group inline-flex items-center text-[10px] font-black uppercase tracking-[0.3em] text-black border-b-2 border-black/10 pb-1 hover:border-emerald-500 transition-all">
-                The Full Index <ArrowRight size={14} className="ml-2 group-hover:translate-x-2 transition-transform" />
+                View All Products <ArrowRight size={14} className="ml-2 group-hover:translate-x-2 transition-transform" />
               </Link>
             </div>
           </div>
@@ -228,7 +228,7 @@ export default function HomePage() {
           {/* Section Header - Editorial Style */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-20 gap-10">
             <div className="relative">
-              <span className="absolute -top-10 left-0 text-[10px] font-black uppercase tracking-[0.6em] text-emerald-600/40">Exclusive Selection</span>
+              <span className="absolute -top-10 left-0 text-[10px] font-black uppercase tracking-[0.6em] text-emerald-600/40">Featured Items</span>
               <div className="flex items-end gap-3">
                 <h2 className="text-4xl md:text-5xl font-black font-plus-jakarta-sans tracking-tighter text-black leading-tight">
                   Featured<br />
@@ -240,10 +240,10 @@ export default function HomePage() {
 
             <div className="max-w-md md:text-right">
               <p className="text-gray-400 text-xs md:text-sm font-medium leading-relaxed mb-6 md:ml-auto">
-                Explore our handpicked curation of exceptional pieces, chosen for their unparalleled craft and timeless design.
+                Explore our top choice of exceptional products, chosen for their quality and timeless design.
               </p>
               <Link href="/products" className="group inline-flex items-center text-[10px] font-black uppercase tracking-[0.3em] text-black border-b-2 border-black/10 pb-1 hover:border-emerald-500 transition-all font-bold">
-                View All Creations <ArrowRight size={14} className="ml-2 group-hover:translate-x-2 transition-transform" />
+                Show All Products <ArrowRight size={14} className="ml-2 group-hover:translate-x-2 transition-transform" />
               </Link>
             </div>
           </div>
@@ -320,7 +320,7 @@ export default function HomePage() {
       >
         <div className="max-w-[1440px] mx-auto px-6 relative z-10 text-center">
           <div className="max-w-3xl mx-auto">
-            <span className="text-emerald-600 font-black uppercase tracking-[0.4em] text-[10px] mb-6 block">Need Assistance?</span>
+            <span className="text-emerald-600 font-black uppercase tracking-[0.4em] text-[10px] mb-6 block">Need Help?</span>
             <h2 className="text-4xl md:text-[4.5rem] font-extrabold font-plus-jakarta-sans tracking-tighter mb-8 text-black leading-[0.9]">Get in Touch</h2>
             <p className="text-gray-500 text-lg mb-14 font-medium leading-relaxed">Have questions about our products or need technical support? Our team is here to help you find the perfect luxury timepiece.</p>
 

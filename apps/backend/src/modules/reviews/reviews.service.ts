@@ -13,32 +13,44 @@ export class ReviewService {
         private adminService: AdminService,
     ) { }
 
-    async create(userId: number, createReviewDto: CreateReviewDto): Promise<Review> {
-        const review = this.reviewRepository.create({
-            ...createReviewDto,
+    async create(userId: string, createReviewDto: CreateReviewDto): Promise<Review> {
+        const review = (this.reviewRepository.create({
+            rating: createReviewDto.rating,
+            comment: createReviewDto.comment,
+            productId: createReviewDto.productId,
             userId,
-        });
+        } as any) as unknown) as Review;
         const savedReview = await this.reviewRepository.save(review);
-
-        // Trigger real-time analytics update
         this.adminService.notifyAnalyticsUpdate();
-
         return savedReview;
     }
 
-    async findByProduct(productId: number): Promise<Review[]> {
-        return await this.reviewRepository.find({
-            where: { productId },
-            relations: ['user'],
-            order: { createdAt: 'DESC' },
+    async findByProduct(productId: string): Promise<Review[]> {
+        const reviews = await this.reviewRepository.find({
+            where: { productId } as any,
+            order: { createdAt: 'DESC' } as any,
         });
+
+        const userRepo = this.reviewRepository.manager.getRepository('User');
+        for (const r of reviews) {
+            r.user = await userRepo.findOne({ where: { _id: r.userId } as any });
+        }
+        return reviews;
     }
 
     async findAll(): Promise<Review[]> {
-        return await this.reviewRepository.find({
-            relations: ['user', 'product'],
-            order: { createdAt: 'DESC' },
+        const reviews = await this.reviewRepository.find({
+            order: { createdAt: 'DESC' } as any,
         });
+
+        const userRepo = this.reviewRepository.manager.getRepository('User');
+        const productRepo = this.reviewRepository.manager.getRepository('Product');
+
+        for (const r of reviews) {
+            r.user = await userRepo.findOne({ where: { _id: r.userId } as any });
+            r.product = await productRepo.findOne({ where: { _id: r.productId } as any });
+        }
+        return reviews;
     }
 
     async getReviewStats() {

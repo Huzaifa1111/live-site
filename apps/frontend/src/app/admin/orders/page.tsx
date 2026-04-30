@@ -21,7 +21,7 @@ import {
 import Link from 'next/link';
 
 interface Order {
-  id: number;
+  id: string;
   orderNumber: string;
   userId: number;
   total: number;
@@ -67,7 +67,7 @@ export default function AdminOrdersPage() {
     }
   };
 
-  const handleStatusChange = async (id: number, status: string) => {
+  const handleStatusChange = async (id: string, status: string) => {
     try {
       await ordersService.updateOrderStatus(id, status);
       setOrders(prev => prev.map(o => o.id === id ? { ...o, status } : o));
@@ -95,8 +95,8 @@ export default function AdminOrdersPage() {
       case 'delivered': return { color: 'text-emerald-500', bg: 'bg-emerald-50', border: 'border-emerald-100', text: 'Delivered', icon: CheckCircle };
       case 'shipped': return { color: 'text-black', bg: 'bg-gray-50', border: 'border-gray-200', text: 'In Transit', icon: Truck };
       case 'processing': return { color: 'text-gray-600', bg: 'bg-gray-50', border: 'border-gray-100', text: 'Processing', icon: Clock };
-      case 'pending': return { color: 'text-orange-500', bg: 'bg-orange-50', border: 'border-orange-100', text: 'Awaiting', icon: AlertTriangle };
-      case 'cancelled': return { color: 'text-red-500', bg: 'bg-red-50', border: 'border-red-100', text: 'Terminated', icon: AlertTriangle };
+      case 'pending': return { color: 'text-orange-500', bg: 'bg-orange-50', border: 'border-orange-100', text: 'Pending', icon: AlertTriangle };
+      case 'cancelled': return { color: 'text-red-500', bg: 'bg-red-50', border: 'border-red-100', text: 'Cancelled', icon: AlertTriangle };
       default: return { color: 'text-gray-400', bg: 'bg-gray-50', border: 'border-gray-100', text: status, icon: Clock };
     }
   };
@@ -127,20 +127,20 @@ export default function AdminOrdersPage() {
         <div className="relative z-10">
           <div className="flex items-center gap-3 mb-6">
             <span className="w-6 h-[1.5px] bg-emerald-500" />
-            <span className="text-[10px] font-black text-emerald-400 uppercase tracking-[0.3em]">Fulfillment Protocol</span>
+            <span className="text-[10px] font-black text-emerald-400 uppercase tracking-[0.3em]">Order Management</span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-black tracking-tighter leading-none mb-3">Acquisitions Ledger</h1>
-          <p className="text-gray-400 font-medium tracking-wide max-w-lg text-sm md:text-base">Overseeing global acquisitions, financial settlements, and logistics fulfillment.</p>
+          <h1 className="text-4xl md:text-5xl font-black tracking-tighter leading-none mb-3">Order History</h1>
+          <p className="text-gray-400 font-medium tracking-wide max-w-lg text-sm md:text-base">Manage your store's orders, payments, and shipping status.</p>
         </div>
       </motion.div>
 
       {/* Metrics Ledger */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {[
-          { title: 'Logistics Volume', value: orders.length, icon: ShoppingBag, desc: 'Total acquisitions' },
-          { title: 'Gross Settlement', value: `$${totalRevenue.toLocaleString()}`, icon: DollarSign, desc: 'Financial valuation' },
-          { title: 'Pending Dispatch', value: pendingOrders, icon: Clock, desc: 'Awaiting fulfillment' },
-          { title: 'Fulfillment Success', value: completedOrders, icon: CheckCircle, desc: 'Orders archived' },
+          { title: 'Total Orders', value: orders.length, icon: ShoppingBag, desc: 'All store orders' },
+          { title: 'Total Sales', value: `$${totalRevenue.toLocaleString()}`, icon: DollarSign, desc: 'Total revenue' },
+          { title: 'Pending Orders', value: pendingOrders, icon: Clock, desc: 'Not yet shipped' },
+          { title: 'Delivered', value: completedOrders, icon: CheckCircle, desc: 'Completed orders' },
         ].map((stat, index) => (
           <motion.div key={index} variants={itemVariants} whileHover={{ y: -5 }}>
             <div className="bg-white rounded-[2rem] p-7 border border-gray-100 shadow-sm relative overflow-hidden group">
@@ -165,7 +165,7 @@ export default function AdminOrdersPage() {
             <Search className="absolute left-5 top-1/2 transform -translate-y-1/2 text-emerald-500/30 w-4 h-4" />
             <input
               type="text"
-              placeholder="Search acquisitions by ID or customer..."
+              placeholder="Search orders by ID or customer..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-12 pr-6 h-14 bg-gray-50/50 border border-gray-100 rounded-xl focus:bg-white focus:border-emerald-100 focus:outline-none transition-all font-medium text-sm tracking-wide placeholder:text-gray-300"
@@ -178,35 +178,35 @@ export default function AdminOrdersPage() {
               onChange={(e) => setFilterStatus(e.target.value)}
               className="h-14 px-6 bg-gray-50 border border-gray-100 rounded-xl focus:bg-white focus:border-emerald-100 focus:outline-none font-black text-[9px] uppercase tracking-widest text-black cursor-pointer w-full sm:w-[180px]"
             >
-              <option value="all">Filter: Global</option>
-              <option value="pending">Awaiting</option>
+              <option value="all">Role: All Orders</option>
+              <option value="pending">Pending</option>
               <option value="processing">Processing</option>
               <option value="shipped">In Transit</option>
               <option value="delivered">Delivered</option>
-              <option value="cancelled">Terminated</option>
+              <option value="cancelled">Cancelled</option>
             </select>
           </div>
         </div>
 
-        {/* Acquisitions Ledger */}
+        {/* Order List */}
         <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden p-2">
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-50">
               <thead>
                 <tr className="bg-gray-50/20">
                   <th className="px-6 py-5 text-left text-[9px] font-black uppercase tracking-[0.2em] text-gray-400">Order ID</th>
-                  <th className="px-6 py-5 text-left text-[9px] font-black uppercase tracking-[0.2em] text-gray-400">Client Entry</th>
-                  <th className="px-6 py-5 text-left text-[9px] font-black uppercase tracking-[0.2em] text-gray-400">Registry Date</th>
-                  <th className="px-6 py-5 text-left text-[9px] font-black uppercase tracking-[0.2em] text-gray-400">Valuation</th>
-                  <th className="px-6 py-5 text-left text-[9px] font-black uppercase tracking-[0.2em] text-gray-400">Fulfillment</th>
-                  <th className="px-6 py-5 text-right text-[9px] font-black uppercase tracking-[0.2em] text-gray-400">Operations</th>
+                  <th className="px-6 py-5 text-left text-[9px] font-black uppercase tracking-[0.2em] text-gray-400">Customer</th>
+                  <th className="px-6 py-5 text-left text-[9px] font-black uppercase tracking-[0.2em] text-gray-400">Order Date</th>
+                  <th className="px-6 py-5 text-left text-[9px] font-black uppercase tracking-[0.2em] text-gray-400">Total Price</th>
+                  <th className="px-6 py-5 text-left text-[9px] font-black uppercase tracking-[0.2em] text-gray-400">Status</th>
+                  <th className="px-6 py-5 text-right text-[9px] font-black uppercase tracking-[0.2em] text-gray-400">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50/50">
                 {filteredOrders.length === 0 ? (
                   <tr>
                     <td colSpan={6} className="px-6 py-20 text-center">
-                      <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest italic text-center">No acquisitions found in this sector.</p>
+                      <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest italic text-center">No orders found.</p>
                     </td>
                   </tr>
                 ) : (
@@ -250,8 +250,8 @@ export default function AdminOrdersPage() {
                             <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-2 group-hover:translate-x-0">
                               <Link
                                 href={`/admin/orders/${order.id}`}
-                                className="p-2 rounded-lg bg-white text-gray-400 hover:bg-black hover:text-white border border-gray-50 shadow-sm transition-all duration-300"
-                                title="Inspect Entry"
+                                className="p-2 rounded-lg bg-white text-gray-400 hover:bg-black hover:text-white border border-gray-100 shadow-sm transition-all duration-300"
+                                title="View Details"
                               >
                                 <ExternalLink size={14} />
                               </Link>

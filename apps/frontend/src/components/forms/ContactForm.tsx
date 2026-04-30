@@ -47,7 +47,7 @@ export default function ContactForm({ onSubmit }: ContactFormProps) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         <div className="space-y-1.5">
           <label htmlFor="name" className="text-[8px] font-black uppercase tracking-[0.3em] text-emerald-600 ml-0.5">
-            Full Identity
+            Full Name
           </label>
           <div className="relative group">
             <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-emerald-500 transition-colors pointer-events-none">
@@ -68,7 +68,7 @@ export default function ContactForm({ onSubmit }: ContactFormProps) {
 
         <div className="space-y-1.5">
           <label htmlFor="email" className="text-[8px] font-black uppercase tracking-[0.3em] text-emerald-600 ml-0.5">
-            Digital Address
+            Email Address
           </label>
           <div className="relative group">
             <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-emerald-500 transition-colors pointer-events-none">
@@ -90,7 +90,7 @@ export default function ContactForm({ onSubmit }: ContactFormProps) {
 
       <div className="space-y-1.5">
         <label htmlFor="subject" className="text-[8px] font-black uppercase tracking-[0.3em] text-emerald-600 ml-0.5">
-          Inquiry Vector
+          Subject
         </label>
         <div className="relative group">
           <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-emerald-500 transition-colors pointer-events-none">
@@ -107,19 +107,19 @@ export default function ContactForm({ onSubmit }: ContactFormProps) {
             onChange={handleChange}
             className="w-full pl-10 pr-8 py-3 bg-gray-50/50 border border-gray-100 rounded-lg focus:bg-white focus:ring-4 focus:ring-emerald-500/5 focus:border-emerald-500 transition-all duration-500 text-[13px] text-black font-bold appearance-none cursor-pointer outline-none"
           >
-            <option value="">Select Vector</option>
-            <option value="General Inquiry">General Liaison</option>
-            <option value="Technical Support">Technical Synthesis</option>
-            <option value="Billing Question">Financial Protocol</option>
-            <option value="Product Feedback">Quality Intelligence</option>
-            <option value="Other">Custom Transmission</option>
+            <option value="">Select Subject</option>
+            <option value="General Inquiry">General Inquiry</option>
+            <option value="Technical Support">Technical Support</option>
+            <option value="Billing Question">Billing Question</option>
+            <option value="Product Feedback">Product Feedback</option>
+            <option value="Other">Other</option>
           </select>
         </div>
       </div>
 
       <div className="space-y-1.5">
         <label htmlFor="message" className="text-[8px] font-black uppercase tracking-[0.3em] text-emerald-600 ml-0.5">
-          Transmission Payload
+          Message
         </label>
         <div className="relative group">
           <div className="absolute left-4 top-5 text-gray-300 group-focus-within:text-emerald-500 transition-colors pointer-events-none">
@@ -134,7 +134,7 @@ export default function ContactForm({ onSubmit }: ContactFormProps) {
             onChange={handleChange}
             minLength={10}
             className="w-full pl-10 pr-4 py-4 bg-gray-50/50 border border-gray-100 rounded-lg focus:bg-white focus:ring-4 focus:ring-emerald-500/5 focus:border-emerald-500 transition-all duration-500 text-[13px] text-black font-bold placeholder:text-gray-300 placeholder:font-medium resize-none outline-none"
-            placeholder="Articulate inquiry... (Encrypted)"
+            placeholder="How can we help you?"
           />
         </div>
       </div>
@@ -148,11 +148,11 @@ export default function ContactForm({ onSubmit }: ContactFormProps) {
           {isSubmitting ? (
             <div className="flex items-center gap-3">
               <div className="animate-spin h-3.5 w-3.5 border-2 border-white/20 border-t-white rounded-full"></div>
-              <span>Transmitting...</span>
+              <span>Sending...</span>
             </div>
           ) : (
             <>
-              <span>Dispatch Transmission</span>
+              <span>Send Message</span>
               <Send className="w-3.5 h-3.5 ml-2.5 transition-transform duration-700 group-hover:translate-x-2 group-hover:-translate-y-1" />
             </>
           )}

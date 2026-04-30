@@ -21,7 +21,7 @@ import Link from 'next/link';
 import { ordersService } from '@/services/orders.service';
 
 interface Order {
-  id: number;
+  id: string;
   orderNumber?: string;
   total: number;
   status: string;
@@ -111,7 +111,7 @@ export default function DashboardPage() {
             className="flex items-center gap-2 mb-6"
           >
             <span className="w-8 h-[2px] bg-emerald-500" />
-            <span className="text-emerald-400 font-bold uppercase tracking-[0.3em] text-xs">Customer Space</span>
+            <span className="text-emerald-400 font-bold uppercase tracking-[0.3em] text-xs">Your Dashboard</span>
           </motion.div>
           <h1 className="text-4xl md:text-6xl font-black mb-6 tracking-tighter leading-[0.9] text-white">
             {greeting}, <br />
@@ -120,7 +120,7 @@ export default function DashboardPage() {
             </span>
           </h1>
           <p className="text-gray-400 text-lg md:text-xl font-medium tracking-wide max-w-lg leading-relaxed">
-            Your personal hub for tracking orders, managing style preferences, and exploring exclusive drops.
+            Your personal hub for tracking orders, managing settings, and exploring new products.
           </p>
         </div>
       </motion.div>
@@ -129,8 +129,8 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {[
           { icon: Package, label: 'Total Orders', value: orders.length, color: 'emerald' },
-          { icon: DollarSign, label: 'Lifetime Spent', value: `$${totalSpent.toLocaleString()}`, color: 'blue' },
-          { icon: Clock, label: 'Active In-transit', value: activeOrders, color: 'amber' }
+          { icon: DollarSign, label: 'Total Spends', value: `$${totalSpent.toLocaleString()}`, color: 'blue' },
+          { icon: Clock, label: 'Active Orders', value: activeOrders, color: 'amber' }
         ].map((stat, i) => (
           <motion.div
             key={i}
@@ -156,7 +156,7 @@ export default function DashboardPage() {
           <div className="flex justify-between items-center mb-10">
             <div>
               <h2 className="text-3xl font-black text-black tracking-tighter mb-1">Latest Order</h2>
-              <p className="text-gray-400 text-sm font-medium tracking-wide">Most recent acquisition</p>
+              <p className="text-gray-400 text-sm font-medium tracking-wide">Most recent purchase</p>
             </div>
             {orders.length > 0 && (
               <Link href="/dashboard/orders" className="p-3 bg-gray-50 rounded-full hover:bg-emerald-50 text-gray-400 hover:text-emerald-600 transition-all">
@@ -173,15 +173,15 @@ export default function DashboardPage() {
                 </div>
                 <div className="flex-1 text-center md:text-left">
                   <span className="inline-block px-3 py-1 bg-white rounded-full text-[10px] font-black uppercase tracking-widest text-gray-400 mb-3 shadow-sm">
-                    {recentOrder.orderNumber || 'PREMIUM ORDER'}
+                    {recentOrder.orderNumber || 'ORDER DETAILS'}
                   </span>
-                  <p className="text-gray-400 text-sm font-medium mb-1">Acquired on</p>
+                  <p className="text-gray-400 text-sm font-medium mb-1">Ordered on</p>
                   <h3 className="font-bold text-gray-900 text-xl tracking-tight">
                     {new Date(recentOrder.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
                   </h3>
                 </div>
                 <div className="text-center md:text-right">
-                  <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-2">Total Value</p>
+                  <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-2">Total Price</p>
                   <span className="block text-3xl font-black text-black tracking-tighter mb-3">${Number(recentOrder.total).toFixed(2)}</span>
                   <span className={`px-5 py-2 rounded-full text-xs font-black uppercase tracking-widest
                         ${recentOrder.status === 'delivered' ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-200' :
@@ -195,11 +195,11 @@ export default function DashboardPage() {
           ) : (
             <div className="text-center py-16 bg-gray-50 rounded-[2rem] border-2 border-dashed border-gray-100">
               <ShoppingBag className="mx-auto h-16 w-16 text-gray-200 mb-6" />
-              <h3 className="text-2xl font-black text-black mb-2">Portfolio Empty</h3>
-              <p className="text-gray-400 mb-8 max-w-xs mx-auto">Enhance your collection by exploring our latest drops.</p>
+              <h3 className="text-2xl font-black text-black mb-2">No orders yet</h3>
+              <p className="text-gray-400 mb-8 max-w-xs mx-auto">Start your collection by exploring our latest products.</p>
               <Link href="/products">
                 <button className="px-10 py-4 bg-emerald-600 text-white rounded-full font-black uppercase tracking-widest text-xs hover:bg-emerald-700 shadow-xl shadow-emerald-200 transition-all">
-                  Shop Drop
+                  Start Shopping
                 </button>
               </Link>
             </div>
@@ -208,12 +208,12 @@ export default function DashboardPage() {
 
         {/* Dynamic Actions Card */}
         <motion.div variants={itemVariants} className="space-y-6">
-          <h2 className="text-2xl font-black text-black tracking-tighter mb-4 px-2">Portfolio Tools</h2>
+          <h2 className="text-2xl font-black text-black tracking-tighter mb-4 px-2">Account Settings</h2>
           <div className="grid grid-cols-1 gap-4">
             {[
-              { label: 'My Profile', desc: 'Secure configuration', icon: User, href: '/dashboard/profile' },
-              { label: 'Addresses', desc: 'Logistic control', icon: MapPin, href: '/dashboard/addresses' },
-              { label: 'Security', desc: 'Privacy protection', icon: Shield, href: '/dashboard/settings' }
+              { label: 'My Profile', desc: 'Manage your information', icon: User, href: '/dashboard/profile' },
+              { label: 'Addresses', desc: 'Manage your shipping addresses', icon: MapPin, href: '/dashboard/addresses' },
+              { label: 'Security', desc: 'Privacy and security settings', icon: Shield, href: '/dashboard/settings' }
             ].map((action, i) => (
               <Link key={i} href={action.href} className="group">
                 <div className="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-500 flex items-center gap-6">
@@ -235,8 +235,8 @@ export default function DashboardPage() {
                   <LogOut size={24} />
                 </div>
                 <div className="text-left">
-                  <h3 className="font-bold text-red-700 uppercase tracking-tight text-sm mb-1">Exit Session</h3>
-                  <p className="text-xs text-red-400 font-medium">Safe disconnection</p>
+                  <h3 className="font-bold text-red-700 uppercase tracking-tight text-sm mb-1">Log Out</h3>
+                  <p className="text-xs text-red-400 font-medium">Securely log out</p>
                 </div>
               </div>
             </button>

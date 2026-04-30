@@ -76,10 +76,10 @@ export default function AdminDashboardPage() {
   }
 
   const stats = [
-    { title: 'Inventory Volume', value: data?.productCount || 0, change: '+12%', icon: Package },
-    { title: 'Client Registry', value: data?.userCount || 0, change: '+5%', icon: Users },
-    { title: 'Acquisition Flow', value: data?.orderCount || 0, change: '+18%', icon: ShoppingCart },
-    { title: 'Gross Valuation', value: `$${Number(data?.totalRevenue || 0).toLocaleString(undefined, { minimumFractionDigits: 0 })}`, change: '+8%', icon: DollarSign }
+    { title: 'Total Products', value: data?.productCount || 0, change: '+12%', icon: Package },
+    { title: 'Total Users', value: data?.userCount || 0, change: '+5%', icon: Users },
+    { title: 'Total Orders', value: data?.orderCount || 0, change: '+18%', icon: ShoppingCart },
+    { title: 'Total Revenue', value: `$${Number(data?.totalRevenue || 0).toLocaleString(undefined, { minimumFractionDigits: 0 })}`, change: '+8%', icon: DollarSign }
   ];
 
   return (
@@ -97,15 +97,15 @@ export default function AdminDashboardPage() {
           <div className="flex items-center gap-5">
             <div className="flex items-center gap-2.5">
               <span className="w-4 h-[1.5px] bg-emerald-500 flex-shrink-0" />
-              <span className="text-[9px] font-black text-emerald-400 uppercase tracking-[0.3em] whitespace-nowrap">Operational Oversight</span>
+              <span className="text-[9px] font-black text-emerald-400 uppercase tracking-[0.3em] whitespace-nowrap">Dashboard Overview</span>
             </div>
             <div className="w-px h-6 bg-white/10 flex-shrink-0" />
-            <h1 className="text-lg md:text-xl font-black tracking-tighter leading-none">Executive Terminal</h1>
-            <p className="hidden md:block text-gray-500 font-medium text-[11px] max-w-sm">Real-time governance of system dynamics, logistics, and client relations.</p>
+            <h1 className="text-lg md:text-xl font-black tracking-tighter leading-none">Admin Panel</h1>
+            <p className="hidden md:block text-gray-500 font-medium text-[11px] max-w-sm">Monitor store performance, orders, and user activity in real-time.</p>
           </div>
           <div className="flex-shrink-0">
             <div className="px-4 py-2 bg-white/5 backdrop-blur-md rounded-lg text-[8px] font-black text-emerald-400 uppercase tracking-widest border border-white/10 whitespace-nowrap">
-              Live Link: Operational
+              System Status: Online
             </div>
           </div>
         </div>
@@ -137,14 +137,14 @@ export default function AdminDashboardPage() {
           <motion.div variants={itemVariants} className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm p-8 group">
             <div className="flex items-center justify-between mb-8">
               <h2 className="text-xl font-black text-black tracking-tighter uppercase tracking-widest flex items-center gap-3">
-                <div className="w-2 h-2 rounded-full bg-emerald-500" /> Operational Control
+                <div className="w-2 h-2 rounded-full bg-emerald-500" /> Quick Actions
               </h2>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {[
-                { href: '/admin/products/create', label: 'New Asset', desc: 'Secure entry', icon: Package },
-                { href: '/admin/orders', label: 'Logistic Flow', desc: 'Dispatches', icon: ShoppingCart },
-                { href: '/admin/users', label: 'Identity Hub', desc: 'Client ledger', icon: Users },
+                { href: '/admin/products/create', label: 'Add Product', desc: 'New product entry', icon: Package },
+                { href: '/admin/orders', label: 'View Orders', desc: 'Order management', icon: ShoppingCart },
+                { href: '/admin/users', label: 'Manage Users', desc: 'User accounts', icon: Users },
               ].map((action) => (
                 <Link key={action.label} href={action.href} className="group/action">
                   <div className="p-5 rounded-2xl bg-gray-50/50 border border-transparent hover:bg-white hover:border-emerald-100 hover:shadow-xl transition-all duration-500">
@@ -161,8 +161,8 @@ export default function AdminDashboardPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {[
-              { title: 'Inbound Comms', value: data?.messageCount || 0, icon: Mail },
-              { title: 'Sentiment Analysis', value: data?.reviewCount || 0, icon: Star }
+              { title: 'New Messages', value: data?.messageCount || 0, icon: Mail },
+              { title: 'New Reviews', value: data?.reviewCount || 0, icon: Star }
             ].map((stat, index) => (
               <motion.div key={index} variants={itemVariants} className="bg-white rounded-[2rem] p-6 border border-gray-100 shadow-sm flex items-center gap-5 group">
                 <div className="w-12 h-12 rounded-xl bg-gray-50 flex items-center justify-center text-emerald-500/40 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-500">
@@ -181,7 +181,7 @@ export default function AdminDashboardPage() {
         <motion.div variants={itemVariants} className="lg:col-span-4 flex flex-col h-full">
           <div className="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-sm flex-1 flex flex-col">
             <h2 className="text-xl font-black text-black tracking-tighter mb-8 flex items-center gap-3">
-              <TrendingUp className="text-emerald-500" size={20} /> Activity Ledger
+              <TrendingUp className="text-emerald-500" size={20} /> Recent Activity
             </h2>
             <div className="space-y-1.5 flex-1 overflow-y-auto custom-scrollbar pr-1 max-h-[400px]">
               {data?.activities && data.activities.length > 0 ? (
@@ -203,14 +203,14 @@ export default function AdminDashboardPage() {
                 ))
               ) : (
                 <div className="text-center py-20 opacity-30">
-                  <p className="text-gray-400 text-[9px] font-black uppercase tracking-widest italic">Ledger Null</p>
+                  <p className="text-gray-400 text-[9px] font-black uppercase tracking-widest italic">No recent activity</p>
                 </div>
               )}
             </div>
 
             <Link href="/admin/analytics" className="mt-8">
               <button className="w-full py-3.5 bg-black text-white text-[9px] font-black uppercase tracking-[0.2em] rounded-xl hover:bg-emerald-600 transition-all duration-300 shadow-lg shadow-gray-100">
-                Full Analytics Engine
+                View Full Analytics
               </button>
             </Link>
           </div>

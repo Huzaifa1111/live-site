@@ -1,9 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column, UpdateDateColumn } from 'typeorm';
+import { Entity, ObjectIdColumn, ObjectId, Column, UpdateDateColumn } from 'typeorm';
 
 @Entity('settings')
 export class Settings {
-    @PrimaryGeneratedColumn()
-    id: number;
+    @ObjectIdColumn()
+    id: string;
 
     @Column({ default: 'My Awesome Store' })
     storeName: string;
@@ -14,7 +14,7 @@ export class Settings {
     @Column({ default: '+1234567890' })
     storePhone: string;
 
-    @Column({ type: 'text', nullable: true })
+    @Column({ nullable: true })
     storeAddress: string;
 
     @Column({ default: 'USD' })
@@ -23,10 +23,10 @@ export class Settings {
     @Column({ default: false })
     maintenanceMode: boolean;
 
-    @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
+    @Column({ default: 0 })
     taxRate: number;
 
-    @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
+    @Column({ default: 0 })
     shippingFee: number;
 
     @UpdateDateColumn()

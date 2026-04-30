@@ -33,14 +33,14 @@ export class CartController {
   @Put(':id')
   async updateCartItem(
     @Req() req,
-    @Param('id') itemId: number,
+    @Param('id') itemId: string,
     @Body() updateCartDto: UpdateCartItemDto,
   ) {
     return await this.cartService.updateCartItem(req.user.id, itemId, updateCartDto);
   }
 
   @Delete(':id')
-  async removeFromCart(@Req() req, @Param('id') itemId: number) {
+  async removeFromCart(@Req() req, @Param('id') itemId: string) {
     return await this.cartService.removeFromCart(req.user.id, itemId);
   }
 

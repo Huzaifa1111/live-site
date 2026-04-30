@@ -48,7 +48,7 @@ export default function SustainabilityPage() {
                     className="group flex items-center text-[10px] font-black uppercase tracking-[0.4em] text-gray-400 hover:text-emerald-600 mb-12 transition-all"
                 >
                     <ArrowLeft size={14} className="mr-3 transition-transform group-hover:-translate-x-1" />
-                    Back to Collection
+                    Back to Shop
                 </button>
 
                 {/* Parallax Hero Section */}
@@ -71,13 +71,13 @@ export default function SustainabilityPage() {
                             transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
                         >
                             <span className="inline-block py-2 px-5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white font-black uppercase tracking-[0.3em] text-[10px] mb-8">
-                                Ethical Curators
+                                Our Commitment
                             </span>
                             <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black text-white tracking-widest leading-tight md:leading-none mb-6 md:mb-8 drop-shadow-2xl uppercase">
                                 ECO <br /> <span className="text-emerald-400">LUXURY</span>
                             </h1>
                             <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto font-medium leading-relaxed drop-shadow-md">
-                                Redefining professional standards through environmental stewardship. Every acquisition is a pledge to the future.
+                                Setting higher standards for environmental care. Every purchase you make helps build a greener future.
                             </p>
                         </motion.div>
                     </div>
@@ -93,9 +93,9 @@ export default function SustainabilityPage() {
                         className="grid grid-cols-1 md:grid-cols-3 gap-8"
                     >
                         {[
-                            { label: "Carbon Neutral", value: "100%", desc: "Integrated Operations", icon: <Globe className="text-emerald-600" size={18} /> },
-                            { label: "Circular Materials", value: "85%", desc: "Recycled Packaging", icon: <Recycle className="text-emerald-600" size={18} /> },
-                            { label: "Reforestation", value: "50k+", desc: "Saplings Planted", icon: <Leaf className="text-emerald-600" size={18} /> },
+                            { label: "Carbon Neutral", value: "100%", desc: "Across Our Entire Team", icon: <Globe className="text-emerald-600" size={18} /> },
+                            { label: "Eco-Packaging", value: "85%", desc: "Recycled Materials", icon: <Recycle className="text-emerald-600" size={18} /> },
+                            { label: "Reforestation", value: "50k+", desc: "Trees Planted", icon: <Leaf className="text-emerald-600" size={18} /> },
                         ].map((stat, i) => (
                             <motion.div
                                 key={i}
@@ -131,7 +131,7 @@ export default function SustainabilityPage() {
                             </div>
                             <div className="space-y-6 text-sm md:text-base text-gray-600 font-medium leading-relaxed max-w-xl">
                                 <p>
-                                    Modern commerce demands a radical shift in perspective. We don't just curate products; we curate legacies. Our "Emerald Commitment" ensures that every item in our collection is vetted for its ecological integrity.
+                                    Modern shopping needs a change in perspective. We don't just sell products; we build a better world. Our "Emerald Commitment" ensures that every item in our collection is carefully checked for its environmental impact.
                                 </p>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6">
                                     <div className="flex gap-4">
@@ -139,7 +139,7 @@ export default function SustainabilityPage() {
                                             <ShieldCheck size={16} className="text-emerald-600" />
                                         </div>
                                         <div>
-                                            <h4 className="font-black text-[10px] uppercase tracking-widest mb-1">Ethical Labor</h4>
+                                            <h4 className="font-black text-[10px] uppercase tracking-widest mb-1">Fair Work</h4>
                                             <p className="text-[10px] text-gray-500">Fair wages & safety.</p>
                                         </div>
                                     </div>
@@ -148,8 +148,8 @@ export default function SustainabilityPage() {
                                             <Sparkles size={16} className="text-emerald-600" />
                                         </div>
                                         <div>
-                                            <h4 className="font-black text-[10px] uppercase tracking-widest mb-1">Purity Grade</h4>
-                                            <p className="text-[10px] text-gray-500">Chemical-free fabrics.</p>
+                                            <h4 className="font-black text-[10px] uppercase tracking-widest mb-1">Safe Materials</h4>
+                                            <p className="text-[10px] text-gray-500">Soft, chemical-free fabrics.</p>
                                         </div>
                                     </div>
                                 </div>
@@ -180,18 +180,18 @@ export default function SustainabilityPage() {
                 <section className="mb-32">
                     <div className="text-center max-w-3xl mx-auto mb-20 space-y-4">
                         <span className="text-emerald-600 font-black uppercase tracking-[0.5em] text-[11px]">The Pillars</span>
-                        <h2 className="text-3xl md:text-4xl font-black tracking-tight text-gray-900 leading-none">Designed for <span className="text-emerald-800">Prosperity</span></h2>
+                        <h2 className="text-3xl md:text-4xl font-black tracking-tight text-gray-900 leading-none">Designed for <span className="text-emerald-800">the Future</span></h2>
                         <div className="h-1 w-20 bg-emerald-600 mx-auto rounded-full"></div>
                     </div>
 
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {[
-                            { icon: <Leaf size={20} />, title: "Noble Materials", desc: "Organic cottons, recycled polyesters, and responsibly sourced luxury woods." },
-                            { icon: <Globe size={20} />, title: "Circular Ethos", desc: "Refined programs to repair, resell, and recycle every artifact we sell." },
-                            { icon: <Wind size={20} />, title: "Renewable Power", desc: "Global logistics hubs powered by 100% renewable solar and wind energy." },
-                            { icon: <Droplets size={20} />, title: "Aquatic Stewardship", desc: "Advanced closed-loop dyeing processes that conserve premium water sources." },
-                            { icon: <Heart size={20} />, title: "Artisan Welfare", desc: "Direct safety protocols and premium living wages for our master makers." },
-                            { icon: <Sparkles size={20} />, title: "Absolute Clarity", desc: "Full cryptographic visibility into our premium supply chain and impact." },
+                            { icon: <Leaf size={20} />, title: "Eco-Friendly Materials", desc: "Organic cotton, recycled polyester, and responsibly sourced wood." },
+                            { icon: <Globe size={20} />, title: "Re-use & Recycle", desc: "Programs to help you repair, resell, or recycle anything you buy from us." },
+                            { icon: <Wind size={20} />, title: "Green Energy", desc: "Our warehouses and offices are powered by 100% renewable solar and wind energy." },
+                            { icon: <Droplets size={20} />, title: "Water Saving", desc: "Advanced dyeing processes that save huge amounts of water." },
+                            { icon: <Heart size={20} />, title: "Support for Makers", desc: "Safe working conditions and fair pay for the people who make our products." },
+                            { icon: <Sparkles size={20} />, title: "Full Transparency", desc: "Clear information on how we make our products and their total impact." },
                         ].map((item, i) => (
                             <motion.div
                                 key={i}
@@ -230,18 +230,18 @@ export default function SustainabilityPage() {
                     <div className="absolute inset-0 bg-emerald-950/60 backdrop-blur-[2px] z-0"></div>
 
                     <div className="relative z-10 max-w-2xl mx-auto space-y-8">
-                        <span className="text-[10px] font-black uppercase tracking-[0.5em] text-emerald-400">Collaborate with Us</span>
+                        <span className="text-[10px] font-black uppercase tracking-[0.5em] text-emerald-400">Get Involved</span>
                         <h2 className="text-3xl md:text-6xl font-black tracking-tighter leading-tight md:leading-none uppercase px-4">
-                            ACQUIRE <br /> CONSCIOUSLY
+                            SHOP WITH <br /> CARE
                         </h2>
                         <p className="text-base md:text-lg text-emerald-100/80 font-medium max-w-lg mx-auto leading-relaxed">
-                            Join our guild of responsible collectors. Every piece you acquire contributes to a restorative global economy.
+                            Join thousands of customers who care about the planet. Every order you place helps support a better future.
                         </p>
                         <Link
                             href="/products"
                             className="inline-flex items-center px-10 py-6 bg-white text-emerald-900 rounded-2xl font-black uppercase tracking-[0.3em] text-[11px] hover:bg-emerald-400 hover:text-emerald-950 transition-all duration-300 shadow-xl active:scale-95"
                         >
-                            Explore Collection <ArrowRight size={16} className="ml-4" />
+                            Explore All Products <ArrowRight size={16} className="ml-4" />
                         </Link>
                     </div>
                 </motion.section>

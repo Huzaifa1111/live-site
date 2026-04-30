@@ -81,14 +81,14 @@ function ProductsContent() {
           <div className="flex items-center gap-6 mb-8 text-[11px] font-black uppercase tracking-[0.6em] text-emerald-600/50">
             <span>The Collection</span>
             <span className="w-12 h-px bg-emerald-100" />
-            <span>Archive 2026</span>
+            <span>Collection 2026</span>
           </div>
 
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-10">
             <h1 className="text-5xl md:text-7xl font-black tracking-tighter leading-[0.9] max-w-2xl">
               Discover Our<br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-black">
-                Curated Selection
+                Top Picks
               </span>
             </h1>
             <p className="text-gray-400 text-sm md:text-base font-medium leading-relaxed max-w-sm">
@@ -118,20 +118,20 @@ function ProductsContent() {
                   <h2 className="text-2xl font-black tracking-tighter text-black uppercase mb-1">
                     {selectedCategory
                       ? (categories.find(c => c.id.toString() === selectedCategory.toString())?.name || selectedCategory)
-                      : 'Entire Collection'}
+                      : 'All Products'}
                   </h2>
                   <div className="flex items-center gap-3">
                     <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest bg-emerald-50 px-3 py-1 rounded-full">
-                      {products.length} {products.length === 1 ? 'Archetype' : 'Archetypes'}
+                      {products.length} {products.length === 1 ? 'Product' : 'Products'}
                     </span>
                     <span className="w-1 h-1 bg-gray-200 rounded-full"></span>
-                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Digital Showroom</span>
+                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Our Store</span>
                   </div>
                 </div>
 
                 {filters.featured && (
                   <div className="inline-flex items-center px-6 py-2.5 rounded-full bg-emerald-600 text-white text-[9px] font-black uppercase tracking-[0.3em] shadow-[0_10px_20px_-5px_rgba(5,150,105,0.4)] animate-pulse">
-                    Archive Signature Pieces
+                    Our Best Products
                   </div>
                 )}
               </div>
@@ -140,7 +140,7 @@ function ProductsContent() {
             <ProductList
               products={products}
               loading={loading}
-              emptyMessage={filters.search ? 'Zero matches found in our records.' : 'This collection segment is currently empty.'}
+              emptyMessage={filters.search ? 'No products found for your search.' : 'This collection is currently empty.'}
             />
           </div>
         </div>
@@ -153,7 +153,7 @@ export default function ProductsPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen flex items-center justify-center bg-white">
-        <div className="text-gray-400 font-bold animate-pulse uppercase tracking-widest text-xs">Loading Showroom...</div>
+        <div className="text-gray-400 font-bold animate-pulse uppercase tracking-widest text-xs">Loading Products...</div>
       </div>
     }>
       <ProductsContent />

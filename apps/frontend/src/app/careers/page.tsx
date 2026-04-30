@@ -37,7 +37,7 @@ export default function CareersPage() {
                     className="group flex items-center text-[10px] font-black uppercase tracking-[0.4em] text-gray-400 hover:text-emerald-600 mb-12 transition-all"
                 >
                     <ArrowLeft size={14} className="mr-3 transition-transform group-hover:-translate-x-1" />
-                    Back to Gallery
+                    Back to Shop
                 </button>
 
                 {/* Parallax Hero Section */}
@@ -60,13 +60,13 @@ export default function CareersPage() {
                             transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
                         >
                             <span className="inline-block py-2 px-5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white font-black uppercase tracking-[0.3em] text-[10px] mb-8">
-                                Join the Collective
+                                Join Our Team
                             </span>
                             <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black text-white tracking-widest leading-tight md:leading-none mb-6 md:mb-8 drop-shadow-2xl uppercase">
-                                ARCHITECT THE <br /><span className="text-emerald-400">FUTURE</span>
+                                BUILD THE <br /><span className="text-emerald-400">FUTURE</span>
                             </h1>
                             <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto font-medium leading-relaxed drop-shadow-md">
-                                We are seeking relentless visionaries to synthesize the next generation of global commerce.
+                                We are looking for talented people to help build the next generation of online shopping.
                             </p>
                         </motion.div>
                     </div>
@@ -78,15 +78,15 @@ export default function CareersPage() {
                         <span className="text-emerald-600 font-black uppercase tracking-[0.5em] text-[11px]">Our Philosophy</span>
                         <h2 className="text-3xl md:text-5xl font-black tracking-tighter text-gray-900 leading-[1.1] md:leading-none italic">
                             Beyond conventional <br />
-                            <span className="text-emerald-800 opacity-60 not-italic">Professionalism.</span>
+                            <span className="text-emerald-800 opacity-60 not-italic">Work Culture.</span>
                         </h2>
                     </div>
 
                     <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
                         {[
-                            { icon: <Globe size={20} />, title: "Remote Synthesis", desc: "Collaborate from any meridian. We value crystalline output over arbitrary presence." },
-                            { icon: <Zap size={20} />, title: "High Velocity", desc: "Small, autonomous cells. Your engineered solutions impact millions instantaneously." },
-                            { icon: <Heart size={20} />, title: "Holistic Vitality", desc: "Comprehensive care for mind and body. We invest in the human behind the vision." }
+                            { icon: <Globe size={20} />, title: "Remote Work", desc: "Work from anywhere in the world. We value great results over being in an office." },
+                            { icon: <Zap size={20} />, title: "Fast Paced", desc: "Small, autonomous teams. Your work will impact millions of users worldwide." },
+                            { icon: <Heart size={20} />, title: "Health & Wellness", desc: "Comprehensive care for mind and body. We truly care about our people." }
                         ].map((item, i) => (
                             <motion.div
                                 key={i}
@@ -112,18 +112,18 @@ export default function CareersPage() {
                         <div className="grid lg:grid-cols-2 gap-16 items-center">
                             <motion.div {...fadeInUp}>
                                 <h2 className="text-3xl md:text-6xl font-black tracking-tighter mb-8 leading-[1.1] md:leading-none uppercase">
-                                    EQUIPMENT <br />FOR <span className="text-emerald-400">MASTERY</span>
+                                    TOOLS FOR <br /><span className="text-emerald-400">SUCCESS</span>
                                 </h2>
                                 <p className="text-white/60 text-base md:text-lg mb-12 leading-relaxed max-w-md">
-                                    We resolve the mundane details so you can focus on the architectural zenith. Every curator is equipped with superior instruments.
+                                    We take care of the small things so you can focus on your best work. Every team member gets the best equipment.
                                 </p>
 
                                 <div className="grid grid-cols-2 gap-y-6 gap-x-4">
                                     {[
-                                        { icon: <Monitor size={15} />, text: "Flagship M3 Silicon" },
-                                        { icon: <Clock size={15} />, text: "Asynchronous Work" },
-                                        { icon: <Globe size={15} />, text: "Global Workspace Fund" },
-                                        { icon: <Shield size={15} />, text: "Executive Health Plans" },
+                                        { icon: <Monitor size={15} />, text: "Latest MacBook Pro" },
+                                        { icon: <Clock size={15} />, text: "Flexible Hours" },
+                                        { icon: <Globe size={15} />, text: "Remote Work Fund" },
+                                        { icon: <Shield size={15} />, text: "Premium Health Plans" },
                                     ].map((perk, i) => (
                                         <div key={i} className="flex items-center space-x-3">
                                             <div className="text-emerald-400 group-hover:animate-pulse">{perk.icon}</div>
@@ -154,9 +154,9 @@ export default function CareersPage() {
                                                 <div key={i} className={`w-8 h-8 rounded-full border-2 border-white bg-emerald-${100 + i * 100}`}></div>
                                             ))}
                                         </div>
-                                        <span className="font-black text-[10px] uppercase tracking-wider italic">Join the Guild</span>
+                                        <span className="font-black text-[10px] uppercase tracking-wider italic">Join Us</span>
                                     </div>
-                                    <p className="text-[10px] text-gray-500 font-medium leading-relaxed capitalize">A growing collective of intentional innovators.</p>
+                                    <p className="text-[10px] text-gray-500 font-medium leading-relaxed capitalize">A growing team of passionate innovators.</p>
                                 </div>
                             </motion.div>
                         </div>
@@ -167,13 +167,13 @@ export default function CareersPage() {
                 <section className="mb-24 text-center">
                     <motion.div {...fadeInUp} className="max-w-4xl mx-auto space-y-10">
                         <div className="space-y-4">
-                            <span className="text-emerald-600 font-black uppercase tracking-[0.5em] text-[11px]">Synthesize Success</span>
+                            <span className="text-emerald-600 font-black uppercase tracking-[0.5em] text-[11px]">Apply Today</span>
                             <h2 className="text-3xl md:text-7xl font-black tracking-tighter text-gray-900 leading-[1.1] md:leading-none">
-                                JOIN THE <span className="text-emerald-800 opacity-60">EVOLUTION</span>
+                                JOIN OUR <span className="text-emerald-800 opacity-60">GROWING TEAM</span>
                             </h2>
                         </div>
                         <p className="text-base md:text-lg text-gray-500 mb-12 max-w-2xl mx-auto leading-relaxed font-medium">
-                            We are scouting for visionaries who want to architect the future of intentional commerce.
+                            We are looking for people who want to help build the future of online shopping.
                         </p>
 
                         <a

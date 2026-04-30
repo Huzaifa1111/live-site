@@ -37,7 +37,7 @@ export default function PrivacyPolicyPage() {
                     className="group flex items-center text-[10px] font-black uppercase tracking-[0.4em] text-gray-400 hover:text-emerald-600 mb-12 transition-all"
                 >
                     <ArrowLeft size={14} className="mr-3 transition-transform group-hover:-translate-x-1" />
-                    Back to Gallery
+                    Back to Shop
                 </button>
 
                 {/* Parallax Hero Section */}
@@ -66,7 +66,7 @@ export default function PrivacyPolicyPage() {
                                 PRIVACY <br /><span className="text-emerald-400">POLICY</span>
                             </h1>
                             <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto font-medium leading-relaxed drop-shadow-md">
-                                Your data is handled with the same precision and care as our curated artifacts.
+                                Your data is handled with the same care and security as your orders.
                             </p>
                         </motion.div>
                     </div>
@@ -91,7 +91,7 @@ export default function PrivacyPolicyPage() {
                                     <h2 className="text-2xl md:text-3xl font-black tracking-tighter text-gray-900 uppercase">1. Introduction</h2>
                                 </div>
                                 <p className="text-gray-500 leading-relaxed font-medium text-base md:text-lg">
-                                    At E-Store, your privacy is not merely a legal requirement; it is a foundational pillar of our service. We are committed to protecting your personal data and ensuring that your journey within our collective is secure and transparent.
+                                    At E-Store, your privacy is not merely a legal requirement; it is a top priority. We are committed to protecting your personal data and ensuring that your shopping experience is secure and transparent.
                                 </p>
                             </section>
 
@@ -100,14 +100,14 @@ export default function PrivacyPolicyPage() {
                                     <div className="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center">
                                         <Eye size={20} />
                                     </div>
-                                    <h2 className="text-2xl md:text-3xl font-black tracking-tighter text-gray-900 uppercase">2. Collection</h2>
+                                    <h2 className="text-2xl md:text-3xl font-black tracking-tighter text-gray-900 uppercase">2. Data Collection</h2>
                                 </div>
                                 <div className="grid md:grid-cols-2 gap-8 pt-4">
                                     {[
-                                        { title: "Identity", desc: "Names, usernames, and profile identifiers for personalized synthesis." },
-                                        { title: "Contact", desc: "Crystalline delivery pathways including billing and virtual addresses." },
-                                        { title: "Financial", desc: "Securely vaulted payment details for seamless acquisition." },
-                                        { title: "Transaction", desc: "Archives of your curated history and interactive records." },
+                                        { title: "Identity", desc: "Names, usernames, and profile identifiers used to manage your account." },
+                                        { title: "Contact", desc: "Shipping and billing addresses for your orders." },
+                                        { title: "Financial", desc: "Securely stored payment methods for faster checkout." },
+                                        { title: "Transaction", desc: "A record of your past orders and account activity." },
                                     ].map((item, i) => (
                                         <div key={i} className="p-6 rounded-2xl bg-gray-50/50 border border-gray-100 hover:border-emerald-200 transition-all group/item">
                                             <h4 className="font-black text-[11px] uppercase tracking-[0.2em] text-emerald-600 mb-2 group-hover/item:translate-x-1 transition-transform">{item.title} DATA</h4>
@@ -122,10 +122,10 @@ export default function PrivacyPolicyPage() {
                                     <div className="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center">
                                         <Scale size={20} />
                                     </div>
-                                    <h2 className="text-2xl md:text-3xl font-black tracking-tighter text-gray-900 uppercase">3. Synthesis</h2>
+                                    <h2 className="text-2xl md:text-3xl font-black tracking-tighter text-gray-900 uppercase">3. How We Use Your Data</h2>
                                 </div>
                                 <p className="text-gray-500 leading-relaxed font-medium text-base md:text-lg italic">
-                                    We utilize your data only to harmonize your experience. Most commonly, this involves fulfilling acquisition contracts, legal compliance, and refining our architectural standards.
+                                    We use your data only to improve your shopping experience. This includes fulfilling your orders, following legal rules, and making our website better.
                                 </p>
                             </section>
 
@@ -137,12 +137,12 @@ export default function PrivacyPolicyPage() {
                                     <h2 className="text-2xl md:text-3xl font-black tracking-tighter text-gray-900 uppercase">4. Security</h2>
                                 </div>
                                 <p className="text-gray-500 leading-relaxed font-medium text-base md:text-lg">
-                                    Our vaults utilize advanced encryption and architectural safeguards to prevent accidental loss or unauthorized access. Access is strictly limited to curators with a vital business necessity.
+                                    We use advanced encryption and security measures to keep your data safe and prevent unauthorized access. Access is limited only to those team members who need it to process your orders.
                                 </p>
                             </section>
 
                             <div className="pt-16 border-t border-gray-100 text-center">
-                                <p className="text-[11px] font-black uppercase tracking-[0.4em] text-gray-400 mb-4">Questions or Synthesis Inquiries?</p>
+                                <p className="text-[11px] font-black uppercase tracking-[0.4em] text-gray-400 mb-4">Have questions about your privacy?</p>
                                 <a href="mailto:privacy@estore.com" className="text-emerald-600 font-bold hover:text-emerald-800 transition-colors">privacy@estore.com</a>
                             </div>
                         </div>

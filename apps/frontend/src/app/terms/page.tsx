@@ -37,7 +37,7 @@ export default function TermsOfServicePage() {
                     className="group flex items-center text-[10px] font-black uppercase tracking-[0.4em] text-gray-400 hover:text-emerald-600 mb-12 transition-all"
                 >
                     <ArrowLeft size={14} className="mr-3 transition-transform group-hover:-translate-x-1" />
-                    Back to Gallery
+                    Back to Shop
                 </button>
 
                 {/* Parallax Hero Section */}
@@ -60,13 +60,13 @@ export default function TermsOfServicePage() {
                             transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
                         >
                             <span className="inline-block py-2 px-5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white font-black uppercase tracking-[0.3em] text-[10px] mb-8">
-                                Ethical Framework
+                                Our Terms
                             </span>
                             <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black text-white tracking-widest leading-tight md:leading-none mb-6 md:mb-8 drop-shadow-2xl uppercase">
                                 TERMS OF <br /><span className="text-emerald-400">SERVICE</span>
                             </h1>
                             <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto font-medium leading-relaxed drop-shadow-md">
-                                Defining the standards of engagement for our global guild of visionaries.
+                                The rules and conditions for using our website and services.
                             </p>
                         </motion.div>
                     </div>
@@ -88,10 +88,10 @@ export default function TermsOfServicePage() {
                                     <div className="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center">
                                         <Handshake size={20} />
                                     </div>
-                                    <h2 className="text-2xl md:text-3xl font-black tracking-tighter text-gray-900 uppercase">1. Engagement</h2>
+                                    <h2 className="text-2xl md:text-3xl font-black tracking-tighter text-gray-900 uppercase">1. Acceptance of Terms</h2>
                                 </div>
                                 <p className="text-gray-500 leading-relaxed font-medium text-base md:text-lg">
-                                    By accessing and participating in the E-Store marketplace, you confirm your alignment with our collective standards and agree to be bound by the ethical framework outlined below.
+                                    By using our website and marketplace, you agree to follow these terms and conditions. If you do not agree with any part of these terms, please do not use our services.
                                 </p>
                             </section>
 
@@ -100,10 +100,10 @@ export default function TermsOfServicePage() {
                                     <div className="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center">
                                         <Zap size={20} />
                                     </div>
-                                    <h2 className="text-2xl md:text-3xl font-black tracking-tighter text-gray-900 uppercase">2. License</h2>
+                                    <h2 className="text-2xl md:text-3xl font-black tracking-tighter text-gray-900 uppercase">2. Use of Site</h2>
                                 </div>
                                 <p className="text-gray-500 leading-relaxed font-medium text-base md:text-lg italic">
-                                    We grant you a revocable, non-exclusive, non-transferable, limited license to utilize our platform strictly in accordance with these principles of intentional commerce.
+                                    We grant you permission to use our website for personal shopping, as long as you follow these rules and policies.
                                 </p>
                             </section>
 
@@ -112,13 +112,13 @@ export default function TermsOfServicePage() {
                                     <div className="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center">
                                         <Globe size={20} />
                                     </div>
-                                    <h2 className="text-2xl md:text-3xl font-black tracking-tighter text-gray-900 uppercase">3. Boundaries</h2>
+                                    <h2 className="text-2xl md:text-3xl font-black tracking-tighter text-gray-900 uppercase">3. Rules of Conduct</h2>
                                 </div>
                                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-4">
                                     {[
-                                        { title: "Commercial", desc: "No unauthorized exploitation of the guild's resources." },
-                                        { title: "Intellectual", desc: "No reverse engineering of our architectural synthesis." },
-                                        { title: "Proprietary", desc: "No removal of the artisan's signature or heritage marks." },
+                                        { title: "Commercial", desc: "No unauthorized use of our website or services." },
+                                        { title: "Intellectual", desc: "No copying or reverse engineering of our technology." },
+                                        { title: "Proprietary", desc: "No removal of our logos, branding, or trademarks." },
                                     ].map((item, i) => (
                                         <div key={i} className="p-6 rounded-2xl bg-gray-50/50 border border-gray-100 hover:border-emerald-200 transition-all group/item">
                                             <h4 className="font-black text-[10px] uppercase tracking-[0.2em] text-emerald-600 mb-2">{item.title}</h4>
@@ -133,10 +133,10 @@ export default function TermsOfServicePage() {
                                     <div className="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center">
                                         <ShieldCheck size={20} />
                                     </div>
-                                    <h2 className="text-2xl md:text-3xl font-black tracking-tighter text-gray-900 uppercase">4. Responsibility</h2>
+                                    <h2 className="text-2xl md:text-3xl font-black tracking-tighter text-gray-900 uppercase">4. Your Account</h2>
                                 </div>
                                 <p className="text-gray-500 leading-relaxed font-medium text-base md:text-lg">
-                                    You are the sole architect of your account security. Every transaction signed under your vision is your responsibility. The guild reserves the right to modify or dissolve access to ensure collective purity.
+                                    You are responsible for keeping your account password safe. You are responsible for all activity that happens on your account. We reserve the right to close accounts if these terms are broken.
                                 </p>
                             </section>
 
@@ -145,15 +145,15 @@ export default function TermsOfServicePage() {
                                     <div className="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center">
                                         <AlertCircle size={20} />
                                     </div>
-                                    <h2 className="text-2xl md:text-3xl font-black tracking-tighter text-gray-900 uppercase">5. Updates</h2>
+                                    <h2 className="text-2xl md:text-3xl font-black tracking-tighter text-gray-900 uppercase">5. Changes to Terms</h2>
                                 </div>
                                 <p className="text-gray-500 leading-relaxed font-medium text-base md:text-lg">
-                                    As our evolution continues, these terms may adapt. We will notify you of significant stylistic or structural shifts within our framework.
+                                    We may update these terms from time to time. If we make significant changes, we will notify you by posting a notice on our website or sending an email.
                                 </p>
                             </section>
 
                             <div className="pt-16 border-t border-gray-100 text-center">
-                                <p className="text-[11px] font-black uppercase tracking-[0.4em] text-gray-400 mb-4">Framework Last Updated</p>
+                                <p className="text-[11px] font-black uppercase tracking-[0.4em] text-gray-400 mb-4">Last Updated</p>
                                 <span className="text-emerald-600 font-bold uppercase tracking-widest text-xs">January 2026</span>
                             </div>
                         </div>

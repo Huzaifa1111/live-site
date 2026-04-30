@@ -36,11 +36,11 @@ export class AddressesController {
         @Param('id') id: string,
         @Body() addressData: Partial<Address>
     ) {
-        return this.addressesService.update(+id, req.user.id, addressData);
+        return this.addressesService.update(id, req.user.id, addressData);
     }
 
     @Delete(':id')
     remove(@Req() req, @Param('id') id: string) {
-        return this.addressesService.remove(+id, req.user.id);
+        return this.addressesService.remove(id, req.user.id);
     }
 }

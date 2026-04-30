@@ -1,6 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, ObjectIdColumn, ObjectId, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { OrderItem } from './order-item.entity';
-import { User } from '../users/user.entity';
 
 export enum OrderStatus {
   PENDING = 'pending',
@@ -12,38 +11,33 @@ export enum OrderStatus {
 
 @Entity('orders')
 export class Order {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @ObjectIdColumn()
+  id: string;
 
   @Column({ unique: true, nullable: true })
   orderNumber: string;
 
   @Column()
-  userId: number;
+  userId: string;
 
-  @ManyToOne(() => User)
-  @JoinColumn({ name: 'userId' })
-  user: User;
-
-  @Column('decimal', { precision: 10, scale: 2 })
+  @Column()
   subtotal: number;
 
-  @Column('decimal', { precision: 10, scale: 2, default: 0 })
+  @Column({ default: 0 })
   shippingFee: number;
 
-  @Column('decimal', { precision: 10, scale: 2, default: 0 })
+  @Column({ default: 0 })
   tax: number;
 
-  @Column('decimal', { precision: 10, scale: 2 })
+  @Column()
   total: number;
 
   @Column({
-    type: 'varchar',
     default: OrderStatus.PENDING
   })
   status: OrderStatus;
 
-  @Column('text', { nullable: true })
+  @Column({ nullable: true })
   shippingAddress: string;
 
   @Column({ nullable: true })
@@ -52,9 +46,10 @@ export class Order {
   @CreateDateColumn()
   createdAt: Date;
 
-  @OneToMany(() => OrderItem, (item) => item.order, { cascade: true })
-  items: OrderItem[];
-
   @UpdateDateColumn()
   updatedAt: Date;
+
+  // Manual relations/embedded data for MongoDB
+  items: OrderItem[];
+  user?: any;
 }

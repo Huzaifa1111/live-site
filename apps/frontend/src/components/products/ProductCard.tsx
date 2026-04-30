@@ -3,6 +3,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { resolveProductImage } from '@/lib/image';
 import { ShoppingBag, Eye, Heart } from 'lucide-react';
 import { useCart } from '@/hooks/useCart';
@@ -59,13 +60,12 @@ export default function ProductCard({ product }: ProductCardProps) {
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className="relative aspect-[4/5] overflow-hidden bg-gray-50 rounded-lg mx-2 mt-2">
-        <img
-          src={productImage}
+        <Image
+          src={productImage || 'https://placehold.co/600x600/000000/ffffff?text=No+Image'}
           alt={product.name}
-          className={`w-full h-full object-cover transition-transform duration-1000 ease-out ${isHovered ? 'scale-105' : 'scale-100'}`}
-          onError={(e) => {
-            e.currentTarget.src = 'https://placehold.co/600x600/000000/ffffff?text=No+Image';
-          }}
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          className={`object-cover transition-transform duration-1000 ease-out ${isHovered ? 'scale-105' : 'scale-100'}`}
         />
         <div className={`absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent transition-opacity duration-500 ${isHovered ? 'opacity-100' : 'opacity-0'}`}></div>
         <div className={`absolute top-2 right-2 flex flex-col space-y-1.5 transition-all duration-500 z-20 ${isHovered ? 'translate-x-0 opacity-100' : 'translate-x-12 opacity-0'}`}>

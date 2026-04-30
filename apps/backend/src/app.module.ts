@@ -15,12 +15,10 @@ import { CartModule } from './modules/cart/cart.module';
 import { ContactModule } from './modules/contact/contact.module';
 import { ReviewsModule } from './modules/reviews/reviews.module';
 import { CategoriesModule } from './modules/categories/categories.module';
-import { createDatabaseIfNotExists } from 'dbsetup';
 
 
-async function initDb() {
-  await createDatabaseIfNotExists();
-}
+
+
 
 @Module({
   imports: [
@@ -29,26 +27,15 @@ async function initDb() {
     }),
     TypeOrmModule.forRootAsync({
       useFactory: async () => {
-        await initDb();
         return {
-          type: 'mysql',
-          host: process.env.DB_HOST || 'localhost',
-          port: parseInt(process.env.DB_PORT || '3306'),
-          username: process.env.DB_USER || 'root',
-          password: process.env.DB_PASSWORD || '',
+          type: 'mongodb',
+          url: process.env.MONGODB_URI,
           database: process.env.DB_NAME || 'store_db',
           synchronize: true,
-          logging: false,
-          migrationsRun: false,
+          logging: true, // Enabled for debugging
           autoLoadEntities: true,
-          retryAttempts: 10,
+          retryAttempts: 3, // Reduced to fail faster for debugging
           retryDelay: 3000,
-          extra: {
-            // Added to handle remote ECONNRESET
-            connectTimeout: 20000,
-            enableKeepAlive: true,
-            keepAliveDelay: 10000,
-          }
         }
       },
     }),

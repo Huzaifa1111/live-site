@@ -17,7 +17,7 @@ export class AttributesController {
 
     @Delete(':id')
     async remove(@Param('id') id: string) {
-        return this.attributesService.remove(parseInt(id));
+        return this.attributesService.remove(id);
     }
 
     @Get('values')

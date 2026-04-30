@@ -46,7 +46,7 @@ export class OrdersController {
 
   @Get(':id')
   @UseGuards(JwtAuthGuard)
-  async getOrderById(@Req() req, @Param('id', ParseIntPipe) id: number) {
+  async getOrderById(@Req() req, @Param('id') id: string) {
     return await this.ordersService.getOrderById(id, req.user.id);
   }
 
@@ -54,7 +54,7 @@ export class OrdersController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
   async updateOrderStatus(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
     @Body('status') status: OrderStatus,
   ) {
     return await this.ordersService.updateOrderStatus(id, status);
@@ -62,14 +62,14 @@ export class OrdersController {
 
   @Put(':id/cancel')
   @UseGuards(JwtAuthGuard)
-  async cancelOrder(@Req() req, @Param('id', ParseIntPipe) id: number) {
+  async cancelOrder(@Req() req, @Param('id') id: string) {
     return await this.ordersService.cancelOrder(id, req.user.id);
   }
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
-  async deleteOrder(@Param('id', ParseIntPipe) id: number) {
+  async deleteOrder(@Param('id') id: string) {
     return await this.ordersService.deleteOrder(id);
   }
 }

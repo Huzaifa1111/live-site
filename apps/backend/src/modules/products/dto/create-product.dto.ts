@@ -16,7 +16,10 @@ class VariationDto {
   @IsOptional() @IsNumber() width?: number;
   @IsOptional() @IsNumber() height?: number;
   @IsOptional() @IsBoolean() isDefault?: boolean;
-  @IsOptional() @IsArray() @IsNumber({}, { each: true }) attributeValueIds?: number[];
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  attributeValueIds?: string[];
 }
 
 export class CreateProductDto {
@@ -41,8 +44,8 @@ export class CreateProductDto {
   category?: string;
 
   @IsOptional()
-  @IsNumber()
-  categoryId?: number;
+  @IsString()
+  categoryId?: string;
 
   @IsOptional()
   @IsBoolean()
@@ -65,8 +68,8 @@ export class CreateProductDto {
   returnPolicy?: string;
 
   @IsOptional()
-  @IsNumber()
-  brandId?: number;
+  @IsString()
+  brandId?: string;
 
   @IsOptional()
   @IsArray()
@@ -76,13 +79,13 @@ export class CreateProductDto {
 
   @IsOptional()
   @IsArray()
-  @IsNumber({}, { each: true })
-  upsellIds?: number[];
+  @IsString({ each: true })
+  upsellIds?: string[];
 
   @IsOptional()
   @IsArray()
-  @IsNumber({}, { each: true })
-  crossSellIds?: number[];
+  @IsString({ each: true })
+  crossSellIds?: string[];
 
   @IsOptional()
   @IsArray()

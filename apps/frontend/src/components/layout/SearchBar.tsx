@@ -92,7 +92,7 @@ export default function SearchBar() {
     return (
         <div className="relative" ref={containerRef}>
             <div
-                className={`flex items-center bg-gray-50 border border-gray-100 rounded-full transition-all duration-300 ${isOpen ? 'w-64 md:w-80 ring-2 ring-emerald-100 border-emerald-400 bg-white shadow-lg' : 'w-10 h-10 md:w-48 overflow-hidden'
+                className={`flex items-center bg-gray-50 border border-gray-100 rounded-full transition-all duration-300 ${isOpen ? 'w-[180px] sm:w-64 md:w-80 ring-2 ring-emerald-100 border-emerald-400 bg-white shadow-lg' : 'w-10 h-10 md:w-48 overflow-hidden'
                     }`}
             >
                 <button

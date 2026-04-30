@@ -23,7 +23,7 @@ class OrderService {
     return response.data;
   }
 
-  async getOrderById(id: number): Promise<Order> {
+  async getOrderById(id: string): Promise<Order> {
     const response = await api.get(`/orders/${id}`);
     return response.data;
   }
@@ -34,12 +34,12 @@ class OrderService {
     return response.data;
   }
 
-  async updateOrderStatus(id: number, status: OrderStatus): Promise<Order> {
+  async updateOrderStatus(id: string, status: OrderStatus): Promise<Order> {
     const response = await api.put(`/orders/${id}/status`, { status });
     return response.data;
   }
 
-  async deleteOrder(id: number): Promise<void> {
+  async deleteOrder(id: string): Promise<void> {
     await api.delete(`/orders/${id}`);
   }
 }

@@ -1,31 +1,20 @@
-// apps/backend/src/modules/orders/order-item.entity.ts
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, UpdateDateColumn, JoinColumn } from 'typeorm';
-import { Order } from './order.entity';
-import { Product } from '../products/product.entity';
+import { Entity, ObjectIdColumn, ObjectId, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity('order_items')
 export class OrderItem {
-    @PrimaryGeneratedColumn()
-    id: number;
+    @ObjectIdColumn()
+    id: string;
 
     @Column()
-    orderId: number;
+    orderId: string;
 
     @Column()
-    productId: number;
-
-    @ManyToOne(() => Order, (order) => order.items)
-    @JoinColumn({ name: 'orderId' })
-    order: Order;
-
-    @ManyToOne(() => Product)
-    @JoinColumn({ name: 'productId' })
-    product: Product;
+    productId: string;
 
     @Column()
     quantity: number;
 
-    @Column('decimal', { precision: 10, scale: 2 })
+    @Column()
     price: number;
 
     @Column({ nullable: true })
@@ -39,4 +28,8 @@ export class OrderItem {
 
     @UpdateDateColumn()
     updatedAt: Date;
+
+    // Manual relations for MongoDB
+    order?: any;
+    product?: any;
 }

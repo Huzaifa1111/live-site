@@ -19,8 +19,9 @@ export class UsersService {
     return this.usersRepository.find();
   }
 
-  async findOne(id: number): Promise<User> {
-    const user = await this.usersRepository.findOne({ where: { id } });
+  async findOne(id: string): Promise<User> {
+    const { ObjectId } = require('mongodb');
+    const user = await this.usersRepository.findOne({ where: { _id: new ObjectId(id) } as any });
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
@@ -48,15 +49,17 @@ export class UsersService {
     return savedUser;
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
+  async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     if (updateUserDto.password) {
       updateUserDto.password = await bcrypt.hash(updateUserDto.password, 10);
     }
-    await this.usersRepository.update(id, updateUserDto);
+    const { ObjectId } = require('mongodb');
+    await this.usersRepository.update(new ObjectId(id) as any, updateUserDto);
     return this.findOne(id);
   }
 
-  async remove(id: number): Promise<void> {
-    await this.usersRepository.delete(id);
+  async remove(id: string): Promise<void> {
+    const { ObjectId } = require('mongodb');
+    await this.usersRepository.delete(new ObjectId(id) as any);
   }
 }

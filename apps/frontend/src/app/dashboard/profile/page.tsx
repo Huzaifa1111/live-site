@@ -176,7 +176,7 @@ export default function ProfilePage() {
 
                     <div className="text-center md:text-left space-y-4">
                         <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-emerald-600/20 backdrop-blur-md border border-emerald-500/30 text-[9px] font-black text-emerald-400 uppercase tracking-[0.2em] mb-2">
-                            <Shield size={12} className="mr-2" /> {user.role?.toUpperCase() || 'CLIENT'} ACCESS
+                            <Shield size={12} className="mr-2" /> {user.role?.toUpperCase() || 'USER'} ACCOUNT
                         </div>
                         <h1 className="text-4xl md:text-6xl font-black tracking-tighter leading-none">{user.name}</h1>
                         <p className="text-gray-400 font-medium tracking-wide flex items-center justify-center md:justify-start">
@@ -196,8 +196,8 @@ export default function ProfilePage() {
 
                         <div className="relative z-10">
                             <div className="mb-10">
-                                <h2 className="text-3xl font-black text-black tracking-tighter">Client Identity</h2>
-                                <p className="text-gray-400 text-xs font-medium mt-2">Update your personal identification details.</p>
+                                <h2 className="text-3xl font-black text-black tracking-tighter">Profile Details</h2>
+                                <p className="text-gray-400 text-xs font-medium mt-2">Update your personal account information.</p>
                             </div>
 
                             {message && (
@@ -223,7 +223,7 @@ export default function ProfilePage() {
                                                 value={formData.name}
                                                 onChange={handleChange}
                                                 className="w-full pl-14 pr-6 py-4 rounded-2xl border border-gray-100 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-50 outline-none transition-all font-bold text-black bg-gray-50/50 focus:bg-white shadow-inner"
-                                                placeholder="Identity Name"
+                                                placeholder="Enter your name"
                                             />
                                         </div>
                                     </div>
@@ -244,7 +244,7 @@ export default function ProfilePage() {
                                     </div>
 
                                     <div className="space-y-3">
-                                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Email Terminal</label>
+                                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Email Address</label>
                                         <div className="relative opacity-60">
                                             <Mail className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-300" size={18} />
                                             <input
@@ -254,21 +254,21 @@ export default function ProfilePage() {
                                                 onChange={handleChange}
                                                 disabled
                                                 className="w-full pl-14 pr-6 py-4 rounded-2xl border border-gray-100 bg-gray-100 text-gray-400 font-bold cursor-not-allowed shadow-inner"
-                                                placeholder="Terminal ID"
+                                                placeholder="Email address"
                                             />
-                                            <p className="text-[9px] text-gray-300 font-black uppercase tracking-widest mt-2 ml-1">Identity Terminal locked.</p>
+                                            <p className="text-[9px] text-gray-300 font-black uppercase tracking-widest mt-2 ml-1">Email address cannot be changed.</p>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div className="pt-10 border-t border-gray-50 mt-10">
                                     <div className="mb-8">
-                                        <h3 className="text-xl font-black text-black tracking-tighter">Credential Rotation</h3>
-                                        <p className="text-gray-400 text-[10px] font-medium mt-1 uppercase tracking-widest">Optional: Update your secure access code.</p>
+                                        <h3 className="text-xl font-black text-black tracking-tighter">Change Password</h3>
+                                        <p className="text-gray-400 text-[10px] font-medium mt-1 uppercase tracking-widest">Optional: Update your account password.</p>
                                     </div>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                         <div className="space-y-3">
-                                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">New Secret</label>
+                                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">New Password</label>
                                             <div className="relative group/input">
                                                 <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within/input:text-emerald-500 transition-colors" size={18} />
                                                 <input
@@ -282,7 +282,7 @@ export default function ProfilePage() {
                                             </div>
                                         </div>
                                         <div className="space-y-3">
-                                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Verify Secret</label>
+                                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Confirm Password</label>
                                             <div className="relative group/input">
                                                 <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within/input:text-emerald-500 transition-colors" size={18} />
                                                 <input
@@ -305,9 +305,9 @@ export default function ProfilePage() {
                                         className="flex items-center px-12 py-5 bg-black text-white rounded-full font-black uppercase tracking-[0.2em] text-[10px] shadow-2xl hover:bg-emerald-600 hover:shadow-emerald-200 transform hover:-translate-y-1 transition-all duration-500 disabled:opacity-50 disabled:cursor-not-allowed group/btn"
                                     >
                                         {isLoading ? (
-                                            <><Loader2 className="animate-spin mr-3" size={16} /> Encrypting...</>
+                                            <><Loader2 className="animate-spin mr-3" size={16} /> Saving...</>
                                         ) : (
-                                            <><Save className="mr-3 group-hover/btn:rotate-12 transition-transform" size={16} /> Synchronize Profile</>
+                                            <><Save className="mr-3 group-hover/btn:rotate-12 transition-transform" size={16} /> Save Changes</>
                                         )}
                                     </button>
                                 </div>

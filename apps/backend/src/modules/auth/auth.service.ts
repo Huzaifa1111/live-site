@@ -175,14 +175,14 @@ export class AuthService {
     return { message: 'OTP resent successfully' };
   }
 
-  async getProfile(userId: number) {
-    const user = await this.usersRepository.findOne({ where: { id: userId } });
+  async getProfile(userId: string) {
+    const { ObjectId } = require('mongodb');
+    const user = await this.usersRepository.findOne({ where: { _id: new ObjectId(userId) } as any });
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException('User on profile get not found');
     }
 
     const { password, verificationOtp, otpExpiresAt, ...userProfile } = user;
-    console.log(`🔍 getProfile - User ID: ${userId}, Role: ${user.role}`);
     return userProfile;
   }
 
@@ -200,7 +200,7 @@ export class AuthService {
       user = this.usersRepository.create({
         email,
         name,
-        googleId,
+        googleId: googleId as string,
         picture,
         isEmailVerified: true, // Google emails are already verified
       });

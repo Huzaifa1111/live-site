@@ -36,7 +36,7 @@ interface OrderItem {
 }
 
 interface Order {
-    id: number;
+    id: string;
     orderNumber: string;
     subtotal: number;
     shippingFee: number;
@@ -69,8 +69,8 @@ export default function MyOrdersPage() {
     const { user, isAuthenticated, isLoading: authLoading } = useAuth();
     const [orders, setOrders] = useState<Order[]>([]);
     const [loadingOrders, setLoadingOrders] = useState(true);
-    const [cancellingId, setCancellingId] = useState<number | null>(null);
-    const [confirmingId, setConfirmingId] = useState<number | null>(null);
+    const [cancellingId, setCancellingId] = useState<string | null>(null);
+    const [confirmingId, setConfirmingId] = useState<string | null>(null);
 
     useEffect(() => {
         if (!authLoading && !isAuthenticated) {
@@ -96,7 +96,7 @@ export default function MyOrdersPage() {
 
     const canCancel = (status: string) => ['pending', 'processing'].includes(status.toLowerCase());
 
-    const handleCancel = async (e: React.MouseEvent, orderId: number) => {
+    const handleCancel = async (e: React.MouseEvent, orderId: string) => {
         e.preventDefault();
         e.stopPropagation();
         if (confirmingId !== orderId) {
@@ -157,12 +157,12 @@ export default function MyOrdersPage() {
                     <Link href="/dashboard" className="group inline-flex items-center text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 hover:text-emerald-600 mb-6 transition-colors">
                         <ArrowLeft size={14} className="mr-2 group-hover:-translate-x-1 transition-transform" /> Dashboard
                     </Link>
-                    <h1 className="text-5xl font-black text-black tracking-tighter leading-none mb-4">My Portfolio</h1>
-                    <p className="text-gray-400 font-medium tracking-wide">A curated history of your style acquisitions.</p>
+                    <h1 className="text-5xl font-black text-black tracking-tighter leading-none mb-4">My Orders</h1>
+                    <p className="text-gray-400 font-medium tracking-wide">A history of all your recent orders.</p>
                 </div>
                 <div className="flex items-center gap-4">
                     <div className="px-6 py-3 bg-gray-50 rounded-full text-[10px] font-black text-gray-500 uppercase tracking-widest border border-gray-100 shadow-inner">
-                        {orders.length} Acquisitions
+                        {orders.length} Orders
                     </div>
                 </div>
             </motion.div>
@@ -174,11 +174,11 @@ export default function MyOrdersPage() {
                         <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center mb-8 shadow-sm group-hover:scale-110 transition-transform duration-500">
                             <ShoppingBag size={48} className="text-gray-200" />
                         </div>
-                        <h2 className="text-3xl font-black text-black tracking-tighter mb-4">Portfolio is empty</h2>
-                        <p className="text-gray-400 font-medium max-w-sm mb-10 leading-relaxed">Your journey begins with your first selection. Explore our latest drops to start your collection.</p>
+                        <h2 className="text-3xl font-black text-black tracking-tighter mb-4">You have no orders yet</h2>
+                        <p className="text-gray-400 font-medium max-w-sm mb-10 leading-relaxed">Your order history will appear here once you make your first purchase. Browse our shop to get started.</p>
                         <Link href="/products">
                             <button className="px-12 py-5 bg-black text-white rounded-full font-black uppercase tracking-widest text-xs hover:bg-emerald-600 hover:shadow-2xl hover:shadow-emerald-200 transition-all duration-500 hover:scale-105 active:scale-95">
-                                Explore Drop
+                                Start Shopping
                             </button>
                         </Link>
                     </div>
@@ -231,7 +231,7 @@ export default function MyOrdersPage() {
                                                     </div>
 
                                                     <div className="text-right">
-                                                        <p className="text-gray-400 text-[10px] font-black uppercase tracking-[0.2em] mb-1">Portfolio Value</p>
+                                                        <p className="text-gray-400 text-[10px] font-black uppercase tracking-[0.2em] mb-1">Total Price</p>
                                                         <p className="text-3xl font-black text-black tracking-tighter">
                                                             ${Number(order.total).toFixed(2)}
                                                         </p>

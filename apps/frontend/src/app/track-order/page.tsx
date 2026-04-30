@@ -5,6 +5,8 @@ import { ordersService } from '@/services/orders.service';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Package, MapPin, CreditCard, Clock, CheckCircle2, Truck, Box, ArrowRight, HelpCircle, AlertCircle, XCircle } from 'lucide-react';
+import Image from 'next/image';
+import { resolveProductImage } from '@/lib/image';
 
 const ORDER_STATUS_STEPS = [
     { key: 'pending', label: 'Ordered', icon: Clock, color: 'text-orange-500', bg: 'bg-orange-50' },
@@ -59,13 +61,13 @@ export default function TrackOrderPage() {
                 >
                     <div className="flex items-center justify-center gap-2 mb-4 text-emerald-600">
                         <Truck size={16} />
-                        <span className="text-[10px] font-bold uppercase tracking-[0.3em]">Logistics Tracking</span>
+                        <span className="text-[10px] font-bold uppercase tracking-[0.3em]">Order Tracking</span>
                     </div>
                     <h1 className="text-4xl md:text-5xl font-black tracking-tight mb-4 text-gray-900">
-                        Follow Your <span className="text-emerald-600">Acquisition</span>
+                        Track Your <span className="text-emerald-600">Order</span>
                     </h1>
                     <p className="text-gray-500 text-sm md:text-base max-w-xl mx-auto font-medium leading-relaxed">
-                        Stay informed on every milestone of your order's journey from our collection to your doorstep.
+                        Stay updated on your order's status from our warehouse to your doorstep.
                     </p>
                 </motion.div>
 
@@ -98,7 +100,7 @@ export default function TrackOrderPage() {
                                 {isLoading ? (
                                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                                 ) : (
-                                    'Track Logistics'
+                                    'Track Order'
                                 )}
                             </button>
                         </form>
@@ -146,11 +148,11 @@ export default function TrackOrderPage() {
                                     </div>
                                     <div className="text-center md:text-left relative z-10">
                                         <h3 className="text-2xl font-black tracking-tight mb-1 uppercase">Order Cancelled</h3>
-                                        <p className="text-red-50 text-xs font-bold uppercase tracking-widest opacity-80">This transaction has been voided by administration</p>
+                                        <p className="text-red-50 text-xs font-bold uppercase tracking-widest opacity-80">This order has been cancelled by the store</p>
                                     </div>
                                     <div className="md:ml-auto">
                                         <Link href="/contact" className="px-6 py-3 bg-white text-red-600 rounded-xl font-bold uppercase tracking-widest text-[10px] hover:bg-red-50 transition-colors">
-                                            Enquire Why
+                                            Ask Why
                                         </Link>
                                     </div>
                                 </motion.div>
@@ -160,7 +162,7 @@ export default function TrackOrderPage() {
                             <div className={`bg-white p-8 md:p-12 rounded-[2.5rem] shadow-[0_20px_60px_rgba(0,0,0,0.03)] border border-gray-100 ${isCancelled ? 'opacity-50 grayscale' : ''}`}>
                                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6">
                                     <div>
-                                        <p className="text-emerald-600 text-[10px] font-bold uppercase tracking-[0.3em] mb-2">Order Identification</p>
+                                        <p className="text-emerald-600 text-[10px] font-bold uppercase tracking-[0.3em] mb-2">Order Number</p>
                                         <h2 className="text-3xl font-black text-gray-900 tracking-tighter">{order.orderNumber}</h2>
                                     </div>
                                     <div className="flex items-center gap-4 bg-gray-50 p-3 rounded-2xl border border-gray-100">
@@ -238,17 +240,19 @@ export default function TrackOrderPage() {
                                         <div className="w-8 h-8 bg-black text-white rounded-lg flex items-center justify-center">
                                             <Box size={16} />
                                         </div>
-                                        Dispatch Contents
+                                        Items in Order
                                     </h3>
 
                                     <div className="space-y-4 max-h-[480px] overflow-y-auto pr-2 custom-scrollbar">
                                         {order.items.map((item: any) => (
                                             <div key={item.id} className="group bg-gray-50/50 p-4 rounded-3xl border border-transparent hover:border-emerald-100 hover:bg-white transition-all duration-300 flex gap-5">
-                                                <div className="w-24 h-24 bg-white rounded-2xl overflow-hidden flex-shrink-0 border border-gray-100 shadow-sm transition-transform group-hover:scale-105">
-                                                    <img
-                                                        src={item.product?.images?.[0] || 'https://via.placeholder.com/300'}
-                                                        alt={item.product?.name}
-                                                        className="w-full h-full object-cover"
+                                                <div className="w-24 h-24 bg-white rounded-2xl overflow-hidden flex-shrink-0 border border-gray-100 shadow-sm transition-transform group-hover:scale-105 relative">
+                                                    <Image
+                                                        src={resolveProductImage(item.product?.images || item.product?.image || null) || 'https://via.placeholder.com/300'}
+                                                        alt={item.product?.name || 'Product'}
+                                                        fill
+                                                        sizes="96px"
+                                                        className="object-cover"
                                                     />
                                                 </div>
                                                 <div className="flex-1 py-1">
@@ -265,8 +269,8 @@ export default function TrackOrderPage() {
 
                                     <div className="mt-8 pt-6 border-t border-gray-50 flex justify-between items-end px-2">
                                         <div>
-                                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Settlement Total</p>
-                                            <p className="text-[10px] text-gray-400 font-medium italic">USD inclusive of taxes</p>
+                                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Order Total</p>
+                                            <p className="text-[10px] text-gray-400 font-medium italic">Total amount (tax included)</p>
                                         </div>
                                         <span className="text-3xl font-black text-gray-900 leading-none">${order.total}</span>
                                     </div>
@@ -279,7 +283,7 @@ export default function TrackOrderPage() {
                                             <div className="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center">
                                                 <MapPin size={16} />
                                             </div>
-                                            Destination
+                                            Shipping Address
                                         </h3>
                                         <div className="bg-gray-50/50 p-5 rounded-2xl border border-gray-100">
                                             <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-2">Shipping Address</p>
@@ -292,7 +296,7 @@ export default function TrackOrderPage() {
                                             <div className="w-8 h-8 bg-orange-50 text-orange-600 rounded-lg flex items-center justify-center">
                                                 <CreditCard size={16} />
                                             </div>
-                                            Finance
+                                            Payment Info
                                         </h3>
                                         <div className="flex items-center gap-4 bg-gray-50/50 p-5 rounded-2xl border border-gray-100">
                                             <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-gray-400 shadow-sm">
@@ -312,10 +316,10 @@ export default function TrackOrderPage() {
                                         <div className="absolute -right-4 -bottom-4 opacity-10 group-hover:scale-110 transition-transform duration-700">
                                             <HelpCircle size={120} />
                                         </div>
-                                        <h4 className="text-lg font-bold mb-2 relative z-10">Need Assistance?</h4>
-                                        <p className="text-gray-400 text-[11px] mb-6 leading-relaxed relative z-10">Our concierge is available for any enquiries regarding your delivery.</p>
+                                        <h4 className="text-lg font-bold mb-2 relative z-10">Need Help?</h4>
+                                        <p className="text-gray-400 text-[11px] mb-6 leading-relaxed relative z-10">Our support team is available for any questions regarding your delivery.</p>
                                         <Link href="/contact" className="inline-flex items-center gap-2 bg-white text-black px-6 py-3 rounded-xl font-bold uppercase tracking-widest text-[9px] hover:bg-emerald-500 hover:text-white transition-all relative z-10">
-                                            <span>Contact Care</span>
+                                            <span>Contact Support</span>
                                             <ArrowRight size={12} />
                                         </Link>
                                     </div>

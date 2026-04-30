@@ -21,7 +21,7 @@ export default function LoginPage() {
     useEffect(() => {
         const verified = searchParams.get('verified');
         if (verified === 'true') {
-            setSuccess('Identity verified. Welcome to the collective.');
+            setSuccess('Email verified successfully. You can now log in.');
         }
 
         const emailParam = searchParams.get('email');
@@ -43,20 +43,20 @@ export default function LoginPage() {
 
         try {
             if (!email || !password) {
-                throw new Error('Required credentials missing.');
+                throw new Error('Please enter your email and password.');
             }
 
             if (!/\S+@\S+\.\S+/.test(email)) {
-                throw new Error('Invalid email structure.');
+                throw new Error('Please enter a valid email address.');
             }
 
             await login(email, password);
             localStorage.setItem('rememberedEmail', email);
         } catch (err: any) {
             if (err.message.includes('verify your email')) {
-                setError('Verification required. Check your secure vault (email).');
+                setError('Verification required. Please check your email inbox.');
             } else {
-                setError(err.message || 'Authentication failed. Review credentials.');
+                setError(err.message || 'Login failed. Please check your details.');
             }
         } finally {
             setIsLoading(false);
@@ -103,8 +103,8 @@ export default function LoginPage() {
 
                         <div className="relative z-10">
                             <div className="mb-10 text-center">
-                                <h2 className="text-3xl font-black text-white tracking-tighter mb-2 uppercase italic">SYNTHESIZE ACCESS</h2>
-                                <p className="text-gray-500 font-medium text-xs tracking-[0.2em] uppercase">Enter the curation collective</p>
+                                <h2 className="text-3xl font-black text-white tracking-tighter mb-2 uppercase italic">Login</h2>
+                                <p className="text-gray-500 font-medium text-xs tracking-[0.2em] uppercase">Welcome back to the store</p>
                             </div>
 
                             <form className="space-y-6" onSubmit={handleSubmit}>
@@ -132,7 +132,7 @@ export default function LoginPage() {
 
                                 <div className="space-y-4">
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] ml-2">Secure Link (Email)</label>
+                                        <label className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] ml-2">Email Address</label>
                                         <div className="relative group">
                                             <Mail className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-emerald-500 transition-colors" size={16} />
                                             <input
@@ -149,8 +149,8 @@ export default function LoginPage() {
 
                                     <div className="space-y-2">
                                         <div className="flex justify-between items-center ml-2">
-                                            <label className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em]">Coded Key (Password)</label>
-                                            <Link href="/auth/verify-email" className="text-[9px] font-black text-emerald-500 uppercase tracking-widest hover:text-emerald-400 transition-colors">Recover</Link>
+                                            <label className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em]">Password</label>
+                                            <Link href="/auth/verify-email" className="text-[9px] font-black text-emerald-500 uppercase tracking-widest hover:text-emerald-400 transition-colors">Forgot Password?</Link>
                                         </div>
                                         <div className="relative group">
                                             <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-emerald-500 transition-colors" size={16} />
@@ -175,11 +175,11 @@ export default function LoginPage() {
                                     {isLoading ? (
                                         <div className="flex items-center space-x-3">
                                             <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin"></div>
-                                            <span>SYNTHESIZING...</span>
+                                            <span>LOGGING IN...</span>
                                         </div>
                                     ) : (
                                         <>
-                                            <span>INITIALIZE ACCESS</span>
+                                            <span>LOGIN</span>
                                             <LogIn size={14} className="group-hover:translate-x-1 transition-transform" />
                                         </>
                                     )}
@@ -187,7 +187,7 @@ export default function LoginPage() {
                             </form>
 
                             <div className="mt-10 pt-10 border-t border-white/5 space-y-6">
-                                <p className="text-[9px] font-black text-gray-600 text-center uppercase tracking-[0.4em]">Alternative Gateways</p>
+                                <p className="text-[9px] font-black text-gray-600 text-center uppercase tracking-[0.4em]">Or login with</p>
 
                                 <button
                                     type="button"
@@ -195,12 +195,12 @@ export default function LoginPage() {
                                     className="w-full bg-white/[0.03] border border-white/5 text-white py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] hover:bg-white/[0.07] hover:border-white/10 transition-all duration-500 flex items-center justify-center space-x-4 group"
                                 >
                                     <Chrome size={16} className="text-gray-400 group-hover:text-white transition-colors" />
-                                    <span>Google Protocol</span>
+                                    <span>Google Login</span>
                                 </button>
 
                                 <div className="text-center">
-                                    <span className="text-[10px] font-black text-gray-600 uppercase tracking-widest">New visionary? </span>
-                                    <Link href="/auth/register" className="text-[10px] font-black text-white hover:text-emerald-500 uppercase tracking-widest underline underline-offset-8 decoration-emerald-500/30 transition-all">Join the Guild</Link>
+                                    <span className="text-[10px] font-black text-gray-600 uppercase tracking-widest">New user? </span>
+                                    <Link href="/auth/register" className="text-[10px] font-black text-white hover:text-emerald-500 uppercase tracking-widest underline underline-offset-8 decoration-emerald-500/30 transition-all">Create an Account</Link>
                                 </div>
                             </div>
                         </div>
@@ -208,7 +208,7 @@ export default function LoginPage() {
 
                     {/* Meta Info */}
                     <div className="mt-12 text-center opacity-40">
-                        <p className="text-[9px] font-black text-gray-600 uppercase tracking-[0.5em]">Secure Terminal Protocol v2.4.0</p>
+                        <p className="text-[9px] font-black text-gray-600 uppercase tracking-[0.5em]">Secure Login System</p>
                     </div>
                 </motion.div>
             </div>

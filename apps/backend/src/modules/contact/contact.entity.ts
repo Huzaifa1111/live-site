@@ -1,8 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
+import { Entity, ObjectIdColumn, ObjectId, Column, CreateDateColumn } from 'typeorm';
 
 @Entity('contacts')
 export class Contact {
-  @PrimaryGeneratedColumn('uuid')
+  @ObjectIdColumn()
   id: string;
 
   @Column()
@@ -14,7 +14,7 @@ export class Contact {
   @Column()
   subject: string;
 
-  @Column('text')
+  @Column()
   message: string;
 
   @CreateDateColumn()

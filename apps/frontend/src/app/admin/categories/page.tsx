@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useEffect, useState } from 'react';
 import { adminService } from '@/services/admin.service';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -127,7 +129,7 @@ export default function CategoriesPage() {
             initial="hidden"
             animate="show"
         >
-            {/* Taxonomy Header */}
+            {/* Category Header */}
             <motion.div variants={itemVariants} className="relative overflow-hidden rounded-[2.5rem] bg-black p-10 md:p-14 text-white shadow-2xl group">
                 <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-emerald-600/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2 group-hover:bg-emerald-500/20 transition-colors duration-1000"></div>
 
@@ -135,10 +137,10 @@ export default function CategoriesPage() {
                     <div>
                         <div className="flex items-center gap-3 mb-6">
                             <span className="w-6 h-[1.5px] bg-emerald-500" />
-                            <span className="text-[10px] font-black text-emerald-400 uppercase tracking-[0.3em]">Taxonomy Governance</span>
+                            <span className="text-[10px] font-black text-emerald-400 uppercase tracking-[0.3em]">Category Management</span>
                         </div>
-                        <h1 className="text-4xl md:text-5xl font-black tracking-tighter leading-none mb-3">Category Matrix</h1>
-                        <p className="text-gray-400 font-medium tracking-wide max-w-lg text-sm md:text-base">Managing the structural architecture and organizational kinetics of the product catalog.</p>
+                        <h1 className="text-4xl md:text-5xl font-black tracking-tighter leading-none mb-3">Categories</h1>
+                        <p className="text-gray-400 font-medium tracking-wide max-w-lg text-sm md:text-base">Manage your product categories, descriptions, and organization.</p>
                     </div>
                     <div className="relative z-10">
                         <button
@@ -146,13 +148,13 @@ export default function CategoriesPage() {
                             className="flex items-center space-x-3 px-8 py-4 rounded-xl bg-white text-black hover:bg-emerald-600 hover:text-white font-black uppercase tracking-widest text-[9px] shadow-2xl transition-all duration-500 active:scale-95"
                         >
                             <Plus className="w-4 h-4" />
-                            <span>Add New Structural Entry</span>
+                            <span>Add New Category</span>
                         </button>
                     </div>
                 </div>
             </motion.div>
 
-            {/* Notification Ledger */}
+            {/* Notifications */}
             <AnimatePresence>
                 {notification && (
                     <motion.div
@@ -175,7 +177,7 @@ export default function CategoriesPage() {
                         <Search className="absolute left-5 top-1/2 transform -translate-y-1/2 text-emerald-500/30 w-4 h-4" />
                         <input
                             type="text"
-                            placeholder="Search classifications..."
+                            placeholder="Search categories..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             className="w-full pl-12 pr-6 h-14 bg-gray-50/50 border border-gray-100 rounded-xl focus:bg-white focus:border-emerald-100 focus:outline-none transition-all font-medium text-sm tracking-wide placeholder:text-gray-300"
@@ -183,16 +185,16 @@ export default function CategoriesPage() {
                     </div>
                 </div>
 
-                {/* Taxonomy Ledger */}
+                {/* Category List */}
                 <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden p-2">
                     <div className="overflow-x-auto">
                         <table className="min-w-full divide-y divide-gray-50">
                             <thead>
                                 <tr className="bg-gray-50/20">
-                                    <th className="px-6 py-5 text-left text-[9px] font-black uppercase tracking-[0.2em] text-gray-400">Class Label</th>
-                                    <th className="px-6 py-5 text-left text-[9px] font-black uppercase tracking-[0.2em] text-gray-400">Asset Density</th>
-                                    <th className="px-6 py-5 text-left text-[9px] font-black uppercase tracking-[0.2em] text-gray-400">Registry Date</th>
-                                    <th className="px-6 py-5 text-right text-[9px] font-black uppercase tracking-[0.2em] text-gray-400">Operations</th>
+                                    <th className="px-6 py-5 text-left text-[9px] font-black uppercase tracking-[0.2em] text-gray-400">Category Name</th>
+                                    <th className="px-6 py-5 text-left text-[9px] font-black uppercase tracking-[0.2em] text-gray-400">Product Count</th>
+                                    <th className="px-6 py-5 text-left text-[9px] font-black uppercase tracking-[0.2em] text-gray-400">Created On</th>
+                                    <th className="px-6 py-5 text-right text-[9px] font-black uppercase tracking-[0.2em] text-gray-400">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-50/50">
@@ -215,7 +217,7 @@ export default function CategoriesPage() {
                                                 </div>
                                                 <div>
                                                     <p className="text-[13px] font-bold text-black tracking-tight uppercase group-hover:text-emerald-600 transition-colors">{category.name}</p>
-                                                    <p className="text-[9px] text-gray-400 font-bold uppercase tracking-widest line-clamp-1 max-w-[200px]">{category.description || 'Null identification'}</p>
+                                                    <p className="text-[9px] text-gray-400 font-bold uppercase tracking-widest line-clamp-1 max-w-[200px]">{category.description || 'No description'}</p>
                                                 </div>
                                             </div>
                                         </td>
@@ -224,7 +226,7 @@ export default function CategoriesPage() {
                                                 <div className="p-1.5 rounded-md bg-emerald-50 text-emerald-600">
                                                     <Package size={12} />
                                                 </div>
-                                                <span className="text-[10px] font-black text-black uppercase tracking-widest">{category.products?.length || 0} Assets</span>
+                                                <span className="text-[10px] font-black text-black uppercase tracking-widest">{category.products?.length || 0} Products</span>
                                             </div>
                                         </td>
                                         <td className="px-6 py-4">
@@ -255,7 +257,7 @@ export default function CategoriesPage() {
                                 )) : (
                                     <tr>
                                         <td colSpan={4} className="px-6 py-20 text-center">
-                                            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest italic">No structural entries matching the query.</p>
+                                            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest italic">No categories found matching your search.</p>
                                         </td>
                                     </tr>
                                 )}
@@ -288,9 +290,9 @@ export default function CategoriesPage() {
                                         <div className="w-8 h-8 rounded-lg bg-black text-emerald-500 flex items-center justify-center">
                                             <LayoutGrid size={16} />
                                         </div>
-                                        <span className="text-[9px] font-black text-emerald-600 uppercase tracking-[0.2em]">Matrix Definition</span>
+                                        <span className="text-[9px] font-black text-emerald-600 uppercase tracking-[0.2em]">Category Details</span>
                                     </div>
-                                    <h2 className="text-2xl font-black text-black tracking-tighter uppercase">{editingCategory ? 'Modify Structural Entry' : 'New Structural Definition'}</h2>
+                                    <h2 className="text-2xl font-black text-black tracking-tighter uppercase">{editingCategory ? 'Edit Category' : 'New Category'}</h2>
                                 </div>
                                 <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-black hover:text-white rounded-xl transition-all text-gray-400 active:scale-95">
                                     <X size={20} />
@@ -299,36 +301,36 @@ export default function CategoriesPage() {
 
                             <form onSubmit={handleSubmit} className="p-8 space-y-6">
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] px-1">Identity Label</label>
+                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] px-1">Category Name</label>
                                     <input
                                         type="text"
                                         required
                                         value={formData.name}
                                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                         className="w-full px-6 py-4 bg-gray-50/50 border border-gray-100 rounded-xl focus:bg-white focus:border-emerald-100 focus:outline-none transition-all font-medium text-sm tracking-wide"
-                                        placeholder="e.g. CORE.ELECTRONICS"
+                                        placeholder="e.g. Electronics"
                                     />
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] px-1">Functional Context</label>
+                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] px-1">Description</label>
                                     <textarea
                                         rows={3}
                                         value={formData.description}
                                         onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                         className="w-full px-6 py-4 bg-gray-50/50 border border-gray-100 rounded-xl focus:bg-white focus:border-emerald-100 focus:outline-none transition-all font-medium text-sm tracking-wide resize-none"
-                                        placeholder="Define the scope and organizational kinetics of this entry..."
+                                        placeholder="Give this category a short description..."
                                     />
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] px-1">Visual Asset Endpoint</label>
+                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] px-1">Image URL</label>
                                     <input
                                         type="text"
                                         value={formData.image}
                                         onChange={(e) => setFormData({ ...formData, image: e.target.value })}
                                         className="w-full px-6 py-4 bg-gray-50/50 border border-gray-100 rounded-xl focus:bg-white focus:border-emerald-100 focus:outline-none transition-all font-medium text-sm tracking-wide"
-                                        placeholder="https://cloud.assets.com/ref.jpg"
+                                        placeholder="https://example.com/image.jpg"
                                     />
                                 </div>
 
@@ -338,7 +340,7 @@ export default function CategoriesPage() {
                                         onClick={() => setIsModalOpen(false)}
                                         className="flex-1 px-6 py-4 bg-gray-50 text-gray-400 font-black uppercase tracking-widest text-[9px] rounded-xl hover:bg-black hover:text-white transition-all active:scale-95"
                                     >
-                                        Abort
+                                        Cancel
                                     </button>
                                     <button
                                         type="submit"
@@ -346,7 +348,7 @@ export default function CategoriesPage() {
                                         className="flex-1 px-6 py-4 bg-emerald-600 text-white font-black uppercase tracking-widest text-[9px] rounded-xl hover:bg-black transition-all shadow-xl shadow-emerald-600/10 flex items-center justify-center gap-3 active:scale-95 disabled:grayscale"
                                     >
                                         {processing && <Loader2 size={14} className="animate-spin" />}
-                                        {processing ? 'Processing definition...' : (editingCategory ? 'Update Entry' : 'Finalize Definition')}
+                                        {processing ? 'Processing...' : (editingCategory ? 'Save Changes' : 'Create Category')}
                                         <ArrowRight size={14} />
                                     </button>
                                 </div>

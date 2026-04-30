@@ -34,9 +34,9 @@ export class OrdersService {
   ) { }
 
   private async getSettings(): Promise<{ taxRate: number; shippingFee: number }> {
-    let settings = await this.settingsRepository.findOne({ where: { id: 1 } });
+    let settings = await this.settingsRepository.findOne({ where: {} });
     if (!settings) {
-      settings = this.settingsRepository.create({ id: 1 });
+      settings = this.settingsRepository.create();
       await this.settingsRepository.save(settings);
     }
     return {
@@ -45,36 +45,25 @@ export class OrdersService {
     };
   }
 
-  async createOrder(userId: number, createOrderDto: CreateOrderDto) {
+  async createOrder(userId: string, createOrderDto: CreateOrderDto) {
     this.logger.log(`Starting createOrder for user ${userId}. Payment Method: ${createOrderDto.paymentMethod}`);
 
     // Get cart items
     const cartItems = await this.cartService.getCart(userId);
-    this.logger.log(`Found ${cartItems.length} items in cart for user ${userId}`);
-
     if (cartItems.length === 0) {
       throw new BadRequestException('Cart is empty. Please add items before checkout.');
     }
 
-    // Calculate subtotal from cart items
-    const subtotal = cartItems.reduce((sum, item) => {
-      return sum + (Number(item.price) * item.quantity);
-    }, 0);
-    this.logger.log(`Calculated subtotal: ${subtotal}`);
-
-    // Fetch live settings for tax and shipping
+    const subtotal = cartItems.reduce((sum, item) => sum + (Number(item.price) * item.quantity), 0);
     const { taxRate, shippingFee } = await this.getSettings();
     const tax = parseFloat((subtotal * (taxRate / 100)).toFixed(2));
     const total = parseFloat((subtotal + shippingFee + tax).toFixed(2));
-    this.logger.log(`Calculated total: ${total} (Tax: ${tax}, Shipping: ${shippingFee})`);
 
-    // Generate professional order number
     const date = new Date();
     const dateStr = date.toISOString().slice(0, 10).replace(/-/g, '');
     const randomStr = Math.random().toString(36).substring(2, 6).toUpperCase();
     const orderNumber = `ORD-${dateStr}-${randomStr}`;
 
-    // Create order object
     const order = this.orderRepository.create({
       userId,
       orderNumber,
@@ -87,33 +76,15 @@ export class OrdersService {
       status: OrderStatus.PENDING,
     });
 
-    // Handle Stripe Payment
     if (createOrderDto.paymentMethod === 'stripe') {
-      this.logger.log(`Processing stripe payment for user ${userId}`);
-      if (!createOrderDto.paymentIntentId) {
-        throw new Error('Payment Intent ID is required for Stripe payments');
-      }
-
-      try {
-        const paymentIntent = await this.stripeService.retrievePaymentIntent(createOrderDto.paymentIntentId);
-
-        if (paymentIntent.status === 'succeeded') {
-          order.status = OrderStatus.PROCESSING; // Or PAID
-        } else {
-          throw new Error(`Payment not successful: ${paymentIntent.status}`);
-        }
-      } catch (error) {
-        this.logger.error(`Stripe verification failed for user ${userId}: ${error.message}`);
-        throw new BadRequestException('Failed to verify payment: ' + error.message);
-      }
+      if (!createOrderDto.paymentIntentId) throw new Error('Payment Intent ID is required for Stripe payments');
+      const paymentIntent = await this.stripeService.retrievePaymentIntent(createOrderDto.paymentIntentId);
+      if (paymentIntent.status === 'succeeded') order.status = OrderStatus.PROCESSING;
+      else throw new Error(`Payment not successful: ${paymentIntent.status}`);
     }
 
-    this.logger.log(`Saving order ${orderNumber} to database...`);
     const savedOrder = await this.orderRepository.save(order);
-    this.logger.log(`Order saved with ID: ${savedOrder.id}`);
 
-    // Create Order Items
-    this.logger.log(`Creating order items for order ID: ${savedOrder.id}`);
     for (const item of cartItems) {
       const orderItem = this.orderItemRepository.create({
         orderId: savedOrder.id,
@@ -122,203 +93,134 @@ export class OrdersService {
         price: item.price,
       });
       await this.orderItemRepository.save(orderItem);
-    }
 
-    // Deduct Stock
-    this.logger.log(`Deducting stock for order ID: ${savedOrder.id}`);
-    for (const item of cartItems) {
-      const product = await this.productRepository.findOne({ where: { id: item.productId } });
-      if (product) { // Ensure product exists
-        if (product.stock < item.quantity) {
-          this.logger.error(`Insufficient stock for product ${product.id}`);
-          throw new BadRequestException(`Insufficient stock for product: ${product.name}`);
-        }
+      // Deduct Stock
+      const product = await this.productRepository.findOne({ where: { _id: item.productId } as any });
+      if (product) {
+        if (product.stock < item.quantity) throw new BadRequestException(`Insufficient stock for product: ${product.name}`);
         product.stock -= item.quantity;
         await this.productRepository.save(product);
-        // console.log(`Stock deducted for product ${product.id}: ${item.quantity} units. New stock: ${product.stock}`);
       }
     }
 
-    // Clear cart after order is created
-    this.logger.log(`Clearing cart for user ${userId}`);
     await this.cartService.clearCart(userId);
-
-    // Trigger real-time analytics update
     await this.adminService.notifyAnalyticsUpdate();
 
-    // Send Order Confirmation Email
     try {
-      this.logger.log(`Initiating order confirmation email for Order ID: ${savedOrder.id}`);
-      // Fetch full order details including user and item relations
       const orderWithData = await this.getOrderById(savedOrder.id);
       if (orderWithData && orderWithData.user) {
-        // Generate Invoice PDF
         const pdfBuffer = await this.pdfService.generateInvoice(orderWithData);
-
         await this.emailService.sendOrderConfirmation(
           orderWithData.user.email,
           orderWithData.user.name,
           orderWithData,
-          [
-            {
-              filename: `invoice-${orderWithData.orderNumber}.pdf`,
-              content: pdfBuffer,
-            }
-          ]
+          [{ filename: `invoice-${orderWithData.orderNumber}.pdf`, content: pdfBuffer }]
         );
-      } else {
-        this.logger.warn(`Could not send confirmation email: Order or User data not found for ID ${savedOrder.id}`);
       }
     } catch (emailError) {
-      this.logger.error(`Failed to send order confirmation email for order ${savedOrder.id}: ${emailError.message}`);
-      // We don't throw here as the order is already placed successfully
+      this.logger.error(`Failed to send order confirmation: ${emailError.message}`);
     }
 
     return savedOrder;
   }
 
   async getOrderByOrderNumber(orderNumber: string) {
-    if (!orderNumber) {
-      throw new BadRequestException('Order number is required');
+    if (!orderNumber) throw new BadRequestException('Order number is required');
+    const order = await this.orderRepository.findOne({ where: { orderNumber: orderNumber.trim() } });
+    if (!order) throw new NotFoundException(`Order with identifier ${orderNumber} not found`);
+
+    // Manual joins
+    order.items = await this.orderItemRepository.find({ where: { orderId: order.id } });
+    for (const item of order.items) {
+        item.product = await this.productRepository.findOne({ where: { _id: item.productId } as any });
     }
-
-    try {
-      const order = await this.orderRepository.findOne({
-        where: { orderNumber: orderNumber.trim() },
-        relations: ['items', 'items.product', 'items.product.brand']
-      });
-
-      if (!order) {
-        throw new NotFoundException(`Order with identifier ${orderNumber} not found`);
-      }
-
-      return order;
-    } catch (error) {
-      console.error(`[OrdersService] Detailed Tracking Error for ${orderNumber}:`, error);
-      if (error instanceof NotFoundException) throw error;
-      throw new Error(`Technical tracking failure: ${error.message}`);
-    }
+    return order;
   }
 
-  async createPaymentIntent(userId: number) {
+  async createPaymentIntent(userId: string) {
     const cartItems = await this.cartService.getCart(userId);
+    if (cartItems.length === 0) throw new BadRequestException('Cart is empty.');
 
-    if (cartItems.length === 0) {
-      console.warn(`[OrdersService] CreatePaymentIntent failed: Cart is empty for user ${userId}`);
-      throw new BadRequestException('Cart is empty. Please add items before checkout.');
-    }
-
-    const subtotal = cartItems.reduce((sum, item) => {
-      return sum + (item.price * item.quantity);
-    }, 0);
-
-    // Fetch live settings for tax and shipping
+    const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     const { taxRate, shippingFee } = await this.getSettings();
     const tax = parseFloat((subtotal * (taxRate / 100)).toFixed(2));
     const total = parseFloat((subtotal + shippingFee + tax).toFixed(2));
 
-    try {
-      const paymentIntent = await this.stripeService.createPaymentIntent(total);
-
-      return {
-        clientSecret: paymentIntent.client_secret,
-        subtotal,
-        shippingFee,
-        tax,
-        total,
-      };
-    } catch (error) {
-      console.error('[OrdersService] Stripe Payment Intent Creation Failed:', error.message);
-      throw error;
-    }
+    const paymentIntent = await this.stripeService.createPaymentIntent(total);
+    return { clientSecret: paymentIntent.client_secret, subtotal, shippingFee, tax, total };
   }
 
-  async getUserOrders(userId: number) {
-    return this.orderRepository.find({
+  async getUserOrders(userId: string) {
+    const orders = await this.orderRepository.find({
       where: { userId },
-      relations: ['items', 'items.product'],
-      order: { createdAt: 'DESC' },
+      order: { createdAt: 'DESC' } as any,
     });
+    for (const o of orders) {
+        o.items = await this.orderItemRepository.find({ where: { orderId: o.id } });
+        for (const item of o.items) {
+            item.product = await this.productRepository.findOne({ where: { _id: item.productId } as any });
+        }
+    }
+    return orders;
   }
 
   async getAllOrders() {
-    return this.orderRepository.find({
-      relations: ['items', 'items.product'],
-      order: { createdAt: 'DESC' },
-    });
-  }
-
-  async getOrderById(id: number, userId?: number) {
-    const where: any = { id };
-    if (userId) {
-      where.userId = userId;
-    }
-
-    try {
-      const order = await this.orderRepository.findOne({
-        where,
-        relations: {
-          user: true,
-          items: {
-            product: {
-              brand: true
-            }
-          }
+    const orders = await this.orderRepository.find({ order: { createdAt: 'DESC' } as any });
+    for (const o of orders) {
+        o.items = await this.orderItemRepository.find({ where: { orderId: o.id } });
+        for (const item of o.items) {
+            item.product = await this.productRepository.findOne({ where: { _id: item.productId } as any });
         }
-      });
-
-      if (!order) {
-        throw new NotFoundException('Order not found');
-      }
-
-      return order;
-    } catch (error) {
-      console.error(`[OrdersService] Failed to fetch order by ID ${id}:`, error.message);
-      if (error instanceof NotFoundException) throw error;
-      throw new Error('Database operation failed while fetching order');
     }
+    return orders;
   }
 
-  async updateOrderStatus(id: number, status: OrderStatus) {
+  async getOrderById(id: string, userId?: string) {
+    const { ObjectId } = require('mongodb');
+    const where: any = { _id: new ObjectId(id) };
+    if (userId) where.userId = userId;
+
+    const order = await this.orderRepository.findOne({ where });
+    if (!order) throw new NotFoundException('Order not found');
+
+    // Manual join users, items, and products
+    const userRepo = this.orderRepository.manager.getRepository('User');
+    order.user = await userRepo.findOne({ where: { _id: order.userId } as any });
+    order.items = await this.orderItemRepository.find({ where: { orderId: order.id } });
+    for (const item of order.items) {
+        item.product = await this.productRepository.findOne({ where: { _id: item.productId } as any });
+    }
+
+    return order;
+  }
+
+  async updateOrderStatus(id: string, status: OrderStatus) {
     const order = await this.getOrderById(id);
     order.status = status;
     const savedOrder = await this.orderRepository.save(order);
-
-    // Trigger real-time analytics update
     this.adminService.notifyAnalyticsUpdate();
-
     return savedOrder;
   }
 
-  async cancelOrder(id: number, userId: number) {
-    // Fetch order owned by this user
-    const order = await this.orderRepository.findOne({ where: { id, userId } });
-
-    if (!order) {
-      throw new NotFoundException('Order not found');
-    }
+  async cancelOrder(id: string, userId: string) {
+    const { ObjectId } = require('mongodb');
+    const order = await this.orderRepository.findOne({ where: { _id: new ObjectId(id), userId } as any });
+    if (!order) throw new NotFoundException('Order not found');
 
     const cancellableStatuses: OrderStatus[] = [OrderStatus.PENDING, OrderStatus.PROCESSING];
-
     if (!cancellableStatuses.includes(order.status)) {
-      throw new ForbiddenException(
-        `Order cannot be cancelled. It is currently "${order.status}". Only pending or processing orders can be cancelled.`
-      );
+      throw new ForbiddenException(`Order cannot be cancelled. Status is "${order.status}".`);
     }
 
     order.status = OrderStatus.CANCELLED;
     const saved = await this.orderRepository.save(order);
-
-    // Notify analytics
     this.adminService.notifyAnalyticsUpdate();
-
     return saved;
   }
 
-  async deleteOrder(id: number) {
-    const result = await this.orderRepository.delete(id);
-    if (result.affected === 0) {
-      throw new NotFoundException('Order not found');
-    }
+  async deleteOrder(id: string) {
+    const { ObjectId } = require('mongodb');
+    const result = await this.orderRepository.delete(new ObjectId(id) as any);
+    if (result.affected === 0) throw new NotFoundException('Order not found');
   }
 }

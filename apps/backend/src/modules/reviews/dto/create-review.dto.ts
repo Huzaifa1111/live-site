@@ -12,7 +12,7 @@ export class CreateReviewDto {
     @MinLength(5)
     comment: string;
 
-    @IsInt()
+    @IsString()
     @IsNotEmpty()
-    productId: number;
+    productId: string;
 }

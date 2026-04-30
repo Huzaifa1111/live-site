@@ -1,32 +1,26 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
-import { User } from '../users/user.entity';
-import { Product } from '../products/product.entity';
+import { Entity, ObjectIdColumn, ObjectId, Column, CreateDateColumn } from 'typeorm';
 
 @Entity('reviews')
 export class Review {
-    @PrimaryGeneratedColumn('uuid')
+    @ObjectIdColumn()
     id: string;
 
-    @Column({ type: 'int' })
+    @Column()
     rating: number;
 
-    @Column({ type: 'text' })
+    @Column()
     comment: string;
 
     @Column()
-    userId: number;
+    userId: string;
 
     @Column()
-    productId: number;
-
-    @ManyToOne(() => User)
-    @JoinColumn({ name: 'userId' })
-    user: User;
-
-    @ManyToOne(() => Product)
-    @JoinColumn({ name: 'productId' })
-    product: Product;
+    productId: string;
 
     @CreateDateColumn()
     createdAt: Date;
+
+    // Manual relations for MongoDB
+    user?: any;
+    product?: any;
 }

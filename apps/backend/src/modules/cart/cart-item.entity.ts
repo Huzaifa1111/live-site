@@ -1,33 +1,23 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
-import { User } from '../users/user.entity';
-import { Product } from '../products/product.entity';
+import { Entity, ObjectIdColumn, ObjectId, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity('cart_items')
 export class CartItem {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @ObjectIdColumn()
+  id: string;
 
   @Column()
-  userId: number;
-
-  @ManyToOne(() => User)
-  @JoinColumn({ name: 'userId' })
-  user: User;
+  userId: string;
 
   @Column()
-  productId: number;
-
-  @ManyToOne(() => Product)
-  @JoinColumn({ name: 'productId' })
-  product: Product;
+  productId: string;
 
   @Column({ nullable: true })
-  variationId: number;
+  variationId: string;
 
   @Column()
   quantity: number;
 
-  @Column('decimal', { precision: 10, scale: 2 })
+  @Column()
   price: number;
 
   @CreateDateColumn()
@@ -35,4 +25,8 @@ export class CartItem {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  // Manual relations for MongoDB
+  user?: any;
+  product?: any;
 }

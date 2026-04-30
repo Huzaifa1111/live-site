@@ -1,25 +1,23 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, UpdateDateColumn, ManyToMany, JoinTable } from 'typeorm';
-import { Product } from './product.entity';
-import { AttributeValue } from './attribute.entity';
+import { Entity, ObjectIdColumn, ObjectId, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity('product_variations')
 export class ProductVariation {
-    @PrimaryGeneratedColumn()
-    id: number;
+    @ObjectIdColumn()
+    id: string;
 
     @Column({ unique: true })
     sku: string;
 
-    @Column('decimal', { precision: 10, scale: 2 })
+    @Column()
     price: number;
 
-    @Column('decimal', { precision: 10, scale: 2, nullable: true })
+    @Column({ nullable: true })
     salePrice: number;
 
-    @Column({ type: 'timestamp', nullable: true })
+    @Column({ nullable: true })
     saleStartDate: Date;
 
-    @Column({ type: 'timestamp', nullable: true })
+    @Column({ nullable: true })
     saleEndDate: Date;
 
     @Column({ default: 0 })
@@ -28,34 +26,29 @@ export class ProductVariation {
     @Column({ default: true })
     inStock: boolean;
 
-    @Column('simple-array', { nullable: true })
+    @Column({ nullable: true })
     images: string[];
 
-    @Column('decimal', { precision: 10, scale: 2, nullable: true })
+    @Column({ nullable: true })
     weight: number;
 
-    @Column('decimal', { precision: 10, scale: 2, nullable: true })
+    @Column({ nullable: true })
     length: number;
 
-    @Column('decimal', { precision: 10, scale: 2, nullable: true })
+    @Column({ nullable: true })
     width: number;
 
-    @Column('decimal', { precision: 10, scale: 2, nullable: true })
+    @Column({ nullable: true })
     height: number;
 
     @Column({ default: false })
     isDefault: boolean;
 
-    @ManyToOne(() => Product, (product) => product.variations, { onDelete: 'CASCADE' })
-    product: Product;
+    @Column()
+    productId: string;
 
-    @ManyToMany(() => AttributeValue)
-    @JoinTable({
-        name: 'variation_attribute_values',
-        joinColumn: { name: 'variation_id', referencedColumnName: 'id' },
-        inverseJoinColumn: { name: 'attribute_value_id', referencedColumnName: 'id' }
-    })
-    attributeValues: AttributeValue[];
+    @Column({ nullable: true })
+    attributeValueIds: string[];
 
     @CreateDateColumn()
     createdAt: Date;

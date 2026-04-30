@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { ShoppingCart, Heart, Share2, Info, Plus, Minus, Check, Truck, ShieldCheck } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/Card';
 import { resolveProductImage } from '@/lib/image';
+
 import { useCart } from '@/hooks/useCart';
 import { useAuth } from '@/lib/auth';
 
@@ -168,9 +169,9 @@ export default function ProductDetail({ product }: ProductDetailProps) {
             <div className="space-y-4 md:space-y-6">
               <div className="relative aspect-square w-full max-w-sm mx-auto rounded-[2.5rem] overflow-hidden bg-gray-50/50 border border-gray-100 shadow-inner group">
                 <img
-                  src={resolveProductImage(allImages[selectedImage])}
+                  src={resolveProductImage(allImages[selectedImage]) || 'https://placehold.co/600x600/000000/ffffff?text=No+Image'}
                   alt={product.name}
-                  className="w-full h-full object-contain transition-all duration-1000 ease-out group-hover:scale-110"
+                  className="absolute inset-0 w-full h-full object-contain transition-all duration-1000 ease-out group-hover:scale-110"
                 />
                 <div className="absolute top-6 right-6 flex flex-col gap-3">
                   <button
@@ -196,7 +197,11 @@ export default function ProductDetail({ product }: ProductDetailProps) {
                         : 'border-transparent opacity-50 hover:opacity-100 hover:scale-105'
                         }`}
                     >
-                      <img src={resolveProductImage(img)} className="w-full h-full object-cover" alt="" />
+                      <img 
+                        src={resolveProductImage(img) || 'https://placehold.co/600x600/000000/ffffff?text=No+Image'} 
+                        className="absolute inset-0 w-full h-full object-cover" 
+                        alt="" 
+                      />
                     </button>
                   ))}
                 </div>
@@ -297,11 +302,11 @@ export default function ProductDetail({ product }: ProductDetailProps) {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-3">
                   <div className="flex items-center gap-3 p-3 md:p-4 bg-white rounded-2xl border border-gray-100 shadow-sm">
                     <Truck className="text-emerald-500 flex-shrink-0" size={18} />
-                    <span className="text-[10px] font-black uppercase tracking-widest text-emerald-900">White Glove Shipping</span>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-emerald-900">Premium Delivery</span>
                   </div>
                   <div className="flex items-center gap-3 p-3 md:p-4 bg-white rounded-2xl border border-gray-100 shadow-sm">
                     <ShieldCheck className="text-emerald-500 flex-shrink-0" size={18} />
-                    <span className="text-[10px] font-black uppercase tracking-widest text-emerald-900">Authentic Seal</span>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-emerald-900">100% Authentic</span>
                   </div>
                 </div>
 
@@ -325,7 +330,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
                   >
                     <div className="relative flex items-center">
                       <ShoppingCart className="w-4 h-4 mr-4" />
-                      {addingToCart ? 'Authenticating...' : currentStock === 0 ? 'Out of Stock' : 'Acquire Policy'}
+                      {addingToCart ? 'Authenticating...' : currentStock === 0 ? 'Out of Stock' : 'Add to Cart'}
                     </div>
                   </button>
                 </div>

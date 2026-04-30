@@ -1,13 +1,11 @@
 import {
     Entity,
-    PrimaryGeneratedColumn,
+    ObjectIdColumn,
+    ObjectId,
     Column,
     CreateDateColumn,
     UpdateDateColumn,
-    ManyToOne,
-    JoinColumn
 } from 'typeorm';
-import { User } from './user.entity';
 
 export enum AddressType {
     HOME = 'home',
@@ -16,18 +14,13 @@ export enum AddressType {
 
 @Entity('addresses')
 export class Address {
-    @PrimaryGeneratedColumn()
-    id: number;
+    @ObjectIdColumn()
+    id: string;
 
     @Column()
-    userId: number;
-
-    @ManyToOne(() => User, (user) => user.addresses, { onDelete: 'CASCADE' })
-    @JoinColumn({ name: 'userId' })
-    user: User;
+    userId: string;
 
     @Column({
-        type: 'varchar',
         default: AddressType.HOME
     })
     type: AddressType;

@@ -26,12 +26,12 @@ export const ordersService = {
         return response.data;
     },
 
-    async updateOrderStatus(id: number, status: string) {
+    async updateOrderStatus(id: string, status: string) {
         const response = await api.put(`/orders/${id}/status`, { status });
         return response.data;
     },
 
-    async getOrderById(id: number) {
+    async getOrderById(id: string) {
         const response = await api.get(`/orders/${id}`);
         return response.data;
     },
@@ -41,7 +41,7 @@ export const ordersService = {
         return response.data;
     },
 
-    async cancelOrder(id: number) {
+    async cancelOrder(id: string) {
         const response = await api.put(`/orders/${id}/cancel`);
         return response.data;
     }

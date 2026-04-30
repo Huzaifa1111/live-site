@@ -1,31 +1,27 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany, ManyToOne, ManyToMany, JoinTable } from 'typeorm';
-import { Review } from '../reviews/review.entity';
-import { Brand } from '../brands/brand.entity';
-import { ProductVariation } from './variation.entity';
-import { Category } from '../categories/category.entity';
+import { Entity, ObjectIdColumn, ObjectId, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity('products')
 export class Product {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @ObjectIdColumn()
+  id: string;
 
   @Column()
   name: string;
 
-  @Column('text', { nullable: true })
+  @Column({ nullable: true })
   description: string;
 
-  @Column('decimal', { precision: 10, scale: 2 })
+  @Column()
   price: number;
 
-  @Column({ default: 0 }) // Add default value
+  @Column({ default: 0 })
   stock: number;
 
-  @Column('simple-array', { nullable: true })
+  @Column({ nullable: true })
   images: string[];
 
-  @ManyToOne(() => Category, (category) => category.products, { nullable: true, onDelete: 'SET NULL' })
-  category: Category;
+  @Column({ nullable: true })
+  categoryId: string;
 
   @Column({ default: false })
   featured: boolean;
@@ -33,39 +29,27 @@ export class Product {
   @Column({ nullable: true })
   sku: string;
 
-  @Column('text', { nullable: true })
+  @Column({ nullable: true })
   longDescription: string;
 
-  @Column('text', { nullable: true })
+  @Column({ nullable: true })
   shippingPolicy: string;
 
-  @Column('text', { nullable: true })
+  @Column({ nullable: true })
   returnPolicy: string;
 
-  @Column('simple-array', { nullable: true })
+  @Column({ nullable: true })
   descriptionImages: string[];
 
-  @ManyToOne(() => Brand, (brand) => brand.products, { nullable: true })
-  brand: Brand;
+  @Column({ nullable: true })
+  brandId: string;
 
-  @OneToMany(() => ProductVariation, (variation) => variation.product, { cascade: true })
-  variations: ProductVariation[];
+  // Manual relations/references for MongoDB
+  @Column({ nullable: true })
+  upsellIds: string[];
 
-  @ManyToMany(() => Product)
-  @JoinTable({
-    name: 'product_upsells',
-    joinColumn: { name: 'product_id', referencedColumnName: 'id' },
-    inverseJoinColumn: { name: 'upsell_id', referencedColumnName: 'id' }
-  })
-  upsells: Product[];
-
-  @ManyToMany(() => Product)
-  @JoinTable({
-    name: 'product_cross_sells',
-    joinColumn: { name: 'product_id', referencedColumnName: 'id' },
-    inverseJoinColumn: { name: 'cross_sell_id', referencedColumnName: 'id' }
-  })
-  crossSells: Product[];
+  @Column({ nullable: true })
+  crossSellIds: string[];
 
   @CreateDateColumn()
   createdAt: Date;
@@ -73,6 +57,11 @@ export class Product {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @OneToMany(() => Review, (review) => review.product)
-  reviews: Review[];
+  // Placeholder fields to maintain TypeScript compatibility in services if needed
+  category?: any;
+  brand?: any;
+  variations?: any[];
+  reviews?: any[];
+  upsells?: Product[];
+  crossSells?: Product[];
 }

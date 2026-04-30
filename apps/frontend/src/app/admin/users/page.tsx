@@ -50,7 +50,7 @@ export default function AdminUsersPage() {
       setError(null);
     } catch (err) {
       console.error('Failed to fetch users:', err);
-      setError('Failed to load identity records. Please re-authenticate.');
+      setError('Failed to load user records. Please log in again.');
     } finally {
       setLoading(false);
     }
@@ -76,11 +76,11 @@ export default function AdminUsersPage() {
     const r = (role || 'customer').toLowerCase();
     switch (r) {
       case 'admin':
-        return <span className="inline-flex items-center px-3 py-1 rounded-lg text-[8px] font-black uppercase tracking-widest bg-emerald-600 text-white shadow-lg shadow-emerald-100"><Shield size={10} className="mr-1.5" /> Architect</span>;
+        return <span className="inline-flex items-center px-3 py-1 rounded-lg text-[8px] font-black uppercase tracking-widest bg-emerald-600 text-white shadow-lg shadow-emerald-100"><Shield size={10} className="mr-1.5" /> Admin</span>;
       case 'moderator':
-        return <span className="inline-flex items-center px-3 py-1 rounded-lg text-[8px] font-black uppercase tracking-widest bg-black text-emerald-500 border border-emerald-500/20 shadow-xl"><Shield size={10} className="mr-1.5" /> Monitor</span>;
+        return <span className="inline-flex items-center px-3 py-1 rounded-lg text-[8px] font-black uppercase tracking-widest bg-black text-emerald-500 border border-emerald-500/20 shadow-xl"><Shield size={10} className="mr-1.5" /> Moderator</span>;
       default:
-        return <span className="inline-flex items-center px-3 py-1 rounded-lg text-[8px] font-black uppercase tracking-widest bg-gray-50 text-gray-500 border border-gray-100 group-hover:bg-white group-hover:text-black transition-colors">Client</span>;
+        return <span className="inline-flex items-center px-3 py-1 rounded-lg text-[8px] font-black uppercase tracking-widest bg-gray-50 text-gray-500 border border-gray-100 group-hover:bg-white group-hover:text-black transition-colors">Customer</span>;
     }
   };
 
@@ -124,15 +124,15 @@ export default function AdminUsersPage() {
           <div>
             <div className="flex items-center gap-3 mb-6">
               <span className="w-6 h-[1.5px] bg-emerald-500" />
-              <span className="text-[10px] font-black text-emerald-400 uppercase tracking-[0.3em]">Identity Governance</span>
+              <span className="text-[10px] font-black text-emerald-400 uppercase tracking-[0.3em]">User Management</span>
             </div>
-            <h1 className="text-4xl md:text-5xl font-black tracking-tighter leading-none mb-3">Client Directory</h1>
-            <p className="text-gray-400 font-medium tracking-wide max-w-lg text-sm md:text-base">Curating the collective identity ledger, access parameters, and engagement kinetics.</p>
+            <h1 className="text-4xl md:text-5xl font-black tracking-tighter leading-none mb-3">User Directory</h1>
+            <p className="text-gray-400 font-medium tracking-wide max-w-lg text-sm md:text-base">Manage customer accounts, roles, and overall platform permissions.</p>
           </div>
           <div className="relative z-10">
             <button className="flex items-center space-x-3 px-8 py-4 rounded-xl bg-white text-black hover:bg-emerald-600 hover:text-white font-black uppercase tracking-widest text-[9px] shadow-2xl transition-all duration-500 active:scale-95">
               <UserPlus className="w-4 h-4" />
-              <span>Invite New Entry</span>
+              <span>Invite New User</span>
             </button>
           </div>
         </div>
@@ -141,9 +141,9 @@ export default function AdminUsersPage() {
       {/* Metrics Ledger */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         {[
-          { title: 'Identity Volume', value: totalUsers, icon: Users, desc: 'Registered profiles' },
-          { title: 'Verified Nodes', value: activeUsers, icon: CheckCircle, desc: 'Active participants' },
-          { title: 'Recent Acquisition', value: newThisMonth, icon: UserPlus, desc: 'Created 30d' },
+          { title: 'Total Users', value: totalUsers, icon: Users, desc: 'Registered accounts' },
+          { title: 'Active Accounts', value: activeUsers, icon: CheckCircle, desc: 'Currently active' },
+          { title: 'Recent Signups', value: newThisMonth, icon: UserPlus, desc: 'Past 30 days' },
         ].map((stat, index) => (
           <motion.div key={index} variants={itemVariants} whileHover={{ y: -5 }}>
             <div className="bg-white rounded-[2rem] p-7 border border-gray-100 shadow-sm relative overflow-hidden group">
@@ -168,7 +168,7 @@ export default function AdminUsersPage() {
             <Search className="absolute left-5 top-1/2 transform -translate-y-1/2 text-emerald-500/30 w-4 h-4" />
             <input
               type="text"
-              placeholder="Search identities by name or email..."
+              placeholder="Search users by name or email..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-12 pr-6 h-14 bg-gray-50/50 border border-gray-100 rounded-xl focus:bg-white focus:border-emerald-100 focus:outline-none transition-all font-medium text-sm tracking-wide placeholder:text-gray-300"
@@ -181,10 +181,10 @@ export default function AdminUsersPage() {
               onChange={(e) => setRoleFilter(e.target.value)}
               className="h-14 px-6 bg-gray-50 border border-gray-100 rounded-xl focus:bg-white focus:border-emerald-100 focus:outline-none font-black text-[9px] uppercase tracking-widest text-black cursor-pointer w-full sm:w-[180px]"
             >
-              <option value="all">Role: Universal</option>
-              <option value="admin">Architect</option>
-              <option value="moderator">Monitor</option>
-              <option value="customer">Client</option>
+              <option value="all">Role: All Roles</option>
+              <option value="admin">Admin</option>
+              <option value="moderator">Moderator</option>
+              <option value="customer">Customer</option>
             </select>
             <button
               onClick={fetchUsers}
@@ -195,7 +195,7 @@ export default function AdminUsersPage() {
           </div>
         </div>
 
-        {/* Directory Ledger */}
+        {/* User List */}
         <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden p-2">
           {error ? (
             <div className="text-center py-20 bg-red-50/20 rounded-[2rem]">
@@ -205,7 +205,7 @@ export default function AdminUsersPage() {
                 onClick={fetchUsers}
                 className="px-6 py-3 bg-black text-white rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-emerald-600 transition-all"
               >
-                Re-sync Ledger
+                Reload List
               </button>
             </div>
           ) : (
@@ -213,18 +213,18 @@ export default function AdminUsersPage() {
               <table className="min-w-full divide-y divide-gray-50">
                 <thead>
                   <tr className="bg-gray-50/20">
-                    <th className="px-6 py-5 text-left text-[9px] font-black uppercase tracking-[0.2em] text-gray-400">Identity Profile</th>
-                    <th className="px-6 py-5 text-left text-[9px] font-black uppercase tracking-[0.2em] text-gray-400">Privilege Level</th>
-                    <th className="px-6 py-5 text-left text-[9px] font-black uppercase tracking-[0.2em] text-gray-400">Sync Status</th>
-                    <th className="px-6 py-5 text-left text-[9px] font-black uppercase tracking-[0.2em] text-gray-400">Registry Date</th>
-                    <th className="px-6 py-5 text-right text-[9px] font-black uppercase tracking-[0.2em] text-gray-400">Operations</th>
+                    <th className="px-6 py-5 text-left text-[9px] font-black uppercase tracking-[0.2em] text-gray-400">User Profile</th>
+                    <th className="px-6 py-5 text-left text-[9px] font-black uppercase tracking-[0.2em] text-gray-400">Role</th>
+                    <th className="px-6 py-5 text-left text-[9px] font-black uppercase tracking-[0.2em] text-gray-400">Status</th>
+                    <th className="px-6 py-5 text-left text-[9px] font-black uppercase tracking-[0.2em] text-gray-400">Joined Date</th>
+                    <th className="px-6 py-5 text-right text-[9px] font-black uppercase tracking-[0.2em] text-gray-400">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50/50">
                   {filteredUsers.length === 0 ? (
                     <tr>
                       <td colSpan={5} className="px-6 py-20 text-center">
-                        <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest italic text-center">No matching identities in this sector.</p>
+                        <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest italic text-center">No users found matching your search.</p>
                       </td>
                     </tr>
                   ) : (
@@ -247,7 +247,7 @@ export default function AdminUsersPage() {
                                 />
                               </div>
                               <div className="ml-4 min-w-0">
-                                <div className="text-[13px] font-bold text-black tracking-tight truncate max-w-[200px] group-hover:text-emerald-600 transition-colors uppercase">{user.name || 'Anonymous client'}</div>
+                                <div className="text-[13px] font-bold text-black tracking-tight truncate max-w-[200px] group-hover:text-emerald-600 transition-colors uppercase">{user.name || 'Anonymous user'}</div>
                                 <div className="text-[9px] text-gray-400 font-bold uppercase tracking-widest truncate max-w-[200px]">{user.email}</div>
                               </div>
                             </div>

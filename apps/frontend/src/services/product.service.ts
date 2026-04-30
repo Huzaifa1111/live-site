@@ -2,7 +2,7 @@
 import api from '@/lib/api';
 
 export interface Variation {
-  id: number;
+  id: string;
   color: string;
   size: string;
   sku: string;
@@ -12,7 +12,7 @@ export interface Variation {
 }
 
 export interface Product {
-  id: number;
+  id: string;
   name: string;
   description: string;
   longDescription?: string;
@@ -20,7 +20,7 @@ export interface Product {
   stock: number;
   image: string | null;
   images?: string[];
-  category?: { id: number; name: string };
+  category?: { id: string; name: string };
   featured?: boolean;
   createdAt: string;
   updatedAt: string;
@@ -38,7 +38,7 @@ export interface CreateProductData {
   description: string;
   price: number;
   stock: number;
-  categoryId?: number | string;
+  categoryId?: string;
   category?: string; // Legacy field for string input if needed
   featured?: boolean;
   image?: File;
@@ -79,12 +79,12 @@ class ProductService {
     }
   }
 
-  async getCategories(): Promise<{ id: number, name: string }[]> {
+  async getCategories(): Promise<{ id: string, name: string }[]> {
     const response = await api.get('/categories/public');
     return response.data;
   }
 
-  async getProductById(id: number): Promise<Product> {
+  async getProductById(id: string): Promise<Product> {
     const response = await api.get(`/products/${id}`);
     return response.data;
   }
@@ -125,7 +125,7 @@ class ProductService {
     return response.data;
   }
 
-  async updateProduct(id: number, productData: UpdateProductData): Promise<Product> {
+  async updateProduct(id: string, productData: UpdateProductData): Promise<Product> {
     const formData = new FormData();
 
     if (productData.name) formData.append('name', productData.name);
@@ -161,7 +161,7 @@ class ProductService {
     return response.data.data;
   }
 
-  async deleteProduct(id: number): Promise<void> {
+  async deleteProduct(id: string): Promise<void> {
     await api.delete(`/products/${id}`);
   }
 }

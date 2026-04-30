@@ -10,7 +10,8 @@ import {
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import { addressesService, Address as SavedAddress } from '@/services/addresses.service';
-import { Home, Briefcase, MapPin, Loader2, Check, CreditCard, Banknote, ShieldCheck, ArrowRight, Package } from 'lucide-react';
+import { Home, Briefcase, MapPin, Loader2, Check, CreditCard, Banknote, Landmark, ShieldCheck, ArrowRight, Package } from 'lucide-react';
+import Image from 'next/image';
 import { useAuth } from '@/lib/auth';
 import { useCart } from '@/hooks/useCart';
 import { resolveProductImage } from '@/lib/image';
@@ -135,14 +136,14 @@ export default function CheckoutForm({ clientSecret }: { clientSecret: string })
                 setIsLoading(false);
             }
         } else {
-            // COD Flow
+            // COD or Bank Transfer Flow
             try {
                 const token = localStorage.getItem('token');
                 const response = await axios.post(
                     'http://localhost:3001/orders',
                     {
                         shippingAddress,
-                        paymentMethod: 'cod',
+                        paymentMethod: paymentMethod,
                     },
                     {
                         headers: { Authorization: `Bearer ${token}` },
@@ -313,7 +314,7 @@ export default function CheckoutForm({ clientSecret }: { clientSecret: string })
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
                         <label className={`relative cursor-pointer p-4 rounded-xl border transition-all duration-300 ${paymentMethod === 'stripe' ? 'border-emerald-500 bg-emerald-50/20' : 'border-gray-200 bg-white hover:border-gray-300'}`}>
                             <input
                                 type="radio"
@@ -353,6 +354,26 @@ export default function CheckoutForm({ clientSecret }: { clientSecret: string })
                                 </div>
                             </div>
                         </label>
+
+                        <label className={`relative cursor-pointer p-4 rounded-xl border transition-all duration-300 ${paymentMethod === 'bank_transfer' ? 'border-emerald-500 bg-emerald-50/20' : 'border-gray-200 bg-white hover:border-gray-300'}`}>
+                            <input
+                                type="radio"
+                                name="paymentMethod"
+                                value="bank_transfer"
+                                checked={paymentMethod === 'bank_transfer'}
+                                onChange={() => setPaymentMethod('bank_transfer')}
+                                className="sr-only"
+                            />
+                            <div className="flex items-center gap-3">
+                                <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-colors ${paymentMethod === 'bank_transfer' ? 'bg-emerald-500 text-white' : 'bg-gray-100 text-gray-400'}`}>
+                                    <Landmark size={18} />
+                                </div>
+                                <div className="text-left">
+                                    <h3 className={`text-sm font-bold ${paymentMethod === 'bank_transfer' ? 'text-gray-900' : 'text-gray-500'}`}>Bank Transfer</h3>
+                                    <p className="text-[10px] text-gray-400 font-medium">Direct deposit</p>
+                                </div>
+                            </div>
+                        </label>
                     </div>
 
                     <AnimatePresence mode='wait'>
@@ -364,6 +385,37 @@ export default function CheckoutForm({ clientSecret }: { clientSecret: string })
                                 className="bg-gray-50 p-6 rounded-2xl border border-gray-100"
                             >
                                 <PaymentElement />
+                            </motion.div>
+                        )}
+                        {paymentMethod === 'bank_transfer' && (
+                            <motion.div
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: 'auto' }}
+                                exit={{ opacity: 0, height: 0 }}
+                                className="bg-emerald-50/30 p-6 rounded-2xl border border-emerald-100 text-center overflow-hidden"
+                            >
+                                <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto text-emerald-600 shadow-sm border border-emerald-100 mb-4">
+                                    <Landmark size={24} />
+                                </div>
+                                <h4 className="text-lg font-black text-gray-900 tracking-tight">Direct Bank Transfer</h4>
+                                <p className="text-[11px] text-gray-500 mt-1 mb-6 max-w-sm mx-auto font-medium">Please transfer your total amount to the following bank account. Your order will not ship until the funds have cleared.</p>
+                                
+                                <div className="bg-white p-4 sm:p-6 rounded-xl border border-gray-100 shadow-sm inline-block text-left w-full sm:w-auto">
+                                    <div className="space-y-3">
+                                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-6 border-b border-gray-50 pb-3">
+                                            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Account Name</span>
+                                            <span className="text-sm font-bold text-gray-900">MUHAMMAD HUZAIFA</span>
+                                        </div>
+                                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-6 border-b border-gray-50 pb-3">
+                                            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Account No.</span>
+                                            <span className="text-sm font-black text-gray-900 tracking-wider">3006589137</span>
+                                        </div>
+                                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-6 pt-1">
+                                            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">IBAN</span>
+                                            <span className="text-xs sm:text-sm font-black text-emerald-600 tracking-widest break-all">PK72KHYB5074003006589137</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </motion.div>
                         )}
                     </AnimatePresence>
@@ -386,11 +438,13 @@ export default function CheckoutForm({ clientSecret }: { clientSecret: string })
                     <div className="space-y-4 mb-8 max-h-96 overflow-y-auto pr-2 custom-scrollbar">
                         {items.map((item) => (
                             <div key={item.id} className="flex gap-4 items-center">
-                                <div className="w-16 h-16 bg-gray-50 rounded-xl overflow-hidden border border-gray-100 shrink-0">
-                                    <img
-                                        src={resolveProductImage(item.product?.images || item.product?.image || null)}
-                                        alt={item.product?.name}
-                                        className="w-full h-full object-cover"
+                                <div className="w-16 h-16 bg-gray-50 rounded-xl overflow-hidden border border-gray-100 shrink-0 relative">
+                                    <Image
+                                        src={resolveProductImage(item.product?.images || item.product?.image || null) || 'https://placehold.co/600x600/000000/ffffff?text=No+Image'}
+                                        alt={item.product?.name || 'Product'}
+                                        fill
+                                        sizes="64px"
+                                        className="object-cover"
                                     />
                                 </div>
                                 <div className="flex-1 min-w-0">
@@ -455,7 +509,7 @@ export default function CheckoutForm({ clientSecret }: { clientSecret: string })
                             </>
                         ) : (
                             <>
-                                <span>Pay {paymentMethod === 'cod' ? 'Cash on Delivery' : 'Now'}</span>
+                                <span>Pay {paymentMethod === 'cod' ? 'Cash on Delivery' : paymentMethod === 'bank_transfer' ? 'via Bank Transfer' : 'Now'}</span>
                                 <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                             </>
                         )}

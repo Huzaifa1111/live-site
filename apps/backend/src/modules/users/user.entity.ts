@@ -1,17 +1,16 @@
 import {
   Entity,
-  PrimaryGeneratedColumn,
+  ObjectIdColumn,
+  ObjectId,
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  OneToMany
 } from 'typeorm';
-import { Address } from './address.entity';
 
 @Entity('users')
 export class User {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @ObjectIdColumn()
+  id: string;
 
   @Column()
   name: string;
@@ -37,10 +36,10 @@ export class User {
   @Column({ default: false })
   isEmailVerified: boolean;
 
-  @Column({ type: 'varchar', nullable: true })
+  @Column({ nullable: true })
   verificationOtp: string | null;
 
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ nullable: true })
   otpExpiresAt: Date | null;
 
   @CreateDateColumn()
@@ -49,6 +48,6 @@ export class User {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @OneToMany(() => Address, (address) => address.user)
-  addresses: Address[];
+  // MongoDB relation: handled manually or as joined data in services
+  addresses?: any[];
 }

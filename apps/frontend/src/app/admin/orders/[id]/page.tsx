@@ -46,7 +46,7 @@ export default function OrderDetailPage() {
     useEffect(() => {
         const fetchOrder = async () => {
             try {
-                const data = await ordersService.getOrderById(Number(params.id));
+                const data = await ordersService.getOrderById(params.id as string);
                 setOrder(data);
             } catch (error) {
                 console.error('Failed to fetch order:', error);
@@ -62,8 +62,8 @@ export default function OrderDetailPage() {
             case 'delivered': return { color: 'text-emerald-500', bg: 'bg-emerald-50', border: 'border-emerald-100', text: 'Delivered', icon: CheckCircle };
             case 'shipped': return { color: 'text-black', bg: 'bg-gray-50', border: 'border-gray-200', text: 'In Transit', icon: Truck };
             case 'processing': return { color: 'text-gray-600', bg: 'bg-gray-50', border: 'border-gray-100', text: 'Processing', icon: Clock };
-            case 'pending': return { color: 'text-orange-500', bg: 'bg-orange-50', border: 'border-orange-100', text: 'Awaiting', icon: AlertTriangle };
-            case 'cancelled': return { color: 'text-red-500', bg: 'bg-red-50', border: 'border-red-100', text: 'Terminated', icon: AlertTriangle };
+            case 'pending': return { color: 'text-orange-500', bg: 'bg-orange-50', border: 'border-orange-100', text: 'Pending', icon: AlertTriangle };
+            case 'cancelled': return { color: 'text-red-500', bg: 'bg-red-50', border: 'border-red-100', text: 'Cancelled', icon: AlertTriangle };
             default: return { color: 'text-gray-400', bg: 'bg-gray-50', border: 'border-gray-100', text: status, icon: Clock };
         }
     };
@@ -84,9 +84,9 @@ export default function OrderDetailPage() {
         return (
             <div className="text-center py-20 bg-white rounded-[2rem] border border-gray-100 shadow-sm">
                 <Package size={40} className="mx-auto text-gray-200 mb-4" />
-                <h2 className="text-xl font-black text-black tracking-tight">Acquisition record not found</h2>
+                <h2 className="text-xl font-black text-black tracking-tight">Order not found</h2>
                 <Link href="/admin/orders" className="text-emerald-600 font-bold mt-4 inline-block hover:underline text-sm">
-                    Return to Logistics Ledger
+                    Back to Orders
                 </Link>
             </div>
         );
@@ -102,7 +102,7 @@ export default function OrderDetailPage() {
             initial="hidden"
             animate="show"
         >
-            {/* Entry Header */}
+            {/* Order Header */}
             <motion.div variants={itemVariants} className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-black rounded-[2.5rem] p-8 md:p-10 shadow-2xl relative overflow-hidden group">
                 <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-emerald-600/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2 group-hover:bg-emerald-500/20 transition-colors duration-1000"></div>
 
@@ -118,7 +118,7 @@ export default function OrderDetailPage() {
                             </span>
                         </div>
                         <p className="text-gray-400 font-bold uppercase tracking-widest text-[10px] flex items-center gap-2">
-                            <Calendar size={12} className="text-emerald-500/40" /> Registered on {new Date(order.createdAt).toLocaleString()}
+                            <Calendar size={12} className="text-emerald-500/40" /> Placed on {new Date(order.createdAt).toLocaleString()}
                         </p>
                     </div>
                 </div>
@@ -128,22 +128,22 @@ export default function OrderDetailPage() {
                         className="px-8 py-4 rounded-xl bg-white text-black font-black uppercase tracking-widest text-[9px] shadow-2xl transition-all duration-500 hover:bg-emerald-600 hover:text-white active:scale-95 flex items-center gap-3"
                         onClick={() => window.print()}
                     >
-                        Export Invoice
+                        Print Invoice
                     </button>
                 </div>
             </motion.div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Left Column - Logistics Ledger */}
+                {/* Left Column - Order Items */}
                 <div className="lg:col-span-2 space-y-8">
-                    {/* Item Fulfillment */}
+                    {/* Ordered Items */}
                     <motion.div variants={itemVariants} className="bg-white rounded-[2rem] p-7 border border-gray-100 shadow-sm relative overflow-hidden">
                         <div className="flex items-center justify-between mb-8">
                             <h2 className="text-sm font-black text-black uppercase tracking-[0.2em] flex items-center gap-3">
                                 <div className="p-2 rounded-lg bg-black text-emerald-500">
                                     <Package size={16} />
                                 </div>
-                                Acquisition Manifest
+                                Order Items
                             </h2>
                         </div>
 
@@ -192,56 +192,56 @@ export default function OrderDetailPage() {
                         </div>
 
                         <div className="mt-8 pt-8 border-t border-gray-100 flex flex-col items-end gap-1 text-right">
-                            <div className="text-[9px] font-black uppercase tracking-[0.2em] text-gray-400">Total Settlement</div>
+                            <div className="text-[9px] font-black uppercase tracking-[0.2em] text-gray-400">Order Total</div>
                             <div className="text-3xl font-black text-black tracking-tighter">${order.total}</div>
                         </div>
                     </motion.div>
                 </div>
 
-                {/* Right Column - Client & Protocol */}
+                {/* Right Column - Customer & Shipping */}
                 <div className="space-y-8">
-                    {/* Identity Card */}
+                    {/* Customer Info */}
                     <motion.div variants={itemVariants} className="bg-white rounded-[2rem] p-7 border border-gray-100 shadow-sm">
                         <h2 className="text-[10px] font-black text-black uppercase tracking-[0.2em] mb-6 flex items-center gap-3">
                             <div className="p-2 rounded-lg bg-black text-emerald-500">
                                 <User size={16} />
                             </div>
-                            Identity Parameters
+                            Customer Details
                         </h2>
                         <div className="flex items-center gap-4">
                             <div className="w-10 h-10 rounded-lg bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-400 font-black text-xs">
                                 {order.userId}
                             </div>
                             <div>
-                                <div className="text-[11px] font-black text-black uppercase tracking-widest">Client Entry #{order.userId}</div>
-                                <div className="text-[9px] text-gray-400 font-bold uppercase tracking-widest">Registry ID: {order.userId.toString().padStart(8, '0')}</div>
+                                <div className="text-[11px] font-black text-black uppercase tracking-widest">Customer ID #{order.userId}</div>
+                                <div className="text-[9px] text-gray-400 font-bold uppercase tracking-widest">User ID: {order.userId.toString().padStart(8, '0')}</div>
                             </div>
                         </div>
                     </motion.div>
 
-                    {/* Logistics Destination */}
+                    {/* Shipping Info */}
                     <motion.div variants={itemVariants} className="bg-white rounded-[2rem] p-7 border border-gray-100 shadow-sm">
                         <h2 className="text-[10px] font-black text-black uppercase tracking-[0.2em] mb-6 flex items-center gap-3">
                             <div className="p-2 rounded-lg bg-black text-emerald-500">
                                 <Truck size={16} />
                             </div>
-                            Logistics Node
+                            Shipping Address
                         </h2>
                         <div className="flex gap-4 p-4 bg-gray-50 rounded-xl border border-gray-100">
                             <MapPin className="text-emerald-500/40 flex-shrink-0" size={16} />
                             <div className="text-[10px] font-black uppercase tracking-widest text-gray-500 leading-relaxed">
-                                {order.shippingAddress || 'No node address registered.'}
+                                {order.shippingAddress || 'No shipping address provided.'}
                             </div>
                         </div>
                     </motion.div>
 
-                    {/* Settlement Protocol */}
+                    {/* Payment Info */}
                     <motion.div variants={itemVariants} className="bg-white rounded-[2rem] p-7 border border-gray-100 shadow-sm">
                         <h2 className="text-[10px] font-black text-black uppercase tracking-[0.2em] mb-6 flex items-center gap-3">
                             <div className="p-2 rounded-lg bg-black text-emerald-500">
                                 <CreditCard size={16} />
                             </div>
-                            Settlement Protocol
+                            Payment Information
                         </h2>
                         <div className="flex justify-between items-center p-4 bg-gray-50 rounded-xl border border-gray-100">
                             <div className="flex items-center gap-3">
@@ -251,7 +251,7 @@ export default function OrderDetailPage() {
                                 <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">{order.paymentMethod}</span>
                             </div>
                             <div className="text-emerald-500 font-black flex items-center gap-1.5 text-[8px] uppercase tracking-widest">
-                                <CheckCircle size={12} /> Executed
+                                <CheckCircle size={12} /> Paid
                             </div>
                         </div>
                     </motion.div>

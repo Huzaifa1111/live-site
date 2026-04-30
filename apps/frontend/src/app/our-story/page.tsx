@@ -46,7 +46,7 @@ export default function OurStoryPage() {
                     className="group flex items-center text-[10px] font-black uppercase tracking-[0.4em] text-gray-400 hover:text-emerald-600 mb-12 transition-all"
                 >
                     <ArrowLeft size={14} className="mr-3 transition-transform group-hover:-translate-x-1" />
-                    Back to Gallery
+                    Back to Shop
                 </button>
 
                 {/* Parallax Hero Section */}
@@ -72,10 +72,10 @@ export default function OurStoryPage() {
                                 Established 2024
                             </span>
                             <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black text-white tracking-widest leading-tight md:leading-none mb-6 md:mb-8 drop-shadow-2xl translate-y-2">
-                                THE <span className="text-emerald-400">GENESIS</span>
+                                OUR <span className="text-emerald-400">ORIGIN</span>
                             </h1>
                             <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto font-medium leading-relaxed drop-shadow-md">
-                                Two visionaries, one mission: To synthesize technological precision with artistic craftsmanship.
+                                Two founders, one mission: To bring together great technology and beautiful craftsmanship.
                             </p>
                         </motion.div>
                     </div>
@@ -85,9 +85,9 @@ export default function OurStoryPage() {
                 <section className="mb-20">
                     <div className="max-w-4xl mx-auto text-center space-y-12">
                         <motion.div {...fadeInUp} className="space-y-4">
-                            <span className="text-[11px] font-black text-emerald-600 uppercase tracking-[0.5em] block">The Inception</span>
+                            <span className="text-[11px] font-black text-emerald-600 uppercase tracking-[0.5em] block">The Beginning</span>
                             <h2 className="text-3xl md:text-4xl font-black tracking-tighter text-gray-900 leading-none">
-                                Curating Clarity <br />
+                                Focus on Quality <br />
                                 <span className="text-emerald-800 opacity-60">In a world of noise.</span>
                             </h2>
                         </motion.div>
@@ -97,7 +97,7 @@ export default function OurStoryPage() {
                             transition={{ delay: 0.2 }}
                             className="text-gray-600 text-base md:text-lg leading-relaxed font-medium"
                         >
-                            In an era of generic mass-production, we envisioned a sanctuary for intentional acquisition. What began as a series of late-night architectural sessions has blossomed into a global guild of artisans and collectors. We strip away the superfluous to reveal the essential, ensuring that every interaction with our platform is as seamless as it is inspiring.
+                            In an era of generic mass-production, we envisioned a sanctuary for thoughtful shopping. What began as a series of late-night planning meetings has blossomed into a global community of makers and customers. We keep it simple and focus on what matters, ensuring that using our site is easy and enjoyable.
                         </motion.p>
 
                         <motion.div
@@ -119,8 +119,8 @@ export default function OurStoryPage() {
                         whileInView="whileInView"
                         className="text-center mb-16 space-y-4"
                     >
-                        <span className="text-emerald-600 font-black uppercase tracking-[0.5em] text-[11px]">The Curators</span>
-                        <h2 className="text-3xl md:text-5xl font-black tracking-tighter text-gray-900 leading-[1.1] md:leading-none uppercase">ARCHITECTS <br />OF THE FUTURE</h2>
+                        <span className="text-emerald-600 font-black uppercase tracking-[0.5em] text-[11px]">The Founders</span>
+                        <h2 className="text-3xl md:text-5xl font-black tracking-tighter text-gray-900 leading-[1.1] md:leading-none uppercase">MEET THE <br />FOUNDERS</h2>
                     </motion.div>
 
                     <div className="grid md:grid-cols-2 gap-8 lg:gap-12 max-w-3xl mx-auto">
@@ -146,7 +146,7 @@ export default function OurStoryPage() {
                                     <div className="space-y-1">
                                         <h3 className="text-2xl lg:text-3xl font-black text-gray-900 tracking-tighter leading-none">Wasik Rehman</h3>
                                         <span className="inline-block py-1 px-4 bg-emerald-50 text-emerald-600 rounded-full text-[9px] font-black uppercase tracking-[0.2em]">
-                                            Chief Strategist
+                                            Operations Lead
                                         </span>
                                     </div>
                                     <p className="text-gray-500 leading-relaxed font-medium italic max-w-[180px] mx-auto text-[10px]">
@@ -185,7 +185,7 @@ export default function OurStoryPage() {
                                     <div className="space-y-1">
                                         <h3 className="text-2xl lg:text-3xl font-black text-gray-900 tracking-tighter leading-none">M. Huzaifa</h3>
                                         <span className="inline-block py-1 px-4 bg-emerald-50 text-emerald-600 rounded-full text-[9px] font-black uppercase tracking-[0.2em]">
-                                            Chief Technologist
+                                            Technology Lead
                                         </span>
                                     </div>
                                     <p className="text-gray-500 leading-relaxed font-medium italic max-w-[180px] mx-auto text-[10px]">

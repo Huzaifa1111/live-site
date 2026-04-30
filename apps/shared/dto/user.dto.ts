@@ -15,7 +15,7 @@ export interface UpdateUserDto {
 }
 
 export interface UserDto {
-  id: number;
+  id: string;
   name: string;
   email: string;
   role: string;

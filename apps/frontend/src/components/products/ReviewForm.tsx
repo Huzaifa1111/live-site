@@ -48,7 +48,7 @@ export default function ReviewForm({ productId, onSuccess }: ReviewFormProps) {
         <form onSubmit={handleSubmit} className="space-y-8 font-plus-jakarta-sans">
             <div className="relative">
                 <span className="absolute -top-10 left-0 text-[9px] font-black uppercase tracking-[0.4em] text-emerald-600/40">Engagement</span>
-                <h3 className="text-xl font-black text-black uppercase tracking-widest mb-6 border-b border-gray-100 pb-4">Chronicled Testimony</h3>
+                <h3 className="text-xl font-black text-black uppercase tracking-widest mb-6 border-b border-gray-100 pb-4">Customer Reviews</h3>
             </div>
 
             <div className="p-6 bg-gray-50/50 rounded-xl border border-gray-100 italic transition-all hover:bg-white hover:shadow-inner group">
@@ -107,7 +107,7 @@ export default function ReviewForm({ productId, onSuccess }: ReviewFormProps) {
                 {isSubmitting ? (
                     <Loader2 className="animate-spin w-4 h-4" />
                 ) : (
-                    'Publish Testimony'
+                    'Submit Review'
                 )}
             </button>
         </form>

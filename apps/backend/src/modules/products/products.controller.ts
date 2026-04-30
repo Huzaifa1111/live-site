@@ -53,16 +53,16 @@ export class ProductsController {
     createProductDto.category = body.category;
     createProductDto.featured = body.featured === 'true' || body.featured === true;
 
-    if (body.brandId) createProductDto.brandId = parseInt(body.brandId);
+    if (body.brandId) createProductDto.brandId = body.brandId;
     if (body.upsellIds) {
       createProductDto.upsellIds = Array.isArray(body.upsellIds)
-        ? body.upsellIds.map(id => parseInt(id))
-        : [parseInt(body.upsellIds)];
+        ? body.upsellIds
+        : [body.upsellIds];
     }
     if (body.crossSellIds) {
       createProductDto.crossSellIds = Array.isArray(body.crossSellIds)
-        ? body.crossSellIds.map(id => parseInt(id))
-        : [parseInt(body.crossSellIds)];
+        ? body.crossSellIds
+        : [body.crossSellIds];
     }
 
     if (body.descriptionImages) {
@@ -82,12 +82,6 @@ export class ProductsController {
         console.error('Failed to parse variations:', e);
       }
     }
-
-    console.log('=== PRODUCT CREATE DEBUG ===');
-    console.log('Incoming Raw Body:', body);
-    console.log('Parsed Stock:', createProductDto.stock);
-    console.log('Parsed Price:', createProductDto.price);
-    console.log('Images:', images ? `Count: ${images.length}` : 'No images');
 
     try {
       const result = await this.productsService.create(createProductDto, images);
@@ -121,7 +115,7 @@ export class ProductsController {
   @Get(':id')
   async findOne(@Param('id') id: string) {
     try {
-      return await this.productsService.findOne(parseInt(id));
+      return await this.productsService.findOne(id);
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw new NotFoundException(`Product with ID ${id} not found`);
@@ -137,12 +131,8 @@ export class ProductsController {
     @Body() updateProductDto: any,
     @UploadedFiles() images?: Express.Multer.File[],
   ) {
-    console.log('=== PRODUCT UPDATE REQUEST ===');
-    console.log('Product ID:', id);
-    console.log('Body:', updateProductDto);
-
     try {
-      await this.productsService.findOne(parseInt(id));
+      await this.productsService.findOne(id);
 
       const updateData: any = {};
       if (updateProductDto.name !== undefined) updateData.name = updateProductDto.name;
@@ -156,39 +146,19 @@ export class ProductsController {
       if (updateProductDto.category) updateData.category = updateProductDto.category;
       if (updateProductDto.featured !== undefined) updateData.featured = updateProductDto.featured === 'true' || updateProductDto.featured === true;
 
-      if (updateProductDto.brandId) updateData.brandId = parseInt(updateProductDto.brandId);
+      if (updateProductDto.brandId) updateData.brandId = updateProductDto.brandId;
       if (updateProductDto.upsellIds) {
         updateData.upsellIds = Array.isArray(updateProductDto.upsellIds)
-          ? updateProductDto.upsellIds.map(id => parseInt(id))
-          : [parseInt(updateProductDto.upsellIds)];
+          ? updateProductDto.upsellIds
+          : [updateProductDto.upsellIds];
       }
       if (updateProductDto.crossSellIds) {
         updateData.crossSellIds = Array.isArray(updateProductDto.crossSellIds)
-          ? updateProductDto.crossSellIds.map(id => parseInt(id))
-          : [parseInt(updateProductDto.crossSellIds)];
+          ? updateProductDto.crossSellIds
+          : [updateProductDto.crossSellIds];
       }
 
-      if (updateProductDto.descriptionImages !== undefined) {
-        try {
-          updateData.descriptionImages = typeof updateProductDto.descriptionImages === 'string'
-            ? JSON.parse(updateProductDto.descriptionImages)
-            : updateProductDto.descriptionImages;
-        } catch (e) {
-          console.error('Failed to parse descriptionImages:', e);
-        }
-      }
-
-      if (updateProductDto.variations) {
-        try {
-          updateData.variations = typeof updateProductDto.variations === 'string'
-            ? JSON.parse(updateProductDto.variations)
-            : updateProductDto.variations;
-        } catch (e) {
-          console.error('Failed to parse variations:', e);
-        }
-      }
-
-      const updatedProduct = await this.productsService.update(parseInt(id), updateData, images);
+      const updatedProduct = await this.productsService.update(id, updateData, images);
       return {
         message: 'Product updated successfully',
         data: updatedProduct,
@@ -205,9 +175,9 @@ export class ProductsController {
   @Delete(':id')
   async remove(@Param('id') id: string) {
     try {
-      await this.productsService.findOne(parseInt(id));
+      await this.productsService.findOne(id);
 
-      await this.productsService.remove(parseInt(id));
+      await this.productsService.remove(id);
       return {
         success: true,
         message: 'Product deleted successfully'

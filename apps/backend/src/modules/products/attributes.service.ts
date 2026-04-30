@@ -13,13 +13,17 @@ export class AttributesService {
     ) { }
 
     async findAll(query?: string) {
+        const where: any = {};
         if (query) {
-            return this.attributeRepository.find({
-                where: { name: Like(`%${query}%`) },
-                relations: ['values']
-            });
+            where.name = { $regex: query, $options: 'i' };
         }
-        return this.attributeRepository.find({ relations: ['values'] });
+        const attributes = await this.attributeRepository.find({ where });
+        
+        // Manually fetch values
+        for (const attr of attributes) {
+            attr.values = await this.attributeValueRepository.find({ where: { attributeId: attr.id } as any });
+        }
+        return attributes;
     }
 
     async create(name: string) {
@@ -27,8 +31,8 @@ export class AttributesService {
         return this.attributeRepository.save(attribute);
     }
 
-    async remove(id: number) {
-        const attribute = await this.attributeRepository.findOne({ where: { id } });
+    async remove(id: string) {
+        const attribute = await this.attributeRepository.findOne({ where: { _id: id } as any });
         if (!attribute) throw new NotFoundException('Attribute not found');
         return this.attributeRepository.remove(attribute);
     }
@@ -36,25 +40,16 @@ export class AttributesService {
     async findValuesByAttribute(attributeName: string, query?: string) {
         const attribute = await this.attributeRepository.findOne({
             where: { name: attributeName },
-            relations: ['values'],
         });
 
-        if (!attribute) {
-            // If attribute doesn't exist, return empty array (or create it if that's desired, 
-            // but for search let's just return empty)
-            return [];
-        }
+        if (!attribute) return [];
 
+        const where: any = { attributeId: attribute.id };
         if (query) {
-            return this.attributeValueRepository.find({
-                where: {
-                    attribute: { id: attribute.id },
-                    value: Like(`%${query}%`),
-                },
-            });
+            where.value = { $regex: query, $options: 'i' };
         }
 
-        return attribute.values;
+        return this.attributeValueRepository.find({ where });
     }
 
     async createAttributeValue(attributeName: string, value: string) {
@@ -65,16 +60,16 @@ export class AttributesService {
             await this.attributeRepository.save(attribute);
         }
 
-        let attrValue = await this.attributeValueRepository.findOne({
-            where: { attribute: { id: attribute.id }, value },
+        let attrValue: AttributeValue | null = await this.attributeValueRepository.findOne({
+            where: { attributeId: attribute.id, value } as any,
         });
 
         if (!attrValue) {
-            attrValue = this.attributeValueRepository.create({
+            const newAttrValue = (this.attributeValueRepository.create({
                 value,
-                attribute,
-            });
-            await this.attributeValueRepository.save(attrValue);
+                attributeId: attribute.id,
+            } as any) as unknown) as AttributeValue;
+            attrValue = await this.attributeValueRepository.save(newAttrValue);
         }
 
         return attrValue;

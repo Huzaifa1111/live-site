@@ -83,13 +83,13 @@ export default function GiftCardsPage() {
                     >
                         <div className="flex items-center justify-center gap-2 mb-4 text-emerald-600">
                             <Star size={12} className="fill-current animate-pulse" />
-                            <span className="text-[9px] font-bold uppercase tracking-[0.4em]">The Ultimate Gesture</span>
+                            <span className="text-[9px] font-bold uppercase tracking-[0.4em]">The Perfect Gift</span>
                         </div>
                         <h1 className="text-4xl md:text-5xl font-black tracking-tight mb-6 leading-[1.1] text-gray-900">
-                            Digital <span className="text-emerald-600">Treasures.</span>
+                            Digital <span className="text-emerald-600">Gift Cards.</span>
                         </h1>
                         <p className="text-lg text-gray-500 max-w-xl mx-auto font-medium leading-relaxed">
-                            Transfer the freedom of choice with our curated digital gift certificates. Instant elegance, delivered to any inbox.
+                            Give the gift of choice with our digital gift cards. Instant delivery to any email address.
                         </p>
                     </motion.div>
                 </div>
@@ -146,7 +146,7 @@ export default function GiftCardsPage() {
                                     <div className="flex justify-between items-start">
                                         <div className="space-y-0.5">
                                             <div className="text-[8px] font-black tracking-[0.3em] opacity-80 uppercase">Estore Digital</div>
-                                            <h3 className="text-base font-black tracking-tighter leading-none">PRESTIGE</h3>
+                                            <h3 className="text-base font-black tracking-tighter leading-none">GIFT CARD</h3>
                                         </div>
                                         <div className="w-10 h-7 bg-white/10 backdrop-blur-md rounded-lg flex items-center justify-center border border-white/20 shadow-inner">
                                             <Zap size={14} className="opacity-80" />
@@ -156,7 +156,7 @@ export default function GiftCardsPage() {
                                     <div className="space-y-4">
                                         <div className="flex items-end justify-between">
                                             <div>
-                                                <p className="text-[8px] font-bold uppercase tracking-[0.4em] mb-2 opacity-50">Authorized Value</p>
+                                                <p className="text-[8px] font-bold uppercase tracking-[0.4em] mb-2 opacity-50">Card Value</p>
                                                 <AnimatePresence mode="wait">
                                                     <motion.div
                                                         key={selectedValue}
@@ -178,7 +178,7 @@ export default function GiftCardsPage() {
 
                                         <div className="flex justify-between items-center pt-3 border-t border-current/10">
                                             <div className="font-mono text-[8px] tracking-[0.2em] opacity-40 uppercase">
-                                                Gift Selection • {currentTier.name} TIER
+                                                E-Store Gift Card • {currentTier.name} TIER
                                             </div>
                                             <div className="flex -space-x-1">
                                                 {[1, 2, 3, 4].map(i => (
@@ -194,9 +194,9 @@ export default function GiftCardsPage() {
                         {/* Feature Grid Below Card */}
                         <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-6">
                             {[
-                                { icon: <Send size={18} />, title: "Instant Dispatch", desc: "Digital delivery via secure link." },
-                                { icon: <Sparkles size={18} />, title: "Perpetual Value", desc: "No expiration date, ever." },
-                                { icon: <CreditCard size={18} />, title: "Verified Secure", desc: "End-to-end encrypted transit." },
+                                { icon: <Send size={18} />, title: "Instant Delivery", desc: "Sent directly to the recipient's email." },
+                                { icon: <Sparkles size={18} />, title: "No Expiration", desc: "This card never expires." },
+                                { icon: <CreditCard size={18} />, title: "Safe & Secure", desc: "100% secure payment and delivery." },
                             ].map((item, i) => (
                                 <motion.div
                                     initial={{ opacity: 0, y: 20 }}
@@ -223,11 +223,11 @@ export default function GiftCardsPage() {
                         className="lg:col-span-5 space-y-6"
                     >
                         <div className="bg-white p-8 md:p-10 rounded-[2.5rem] shadow-[0_30px_80px_rgba(0,0,0,0.03)] border border-gray-100 relative overflow-hidden">
-                            <h2 className="text-2xl font-black mb-8 tracking-tight text-gray-900">Customization</h2>
+                            <h2 className="text-2xl font-black mb-8 tracking-tight text-gray-900">Gift Details</h2>
 
                             {/* Value Grid */}
                             <div className="mb-10">
-                                <label className="text-[9px] font-bold uppercase tracking-[0.4em] text-gray-400 mb-4 block leading-none">Denomination</label>
+                                <label className="text-[9px] font-bold uppercase tracking-[0.4em] text-gray-400 mb-4 block leading-none">Select Amount</label>
                                 <div className="grid grid-cols-2 gap-3">
                                     {cardValues.map((value) => (
                                         <button
@@ -263,7 +263,7 @@ export default function GiftCardsPage() {
                                         <Sparkles size={16} />
                                     </div>
                                     <div>
-                                        <p className="text-[10px] font-black uppercase tracking-widest text-emerald-700 mb-0.5">{currentTier.name} BENEFITS</p>
+                                        <p className="text-[10px] font-black uppercase tracking-widest text-emerald-700 mb-0.5">{currentTier.name} DETAILS</p>
                                         <p className="text-sm font-bold text-gray-700 mb-0.5">{currentTier.discount}</p>
                                         <p className="text-[11px] text-emerald-600/60 font-medium leading-tight">{currentTier.description}</p>
                                     </div>
@@ -277,7 +277,7 @@ export default function GiftCardsPage() {
                                         <input
                                             type="text"
                                             name="recipientName"
-                                            placeholder="Recipient Full Name"
+                                            placeholder="Recipient's Name"
                                             className="w-full bg-[#FAFAFA] border border-gray-100 focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/5 rounded-xl px-6 py-4 outline-none transition-all font-bold text-sm text-gray-900 placeholder:text-gray-300"
                                             value={formState.recipientName}
                                             onChange={handleInputChange}
@@ -288,7 +288,7 @@ export default function GiftCardsPage() {
                                         <input
                                             type="email"
                                             name="recipientEmail"
-                                            placeholder="Digital Delivery Email"
+                                            placeholder="Recipient's Email"
                                             className="w-full bg-[#FAFAFA] border border-gray-100 focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/5 rounded-xl px-6 py-4 outline-none transition-all font-bold text-sm text-gray-900 placeholder:text-gray-300"
                                             value={formState.recipientEmail}
                                             onChange={handleInputChange}
@@ -299,7 +299,7 @@ export default function GiftCardsPage() {
                                         <textarea
                                             name="message"
                                             rows={3}
-                                            placeholder="A Personal Narrative..."
+                                            placeholder="Write a message..."
                                             className="w-full bg-[#FAFAFA] border border-gray-100 focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/5 rounded-xl px-6 py-4 outline-none transition-all font-bold text-sm text-gray-900 placeholder:text-gray-300 resize-none min-h-[100px]"
                                             value={formState.message}
                                             onChange={handleInputChange}
@@ -311,7 +311,7 @@ export default function GiftCardsPage() {
                                 <div className="pt-8 border-t border-gray-50 space-y-5">
                                     <div className="flex justify-between items-end">
                                         <div>
-                                            <span className="text-[9px] font-bold uppercase tracking-[0.4em] text-gray-400 mb-0.5 block">Total Acquisition</span>
+                                            <span className="text-[9px] font-bold uppercase tracking-[0.4em] text-gray-400 mb-0.5 block">Total Price</span>
                                             <span className="text-3xl font-black text-gray-900">${selectedValue}.00</span>
                                         </div>
                                         <div className="text-[9px] font-black uppercase text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full tracking-widest">Digital Ready</div>
@@ -327,7 +327,7 @@ export default function GiftCardsPage() {
                                         className="relative w-full py-4.5 bg-black text-white rounded-[1.2rem] font-bold uppercase tracking-[0.3em] text-[11px] shadow-xl shadow-black/5 hover:bg-emerald-900 transition-all overflow-hidden group"
                                     >
                                         <span className="relative z-10 flex items-center justify-center gap-3 py-1">
-                                            <span>Acquire Certificate</span>
+                                            <span>Buy Gift Card</span>
                                             <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
                                         </span>
                                         <motion.div

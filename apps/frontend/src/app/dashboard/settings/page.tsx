@@ -96,11 +96,11 @@ export default function SettingsPage() {
 
                 <div className="relative z-10">
                     <span className="inline-block px-4 py-1.5 rounded-full bg-emerald-600/20 backdrop-blur-md border border-emerald-500/30 text-[9px] font-black text-emerald-400 uppercase tracking-[0.2em] mb-6">
-                        System Configuration
+                        Site Settings
                     </span>
-                    <h1 className="text-4xl md:text-6xl font-black mb-6 tracking-tighter leading-none">Console & <br className="hidden md:block" /> Preferences</h1>
+                    <h1 className="text-4xl md:text-6xl font-black mb-6 tracking-tighter leading-none">Account & <br className="hidden md:block" /> Preferences</h1>
                     <p className="text-gray-400 max-w-xl text-lg font-medium tracking-wide leading-relaxed">
-                        Curate your digital experience, modulate notification protocols, and govern your security parameters.
+                        Manage your notifications, security, and site display preferences here.
                     </p>
                 </div>
             </motion.div>
@@ -115,26 +115,26 @@ export default function SettingsPage() {
 
                         <h2 className="text-2xl font-black text-black tracking-tighter mb-10 flex items-center">
                             <Bell className="mr-4 text-emerald-500/40" size={24} />
-                            Communication Protocols
+                            Email Notifications
                         </h2>
                         <div className="space-y-2 divide-y divide-gray-50 relative z-10">
                             <Toggle
-                                label="Logistics Alerts"
-                                description="Real-time updates on your style acquisitions"
+                                label="Order Updates"
+                                description="Live updates on your latest orders"
                                 enabled={notifications.orders}
                                 onChange={(v) => setNotifications(prev => ({ ...prev, orders: v }))}
                                 icon={Smartphone}
                             />
                             <Toggle
-                                label="Curated Chronicles"
-                                description="Receive exclusive updates on new drops"
+                                label="News & Updates"
+                                description="Receive news about new product arrivals"
                                 enabled={notifications.email}
                                 onChange={(v) => setNotifications(prev => ({ ...prev, email: v }))}
                                 icon={Mail}
                             />
                             <Toggle
-                                label="Privileged Access"
-                                description="Exclusive early access to seasonal boutique events"
+                                label="Special Offers"
+                                description="Early access to sales and special events"
                                 enabled={notifications.promo}
                                 onChange={(v) => setNotifications(prev => ({ ...prev, promo: v }))}
                                 icon={Globe}
@@ -148,12 +148,12 @@ export default function SettingsPage() {
 
                         <h2 className="text-2xl font-black text-black tracking-tighter mb-10 flex items-center">
                             <Shield className="mr-4 text-emerald-500/40" size={24} />
-                            Governance & Cryptography
+                            Privacy & Security
                         </h2>
                         <div className="space-y-2 divide-y divide-gray-50 relative z-10">
                             <Toggle
-                                label="Public Visibility"
-                                description="Allow community members to view your curated wishlist"
+                                label="Public Profile"
+                                description="Let others see your items and wishlist"
                                 enabled={privacy.publicProfile}
                                 onChange={(v) => setPrivacy(prev => ({ ...prev, publicProfile: v }))}
                                 icon={Eye}
@@ -164,8 +164,8 @@ export default function SettingsPage() {
                                         <Lock size={20} />
                                     </div>
                                     <div>
-                                        <p className="font-bold text-black tracking-tight">Access Key Rotation</p>
-                                        <p className="text-[10px] text-gray-400 font-medium uppercase tracking-widest mt-1">Re-calibrate your secure access code</p>
+                                        <p className="font-bold text-black tracking-tight">Change Password</p>
+                                        <p className="text-[10px] text-gray-400 font-medium uppercase tracking-widest mt-1">Update your login security code</p>
                                     </div>
                                 </div>
                                 <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-300 group-hover/item:bg-emerald-600 group-hover/item:text-white transition-all duration-500">
@@ -183,12 +183,12 @@ export default function SettingsPage() {
                     <div className="bg-white rounded-[3rem] p-10 border border-gray-100 shadow-sm">
                         <h2 className="text-2xl font-black text-black tracking-tighter mb-10 flex items-center">
                             <Moon className="mr-4 text-emerald-500/40" size={24} />
-                            Aesthetic Mode
+                            Site Theme
                         </h2>
                         <div className="space-y-2">
                             <Toggle
-                                label="Noir Presentation"
-                                description="Switch to high-contrast dark interface"
+                                label="Dark Mode"
+                                description="Switch to a dark theme for easier viewing"
                                 enabled={appearance.darkMode}
                                 onChange={(v) => setAppearance(prev => ({ ...prev, darkMode: v }))}
                             />
@@ -197,16 +197,16 @@ export default function SettingsPage() {
 
                     {/* Danger Zone */}
                     <div className="bg-red-50/50 rounded-[3rem] p-10 border border-red-100 shadow-sm group">
-                        <h2 className="text-2xl font-black text-red-700 tracking-tighter mb-4">Critical Actions</h2>
+                        <h2 className="text-2xl font-black text-red-700 tracking-tighter mb-4">Logout</h2>
                         <p className="text-red-600/60 text-[10px] font-black uppercase tracking-widest mb-10 leading-relaxed">
-                            Irreversible terminal termination and synchronization logout.
+                            Safely sign out of your account on this device.
                         </p>
                         <button
                             onClick={logout}
                             className="w-full py-5 bg-white border border-red-200 text-red-600 font-black uppercase tracking-[0.2em] text-[10px] rounded-full shadow-sm hover:bg-red-600 hover:text-white hover:border-red-600 hover:shadow-2xl hover:shadow-red-200 transform hover:-translate-y-1 transition-all duration-500 flex items-center justify-center"
                         >
                             <LogOut size={16} className="mr-3" />
-                            Terminate Session
+                            Log Out
                         </button>
                     </div>
                 </motion.div>
